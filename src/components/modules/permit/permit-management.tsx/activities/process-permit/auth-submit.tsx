@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../../../../ui/button";
 
 import { route } from "preact-router";
 
 import useRequest from "../../../../../../hooks/use-request";
-import {
-  approveAuthorizingAuth,
-  approveHseAuth,
-} from "../../../../../../assets/api/permit";
+import { approveAuthorizingAuth } from "../../../../../../assets/api/permit";
 
 import { toast } from "../../../../../ui/toast";
 import { useIDContext } from "../../../../../../context/id.context";
@@ -15,8 +12,8 @@ import { useIDContext } from "../../../../../../context/id.context";
 import { useAuthorizingActivityContext } from "../../../../../../context/authorizing-activity-context";
 
 export default function AuthProcessSubmit() {
-  const { send, state } = useAuthorizingActivityContext();
-  const { makeRequest, isLoading } = useRequest(approveAuthorizingAuth);
+  const { state } = useAuthorizingActivityContext();
+  const { makeRequest } = useRequest(approveAuthorizingAuth);
 
   const [loading, setLoading] = useState(false);
   const { valueID } = useIDContext();

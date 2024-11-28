@@ -2,13 +2,7 @@ import dayjs from "dayjs";
 import { getPermits } from "../../../../assets/api/permit";
 import useRequest from "../../../../hooks/use-request";
 import Button from "../../../ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "../../../ui/table";
+import { Table, TableBody, TableCell, TableRow } from "../../../ui/table";
 
 export default function PermitsList({ flag }: { flag?: string }) {
   const { response, isLoading } = useRequest(getPermits, { flag }, true);

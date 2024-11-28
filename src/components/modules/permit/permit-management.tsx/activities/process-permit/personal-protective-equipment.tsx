@@ -11,7 +11,7 @@ import { route } from "preact-router";
 
 export default function PersonalProtectiveEquipment() {
   const { send, state } = useIssuingActivityContext();
-  const { getFieldProps, handleSubmit, setFieldValue, values } = useForm({
+  const { handleSubmit, setFieldValue, values } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.personal_protective_equipment,
@@ -107,13 +107,6 @@ export const EQUIPMENT = [
   { text: "LIFE VEST (Work Vest, Life Jacket)", value: "lifeVest" },
   { text: "LIFE BUOY / LIFE LINE", value: "lifeBuoy" },
 ];
-
-const isHotPermit =
-  (message) =>
-  ([permit_type], schema) => {
-    if (permit_type !== "hot_permit") return schema.optional();
-    return schema.required(message);
-  };
 
 const validationSchema = Yup.object({
   // work_area: Yup.string().required("Work area is required"),

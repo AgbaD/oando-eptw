@@ -7,7 +7,7 @@ import Button from "../../../ui/button";
 
 export default function Documents() {
   const { state, send } = usePermitContext();
-  const { setFieldValue, values, getFieldProps, handleSubmit } = useForm({
+  const { setFieldValue, getFieldProps, handleSubmit } = useForm({
     initialValues: state.context.document_uploads,
     onSubmit,
     validationSchema,

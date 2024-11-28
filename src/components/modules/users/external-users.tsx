@@ -1,7 +1,6 @@
-import { useEffect, useState } from "preact/hooks";
-import { getExternalUsers } from "../../../assets/api/user";
+import { useState } from "preact/hooks";
 import useModal from "../../../hooks/use-modal";
-import useRequest from "../../../hooks/use-request";
+// import useRequest from "../../../hooks/use-request";
 import Button from "../../ui/button";
 import Icon from "../../ui/icon";
 import { Modal, ModalBody, ModalDetail, ModalHeader } from "../../ui/modal";
@@ -125,6 +124,10 @@ const ExternalUsers = ({ company = [] }) => {
         data={filteredData}
         onItemClick={handleItemClick}
         getName={getName}
+        formatCreatedAt={(item) =>
+          dayjs(item?.createdAt).format("MMM DD, YYYY")
+        }
+        getDetails={(item) => item?.type}
         type={"Users"}
       />
 

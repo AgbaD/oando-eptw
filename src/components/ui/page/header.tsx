@@ -1,10 +1,10 @@
 import Icon from "../icon";
 import Search from "./search";
 import "./index.scss";
-import { useUserContext } from "../../../context/user.context";
+// import { useUserContext } from "../../../context/user.context";
 
 export default function Header({ title }: { title: string }) {
-  const { profile } = useUserContext();
+  // const { profile } = useUserContext();
 
   return (
     <div className="app-page__header">

@@ -1,4 +1,3 @@
-import Icon from "../../../ui/icon";
 import {
   Dropdown,
   DropdownContent,

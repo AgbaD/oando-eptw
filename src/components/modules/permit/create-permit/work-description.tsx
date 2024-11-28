@@ -5,8 +5,6 @@ import Input from "../../../ui/form/input";
 import Textarea from "../../../ui/form/text-area";
 import Button from "../../../ui/button";
 import { usePermitContext } from "../../../../context/permit.context";
-import useRequest from "../../../../hooks/use-request";
-import { getAllExternalUsers, getSites } from "../../../../assets/api/user";
 
 export default function WorkDescription() {
   const { state, send } = usePermitContext();
@@ -246,20 +244,6 @@ export default function WorkDescription() {
     </form>
   );
 }
-
-const isColdPermit =
-  (message) =>
-  ([permit_type], schema) => {
-    if (permit_type === "cold_permit") return schema.required(message);
-    return schema.optional();
-  };
-
-const isHotPermit =
-  (message) =>
-  ([permit_type], schema) => {
-    if (permit_type === "hot_permit") return schema.required(message);
-    return schema.optional();
-  };
 
 const validationSchema = Yup.object({
   // performing_department: Yup.string().required(

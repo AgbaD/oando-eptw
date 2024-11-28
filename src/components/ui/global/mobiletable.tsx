@@ -1,6 +1,3 @@
-import { h } from "preact";
-import dayjs from "dayjs";
-
 const ReusableMobileTable = ({
   data,
   onItemClick,

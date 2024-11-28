@@ -1,9 +1,5 @@
 import { useState } from "preact/hooks";
-import {
-  getAllCompanies,
-  getCompanyById,
-  getExternalUsers,
-} from "../../../../assets/api/user";
+import { getAllCompanies } from "../../../../assets/api/user";
 import useModal from "../../../../hooks/use-modal";
 import useRequest from "../../../../hooks/use-request";
 
@@ -30,15 +26,14 @@ import {
 } from "../../../ui/dropdown";
 import { useIDContext } from "../../../../context/id.context";
 
-import PopupModal from "../../../ui/popup";
-import { createRequest } from "../../../../assets/api";
+// import { createRequest } from "../../../../assets/api";
 
 export default function Company() {
-  const [selectedCompany, viewCompany] = useState<any>();
+  const [selectedCompany] = useState<any>();
   const { toggle, modals } = useModal({ user_details: false });
   const { response, isLoading } = useRequest(getAllCompanies, {}, true);
 
-  const { setID, valueID } = useIDContext();
+  const { setID } = useIDContext();
 
   const isCompany = true;
 
@@ -56,22 +51,22 @@ export default function Company() {
 
   const status = ["All Status", "Active", "Inactive"];
 
-  const [isModalOpen, setModalOpen] = useState(false);
+  // const [isModalOpen, setModalOpen] = useState(false);
   const startDelete = (item) => {
     console.log("haba please work");
     setID(item.id);
-    setModalOpen(true);
+    // setModalOpen(true);
   };
 
-  const handleDeleteRole = async () => {
-    const id = valueID;
+  // const handleDeleteRole = async () => {
+  //   const id = valueID;
 
-    const response = await createRequest(`/profile/${id}`, "DELETE");
-    console.log(response);
+  //   const response = await createRequest(`/profile/${id}`, "DELETE");
+  //   console.log(response);
 
-    toggle("user_details");
-    setModalOpen(false);
-  };
+  //   toggle("user_details");
+  //   setModalOpen(false);
+  // };
 
   return (
     <>

@@ -1,14 +1,12 @@
 import * as Yup from "yup";
 import { route } from "preact-router";
-import { Fragment } from "preact/jsx-runtime";
 import useForm from "../../../hooks/use-form";
 import Button from "../../ui/button";
 import Icon from "../../ui/icon";
 import Header from "../../ui/page/header";
-import Select from "../../ui/form/select";
 import Input from "../../ui/form/input";
 import useRequest from "../../../hooks/use-request";
-import { editExternalUser, getSites, getRoles } from "../../../assets/api/user";
+import { editExternalUser, getRoles } from "../../../assets/api/user";
 import { toast } from "../../ui/toast";
 
 import Checkbox from "../../ui/form/checkbox";
@@ -110,13 +108,6 @@ export default function EditUser({}: any) {
     </>
   );
 }
-
-const isExternalUser =
-  (message) =>
-  ([userType], schema) => {
-    if (userType !== "external_type") return schema.optional();
-    return schema.required(message);
-  };
 
 const validationSchema = Yup.object({
   // firstName: Yup.string().when(

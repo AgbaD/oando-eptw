@@ -1,8 +1,5 @@
 import useRequest from "../../../hooks/use-request";
-import { getRole, getRoles } from "../../../assets/api/user";
-import { useIDContext } from "../../../context/id.context";
-
-const { valueID } = useIDContext();
+import { getRoles } from "../../../assets/api/user";
 
 async function getRoleByID() {
   const { response } = await useRequest(getRoles(), {}, true);

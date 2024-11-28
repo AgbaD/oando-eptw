@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../../../../ui/button";
 import { useIssuingActivityContext } from "../../../../../../context/issuing-activity-context";
 import { route } from "preact-router";
@@ -10,8 +10,8 @@ import { toast } from "../../../../../ui/toast";
 import { useIDContext } from "../../../../../../context/id.context";
 
 export default function Submit() {
-  const { send, state } = useIssuingActivityContext();
-  const { makeRequest, isLoading } = useRequest(approveIssuingAuth);
+  const { state } = useIssuingActivityContext();
+  const { makeRequest } = useRequest(approveIssuingAuth);
 
   const [loading, setLoading] = useState(false);
 

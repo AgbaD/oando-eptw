@@ -10,9 +10,7 @@ import Textarea from "../../../ui/form/text-area";
 import { Modal, ModalBody, ModalHeader } from "../../../ui/modal";
 import useModal from "../../../../hooks/use-modal";
 import useForm from "../../../../hooks/use-form";
-import useRequest from "../../../../hooks/use-request";
 // import { approveColdWork, rejectIssuingAuth } from "../../../../assets/api/permit";
-import { toast } from "../../../ui/toast";
 import dayjs from "dayjs";
 
 export default function IssuingAuth({ permit }: any) {
@@ -33,7 +31,7 @@ export default function IssuingAuth({ permit }: any) {
   const isApproved = permit.issuringAuthorityStatus === "APPROVED";
   const isHotWork = permit.type === "HOT_WORK";
 
-  async function submitRejectForm(data) {
+  async function submitRejectForm() {
     // const [_, err] = await rejectApi.makeRequest(data);
     // if (err) {
     //   return toast({

@@ -3,18 +3,16 @@ import Button from "../../../../ui/button";
 import useForm from "../../../../../hooks/use-form";
 import Checkbox from "../../../../ui/form/checkbox";
 import { usePermitApprovalContext } from "../../../../../context/approve-permit.context";
-import useRequest from "../../../../../hooks/use-request";
 // import { approveHotWork } from "../../../../../assets/api/permit";
-import { toast } from "../../../../ui/toast";
-import { useRouter } from "preact-router";
+// import { useRouter } from "preact-router";
 
 export default function Consent() {
   const { state, send } = usePermitApprovalContext();
-  const [
-    {
-      matches: { id },
-    },
-  ] = useRouter();
+  // const [
+  //   {
+  //     matches: { id },
+  //   },
+  // ] = useRouter();
   // const { makeRequest, isLoading } = useRequest(approveHotWork)
   const { handleSubmit, values, setFieldValue } = useForm({
     initialValues: state.context.consent,

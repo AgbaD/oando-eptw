@@ -86,15 +86,15 @@ export default function Locations({}: any) {
 
     toggle("role_details");
     setModalOpen(false);
-    if (response?.status === 200) {
+    if (response[0]?.status === 200) {
       return toast({
         variant: "success",
-        message: response?.message ?? "Location deleted succesfully.",
+        message: response[0]?.message ?? "Location deleted succesfully.",
       });
     } else {
       return toast({
         variant: "success",
-        message: response?.message ?? "Location deleted succesfully.",
+        message: response[0]?.message ?? "Location deleted succesfully.",
       });
     }
   };

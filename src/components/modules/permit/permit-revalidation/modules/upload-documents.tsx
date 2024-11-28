@@ -16,7 +16,7 @@ export default function PerfUploadDocuments({}: any) {
   });
 
   const documentFieldKeys = Object.keys(values);
-  const selectedPreviously = [state.context.selected_documents];
+  // const selectedPreviously = [state.context.selected_documents];
 
   function addDocumentUploadField() {
     setFieldValue(`documents_${randomHash(8)}`, {

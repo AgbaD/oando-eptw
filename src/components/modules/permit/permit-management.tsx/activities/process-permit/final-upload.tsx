@@ -9,7 +9,7 @@ import { useIssuingActivityContext } from "../../../../../../context/issuing-act
 import { route } from "preact-router";
 export default function FinalUpload() {
   const { state, send } = useIssuingActivityContext();
-  const { setFieldValue, values, getFieldProps, handleSubmit } = useForm({
+  const { setFieldValue, getFieldProps, handleSubmit } = useForm({
     initialValues: state.context.document_uploads,
     onSubmit,
     validationSchema,

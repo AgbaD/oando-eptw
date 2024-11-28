@@ -4,15 +4,11 @@ import "../../../../registration/index.scss";
 
 import { Link } from "preact-router";
 
-import { useState } from "preact/hooks";
-
 import Textarea from "../../../../../ui/form/text-area";
 import Button from "../../../../../ui/button";
 import { route } from "preact-router";
 
 function Module() {
-  const [isModalOpen, setModalOpen] = useState(false);
-
   return (
     <div className="app-create-permit app-register">
       <div className="app-register__nav-wrapper app-container-wrapper">

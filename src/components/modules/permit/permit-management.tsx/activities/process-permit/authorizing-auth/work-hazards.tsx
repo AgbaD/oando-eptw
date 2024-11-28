@@ -18,7 +18,7 @@ export default function AuthWorkHazards() {
     return acc;
   }, {});
 
-  const { getFieldProps, handleSubmit, setFieldValue, values } = useForm({
+  const { handleSubmit, setFieldValue, values } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.work_hazards,
@@ -128,13 +128,6 @@ export const HAZARDS = [
   { text: "TYPE OF WASTE IS KNOWN", value: "knownWaste" },
   { text: "OTHER", value: "other" },
 ];
-
-const isHotPermit =
-  (message) =>
-  ([permit_type], schema) => {
-    if (permit_type !== "hot_permit") return schema.optional();
-    return schema.required(message);
-  };
 
 const validationSchema = Yup.object({
   // work_area: Yup.string().required("Work area is required"),

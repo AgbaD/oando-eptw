@@ -6,7 +6,6 @@ import PopupModal from "../../../../ui/popup";
 import PermitPopupModal from "../../permit-monitoring/permit-popup-modal";
 
 import { HAZARDS } from "../../create-permit/work-hazards";
-import { documentOptions } from "../../create-permit/documents";
 
 export default function PerformingAuthorities({ response }: any) {
   const details = response;

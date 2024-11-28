@@ -14,7 +14,6 @@ import Button from "../../../ui/button";
 import { useState } from "preact/hooks";
 
 import PopupModal from "../../../ui/popup";
-import Verification from "../permit-management.tsx/activities/process-permit/verification";
 
 import SelectDocuments from "../permit-revalidation/modules/select-documents";
 import PerfUploadDocuments from "../permit-revalidation/modules/upload-documents";

@@ -13,11 +13,7 @@ import useRequest from "../../../hooks/use-request";
 
 import { siteOptions } from "./data";
 
-interface Props {
-  path: string;
-}
-
-export default function CreateWork({ path }: Props) {
+export default function CreateWork({}: any) {
   const siteApi = useRequest(getSites, {}, true);
   const { makeRequest, isLoading } = useRequest(createNewWorkArea);
   const { getFieldProps, handleSubmit, setFieldValue, values } = useForm({
@@ -101,7 +97,9 @@ export default function CreateWork({ path }: Props) {
               placeholder={siteName}
               options={siteOptions}
               {...getFieldProps("siteName")}
-              onChange={(e) => setSiteName(e.target.value)}
+              onChange={(e) =>
+                setSiteName((e.target as HTMLInputElement).value)
+              }
             />
 
             <p className="app-create__form__title">Location Area</p>
@@ -118,7 +116,12 @@ export default function CreateWork({ path }: Props) {
                 <Input
                   placeholder="Enter Location"
                   value={location}
-                  onChange={(e) => handleLocationChange(index, e.target.value)}
+                  onChange={(e) =>
+                    handleLocationChange(
+                      index,
+                      (e.target as HTMLInputElement).value
+                    )
+                  }
                   deleteButton={
                     <img
                       src="/svgs/delete_icon.svg"

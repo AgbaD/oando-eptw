@@ -12,7 +12,7 @@ import PerformingAuthActivities from "../permit-management.tsx/activities/perfor
 import SafetyOfficer from "../permit-management.tsx/workflows/safety-officer";
 import IssuAuthSupervisor from "../permit-management.tsx/workflows/issu-auth-supervisor";
 
-export default function ClosurePermitIndex({ type: string }: any) {
+export default function ClosurePermitIndex({}: any) {
   const { tabs, activeTab } = useTabs([
     "Performing Auth.",
     "Issuing Auth",

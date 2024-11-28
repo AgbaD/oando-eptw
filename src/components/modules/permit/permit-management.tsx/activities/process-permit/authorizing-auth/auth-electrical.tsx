@@ -9,7 +9,7 @@ import Radio from "../../../../../../ui/form/radio";
 export default function AuthElectricalIsolation() {
   const { send, state } = useAuthorizingActivityContext();
 
-  const { getFieldProps, handleSubmit, setFieldValue, values } = useForm({
+  const { handleSubmit, setFieldValue, values } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.electrical_precaution,
@@ -137,13 +137,6 @@ export const LIST = [
   },
   { text: "OTHERS", value: "others" },
 ];
-
-const isHotPermit =
-  (message) =>
-  ([permit_type], schema) => {
-    if (permit_type !== "hot_permit") return schema.optional();
-    return schema.required(message);
-  };
 
 const validationSchema = Yup.object({
   // work_area: Yup.string().required("Work area is required"),

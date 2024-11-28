@@ -11,8 +11,7 @@ import useTabs from "../../../../hooks/use-tabs";
 import PerformingAuthActivities from "../permit-management.tsx/activities/performing-auth-activities";
 import SafetyOfficer from "../permit-management.tsx/workflows/safety-officer";
 import IssuAuthSupervisor from "../permit-management.tsx/workflows/issu-auth-supervisor";
-
-export default function RevalidatePermitIndex({ type: string }: any) {
+export default function RevalidatePermitIndex({}: any) {
   const { tabs, activeTab } = useTabs([
     "Performing Auth.",
     "Issuing Auth",

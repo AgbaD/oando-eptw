@@ -8,7 +8,7 @@ import { useAuthorizingActivityContext } from "../../../../../../../context/auth
 
 export default function AuthMechanicalIsolation() {
   const { send, state } = useAuthorizingActivityContext();
-  const { getFieldProps, handleSubmit, setFieldValue, values } = useForm({
+  const { handleSubmit, setFieldValue, values } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.mechanical_precaution,
@@ -99,13 +99,6 @@ export const LIST = [
   { text: "VENTILATION (Natural / Mechanical means)", value: "ventilation" },
   { text: "OTHER", value: "other" },
 ];
-
-const isHotPermit =
-  (message) =>
-  ([permit_type], schema) => {
-    if (permit_type !== "hot_permit") return schema.optional();
-    return schema.required(message);
-  };
 
 const validationSchema = Yup.object({
   // work_area: Yup.string().required("Work area is required"),

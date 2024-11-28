@@ -6,7 +6,6 @@ import { usePermitContext } from "../../../../context/permit.context";
 import useRequest from "../../../../hooks/use-request";
 import { createPermit } from "../../../../assets/api/permit";
 import { toast } from "../../../ui/toast";
-import dayjs from "dayjs";
 import Section from "../../../ui/sections";
 
 import { HAZARDS } from "./work-hazards";
@@ -14,7 +13,7 @@ import { HAZARDS } from "./work-hazards";
 export default function AdditionalNotes() {
   const { state, send } = usePermitContext();
   const { makeRequest, isLoading } = useRequest(createPermit);
-  const { setFieldValue, values, getFieldProps, handleSubmit } = useForm({
+  const { handleSubmit } = useForm({
     initialValues: state.context.additional_values || {},
     onSubmit,
     validationSchema,

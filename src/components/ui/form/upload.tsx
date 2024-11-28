@@ -1,13 +1,6 @@
 import { useMemo } from "preact/hooks";
 import Icon from "../icon";
 
-import { toast } from "../toast";
-import { createRequest } from "../../../assets/api";
-
-import { route } from "preact-router";
-import useRequest from "../../../hooks/use-request";
-import { uploadFile } from "../../../assets/api/user";
-
 export default function UploadDocument({
   onChange,
   isTouched,
@@ -19,7 +12,7 @@ export default function UploadDocument({
     return props.value ? URL.createObjectURL(props.value) : null;
   }, [props.value]);
 
-  const { makeRequest, isLoading } = useRequest(uploadFile);
+  // const { makeRequest, isLoading } = useRequest(uploadFile);
 
   async function handleFileUpload(file) {
     if (!file) {

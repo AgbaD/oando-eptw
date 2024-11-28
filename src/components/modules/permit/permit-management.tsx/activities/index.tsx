@@ -16,7 +16,7 @@ import { useIDContext } from "../../../../../context/id.context";
 import { useState, useEffect } from "preact/hooks";
 import { createRequest } from "../../../../../assets/api";
 
-export default function ProcessPermitsIndex({ type: string }: any) {
+export default function ProcessPermitsIndex({}: any) {
   const { valueID, setID } = useIDContext();
   const id = valueID;
 

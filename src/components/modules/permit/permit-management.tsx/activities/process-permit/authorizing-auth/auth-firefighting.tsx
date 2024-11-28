@@ -26,7 +26,7 @@ export const FIREFIGHTING_EQUIPMENT = [
 export default function AuthFireFightingEquipment() {
   const { state, send } = useAuthorizingActivityContext();
 
-  const { setFieldValue, values, getFieldProps, handleSubmit } = useForm({
+  const { setFieldValue, values, handleSubmit } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.firefighting_equipment,

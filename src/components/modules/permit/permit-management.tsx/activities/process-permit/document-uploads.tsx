@@ -2,7 +2,6 @@ import * as Yup from "yup";
 
 import useForm from "../../../../../../hooks/use-form";
 import Button from "../../../../../ui/button";
-import { useState } from "preact/hooks";
 import Checkbox from "../../../../../ui/form/checkbox";
 import Select from "../../../../../ui/form/select";
 import { useIssuingActivityContext } from "../../../../../../context/issuing-activity-context";

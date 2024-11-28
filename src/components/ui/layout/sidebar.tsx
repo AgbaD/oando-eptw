@@ -4,7 +4,7 @@ import Icon from "../icon";
 import { useUserContext } from "../../../context/user.context";
 
 export default function Sidebar() {
-  const { profile } = useUserContext();
+  // const { profile } = useUserContext();
 
   return (
     <div className="app-layout__sidebar">

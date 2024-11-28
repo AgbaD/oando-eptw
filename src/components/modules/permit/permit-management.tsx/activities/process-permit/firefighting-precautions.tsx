@@ -27,7 +27,7 @@ export const FIREFIGHTING_EQUIPMENT = [
 export default function FireFightingEquipment() {
   const { state, send } = useIssuingActivityContext();
 
-  const { setFieldValue, values, getFieldProps, handleSubmit } = useForm({
+  const { setFieldValue, values, handleSubmit } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.firefighting_equipment,

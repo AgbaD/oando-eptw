@@ -1,6 +1,5 @@
 import * as Yup from "yup";
 import { route } from "preact-router";
-import { Fragment } from "preact/jsx-runtime";
 import useForm from "../../../../hooks/use-form";
 import Button from "../../../ui/button";
 import Icon from "../../../ui/icon";
@@ -62,7 +61,7 @@ export default function EditCompany({}: any) {
     }
   }, [valueID]);
 
-  const { getFieldProps, values, handleSubmit } = useForm({
+  const { getFieldProps, handleSubmit } = useForm({
     initialValues: {
       name: "",
       contractId: "",
@@ -137,7 +136,9 @@ export default function EditCompany({}: any) {
               placeholder={siteName}
               options={siteOptions}
               {...getFieldProps("siteName")}
-              onChange={(e) => setSiteName(e.target.value)}
+              onChange={(e) =>
+                setSiteName((e.target as HTMLSelectElement).value)
+              }
             />
 
             <p className="app-create__form__title">Location Area</p>

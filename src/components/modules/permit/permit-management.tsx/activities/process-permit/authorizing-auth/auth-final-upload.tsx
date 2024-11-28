@@ -9,7 +9,7 @@ import UploadDocument from "../../../../../../ui/form/upload";
 import { route } from "preact-router";
 export default function AuthFinalUpload() {
   const { state, send } = useAuthorizingActivityContext();
-  const { setFieldValue, values, getFieldProps, handleSubmit } = useForm({
+  const { setFieldValue, getFieldProps, handleSubmit } = useForm({
     initialValues: state.context.document_uploads,
     onSubmit,
     validationSchema,

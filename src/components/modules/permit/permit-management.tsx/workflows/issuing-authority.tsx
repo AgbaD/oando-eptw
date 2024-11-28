@@ -151,7 +151,7 @@ export default function IssuingAuthorities({ response }: any) {
         <p>
           <span className="firefighting-value">
             {firefightingEquipment.some((precaution) =>
-              precaution.hasOwnProperty(FIRE_FIGHTING_MAP[equipment])
+              precaution.hasOwnProperty(FIRE_FIGHTING_MAP[equipment.text])
             )
               ? "YES"
               : "NO"}

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Table,
   TableBody,
@@ -6,7 +5,6 @@ import {
   TableHead,
   TableRow,
 } from "../../../ui/table";
-import { date } from "yup";
 
 export default function PermitActionHistory() {
   const actions = [

@@ -40,7 +40,7 @@ export default function CompanyDetails({}: any) {
     members: [],
   });
 
-  const [users, setUsers] = useState("");
+  // const [users, setUsers] = useState("");
 
   useEffect(() => {
     if (valueID) {
@@ -52,7 +52,7 @@ export default function CompanyDetails({}: any) {
         );
         const roleData = response[0]?.data;
         setCompany(roleData);
-        setUsers(roleData?.name);
+        // setUsers(roleData?.name);
       }
       getCompanyById();
     }

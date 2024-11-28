@@ -6,10 +6,7 @@ import {
   useIssuingActivityContext,
 } from "../../../../../../context/issuing-activity-context";
 
-import {
-  RoleProvider,
-  useRoleContext,
-} from "../../../../../../context/role.context";
+import { RoleProvider } from "../../../../../../context/role.context";
 
 import { Link } from "preact-router";
 import WorkHazards from "./work-hazards";
@@ -23,7 +20,6 @@ import ElectricalIsolation from "./electrical_isolation";
 import Submit from "./submit";
 
 import { capitalize } from "../../../../../../assets/utils";
-import UpdateTimeDate from "./adjust-time-date";
 import Button from "../../../../../ui/button";
 import { useState } from "preact/hooks";
 

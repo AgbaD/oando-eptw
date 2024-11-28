@@ -1,17 +1,22 @@
-import { Ref, useEffect } from 'preact/hooks';
+import { useEffect } from "preact/hooks";
+import { Ref } from "preact";
+import { RefObject } from "preact";
 
-const useClickOutside = (ref: Ref<any> | Ref<any>[], callback: () => void) => {
+const useClickOutside = (
+  ref: Ref<any> | Ref<any>[] | RefObject<any> | RefObject<any>[],
+  callback: () => void
+) => {
   useEffect(() => {
-    const handleClick = (e: any) => {
+    const handleClick = (e: MouseEvent) => {
       const isArray = Array.isArray(ref);
-      if (isArray && ref.every((r) => shouldtriggerCallback(r, e))) {
-        callback()
-      }
 
-      if (!isArray && shouldtriggerCallback(ref, e)) {
+      // Check if the click is outside all or one of the refs
+      if (isArray && ref.every((r) => shouldTriggerCallback(r, e))) {
+        callback();
+      } else if (!isArray && shouldTriggerCallback(ref, e)) {
         callback();
       }
-    }
+    };
 
     document.addEventListener("mousedown", handleClick);
 
@@ -20,9 +25,12 @@ const useClickOutside = (ref: Ref<any> | Ref<any>[], callback: () => void) => {
     };
   }, [ref]);
 
-  function shouldtriggerCallback(ref: Ref<any>, e: any) {
-    return ref.current && !ref.current.contains(e.target)
+  function shouldTriggerCallback(ref: Ref<any>, e: MouseEvent): boolean {
+    if (ref && "current" in ref) {
+      return !ref.current.contains(e.target as Node);
+    }
+    return false;
   }
-}
+};
 
 export default useClickOutside;

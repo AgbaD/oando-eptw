@@ -23,6 +23,8 @@ export default function EditLocation({}: any) {
   const [locationName, setLocationName] = useState("");
   const [locationResponseState, setLocationResponseState] = useState(null);
 
+  console.log(locationName);
+
   useEffect(() => {
     async function getLocationDetails() {
       const response = await createRequest(`/location/${valueID}`, "GET");
@@ -65,6 +67,7 @@ export default function EditLocation({}: any) {
   const [siteName, setSiteName] = useState("--select site--");
   const [locationOptions, setLocationOptions] = useState([]);
 
+  console.log(locationOptions);
   useEffect(() => {
     if (siteName && siteApi.response) {
       const siteData = siteApi.response.data[siteName];
@@ -119,14 +122,21 @@ export default function EditLocation({}: any) {
               placeholder={locationResponseState?.site}
               options={siteOptions}
               {...getFieldProps("site")}
-              onChange={(e) => setSiteName(e.target.value)}
+              onChange={(e) =>
+                setSiteName((e.target as HTMLSelectElement).value)
+              }
             />
 
             <p className="app-create__form__title">Location Area</p>
             <div className="location-fields">
               <Input
                 placeholder={locationResponseState?.locationArea}
-                onChange={(e) => setFieldValue("locationArea", e.target.value)}
+                onChange={(e) =>
+                  setFieldValue(
+                    "locationArea",
+                    (e.target as HTMLInputElement).value
+                  )
+                }
                 {...getFieldProps(`locationArea`)}
               />
             </div>
@@ -137,7 +147,12 @@ export default function EditLocation({}: any) {
                 <Input
                   placeholder="Enter Work Area"
                   value={location}
-                  onChange={(e) => handleLocationChange(index, e.target.value)}
+                  onChange={(e) =>
+                    handleLocationChange(
+                      index,
+                      (e.target as HTMLInputElement).value
+                    )
+                  }
                   deleteButton={
                     <img
                       src="/svgs/delete_icon.svg"

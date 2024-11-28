@@ -82,20 +82,6 @@ export default function IssuingToolKitTime() {
   );
 }
 
-const isColdPermit =
-  (message) =>
-  ([permit_type], schema) => {
-    if (permit_type === "cold_permit") return schema.required(message);
-    return schema.optional();
-  };
-
-const isHotPermit =
-  (message) =>
-  ([permit_type], schema) => {
-    if (permit_type === "hot_permit") return schema.required(message);
-    return schema.optional();
-  };
-
 const validationSchema = Yup.object({
   // from_date: Yup.string().required("From date is required"),
   // to_date: Yup.string().required("To date is required"),

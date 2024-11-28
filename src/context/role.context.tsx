@@ -1,5 +1,5 @@
 import { createContext } from "preact";
-import { useContext, useEffect, useState } from "preact/hooks";
+import { useContext, useState } from "preact/hooks";
 
 const RoleContext = createContext({} as any);
 

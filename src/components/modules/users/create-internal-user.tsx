@@ -19,7 +19,7 @@ export default function CreateInternalUser({}: any) {
   const { makeRequest, isLoading } = useRequest(createExternalUser);
   const locationsApi = useRequest(getSites, {}, true);
   const rolesApi = useRequest(getRoles, {}, true);
-  const { getFieldProps, values, handleSubmit } = useForm({
+  const { getFieldProps, handleSubmit } = useForm({
     initialValues: {
       //   userType: "",
       //   firstName: "",

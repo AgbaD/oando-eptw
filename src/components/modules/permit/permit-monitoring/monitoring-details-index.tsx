@@ -3,7 +3,6 @@ import Header from "../../../ui/page/header";
 
 import ReusableTabs from "../../../ui/resuableTabs";
 
-import OnsiteNotes from "../permit-management.tsx/onsite-notes-comments";
 import PermitActionHistory from "../permit-management.tsx/permit-action-history";
 import WorkAuthoriesFlow from "../permit-management.tsx/work-authories-flow";
 
@@ -12,7 +11,6 @@ import { useEffect, useState } from "preact/hooks";
 
 import Icon from "../../../ui/icon";
 import { route } from "preact-router";
-import OnsiteComments from "../details/onsite-comments";
 import AddOnsiteComments from "./add-onsite-comments";
 
 export default function MonitoringDetailsIndex({}: any) {

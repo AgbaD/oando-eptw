@@ -17,7 +17,7 @@ import { Fragment } from "preact/jsx-runtime";
 export default function CreateCompany({}: any) {
   const { makeRequest, isLoading } = useRequest(createNewCompany);
   const siteApi = useRequest(getSites, {}, true);
-  const { getFieldProps, values, handleSubmit } = useForm({
+  const { getFieldProps, handleSubmit } = useForm({
     initialValues: {
       name: "",
       contractId: "",
@@ -97,7 +97,9 @@ export default function CreateCompany({}: any) {
                 placeholder={siteName}
                 options={siteOptions}
                 {...getFieldProps("siteName")}
-                onChange={(e) => setSiteName(e.target.value)}
+                onChange={(e) =>
+                  setSiteName((e.target as HTMLSelectElement).value)
+                }
               />
 
               <p className="app-create__form__title">Location Area</p>
@@ -118,13 +120,6 @@ export default function CreateCompany({}: any) {
     </>
   );
 }
-
-const isExternalUser =
-  (message) =>
-  ([userType], schema) => {
-    if (userType !== "external_type") return schema.optional();
-    return schema.required(message);
-  };
 
 const validationSchema = Yup.object({
   companyName: Yup.string().required("Company name is required"),

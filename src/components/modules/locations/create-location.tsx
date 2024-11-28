@@ -13,13 +13,9 @@ import { siteOptions } from "./data";
 
 import Input from "../../ui/form/input";
 
-interface Props {
-  path: string;
-}
-
-export default function CreateLocation({ path }: Props) {
+export default function CreateLocation({}: any) {
   const { makeRequest, isLoading } = useRequest(createNewLocation);
-  const { getFieldProps, handleSubmit, setFieldValue, values } = useForm({
+  const { getFieldProps, handleSubmit, setFieldValue } = useForm({
     initialValues: {
       site: "",
       locationArea: "",
@@ -75,7 +71,9 @@ export default function CreateLocation({ path }: Props) {
               <Input
                 placeholder="Enter Location Area"
                 value={location}
-                onChange={(e) => handleLocationChange(e.target.value)}
+                onChange={(e) =>
+                  handleLocationChange((e.target as HTMLInputElement).value)
+                }
                 {...getFieldProps(`locationArea`)}
               />
             </div>

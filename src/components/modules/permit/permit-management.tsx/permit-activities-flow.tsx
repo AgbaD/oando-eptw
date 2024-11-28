@@ -1,4 +1,3 @@
-import Icon from "../../../ui/icon";
 import {
   Dropdown,
   DropdownContent,
@@ -22,7 +21,6 @@ import {
 import { useIDContext } from "../../../../context/id.context";
 
 import useRequest from "../../../../hooks/use-request";
-import { getPermits } from "../../../../assets/api/permit";
 import { route } from "preact-router";
 import { getAllPermits } from "../../../../assets/api/user";
 

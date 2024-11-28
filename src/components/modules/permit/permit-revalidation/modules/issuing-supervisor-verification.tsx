@@ -12,8 +12,7 @@ export default function IssuingVerification() {
   const onSubmit = (selected_documents) => {
     send("submit", { data: { selected_documents } });
   };
-
-  const { setFieldValue, values, getFieldProps, handleSubmit } = useForm({
+  const { values, handleSubmit } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.additional_values,

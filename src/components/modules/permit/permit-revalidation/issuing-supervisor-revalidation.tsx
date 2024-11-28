@@ -15,9 +15,6 @@ import { useState } from "preact/hooks";
 
 import PopupModal from "../../../ui/popup";
 
-import SelectDocuments from "./modules/select-documents";
-import PerfUploadDocuments from "./modules/upload-documents";
-import ToolKitTime from "../permit-management.tsx/activities/process-permit/tool-kit-time";
 import IssuingVerification from "./modules/issuing-supervisor-verification";
 import IssuingSelectDocuments from "./modules/issuing-select-documents";
 import IssuingUploadDocuments from "./modules/issuing-upload-documents";

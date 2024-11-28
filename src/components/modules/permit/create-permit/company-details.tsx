@@ -6,7 +6,7 @@ import { usePermitContext } from "../../../../context/permit.context";
 
 export default function CompanyDetails() {
   const { send, state } = usePermitContext();
-  const { getFieldProps, handleSubmit, setFieldValue, values } = useForm({
+  const { getFieldProps, handleSubmit } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.company_details,
@@ -60,13 +60,6 @@ export default function CompanyDetails() {
     </form>
   );
 }
-
-const isHotPermit =
-  (message) =>
-  ([permit_type], schema) => {
-    if (permit_type !== "hot_permit") return schema.optional();
-    return schema.required(message);
-  };
 
 const validationSchema = Yup.object({
   // performance_department: Yup.string().required(
