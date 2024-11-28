@@ -1,0 +1,82 @@
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  font-family: Helvetica, sans-serif;
+}
+
+.popup-modal {
+  background: white;
+  border-radius: 8px;
+  width: fit-content;
+  padding: 20px;
+  position: relative;
+  text-align: center;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.icon-container {
+  margin-bottom: 10px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.button-group button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.button-group button:first-child {
+  margin-right: 10px;
+}
+
+.popup-sm-table {
+  display: none;
+}
+
+.popup-lg-table {
+  text-align: left;
+  width: 600px;
+}
+
+@media screen and (max-width: 768px) {
+  .popup-sm-table {
+    display: block;
+    text-align: left;
+    font-size: 12px;
+
+    div {
+      margin: 18px 0px;
+    }
+    span {
+      color: #6b7280;
+      margin: 7px 0px;
+    }
+    p {
+      color: #1c1c1c;
+    }
+  }
+}

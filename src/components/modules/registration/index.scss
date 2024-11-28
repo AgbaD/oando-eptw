@@ -1,0 +1,220 @@
+.app-register {
+  background: var(--grey-50);
+  min-height: 100vh;
+  overflow: hidden;
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    img {
+      height: 44px;
+    }
+
+    h5 {
+      font-size: 20px;
+      color: var(--blue-primary);
+    }
+
+    &-wrapper {
+      background-color: #fff;
+      border-bottom: 1px solid var(--grey-divider);
+    }
+  }
+
+  &__content {
+    padding: 50px;
+    background: #fff;
+    border: 1px solid var(--grey-divider);
+    border-radius: 15px;
+    margin: 30px auto;
+    z-index: 1;
+    position: relative;
+
+    &-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      // overflow: hidden;
+
+      > img {
+        position: absolute;
+        top: 0;
+        height: 110%;
+        pointer-events: none;
+        filter: blur(4px);
+      }
+    }
+
+    &__header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+
+      h3 {
+        font-size: 24px;
+        color: var(--blue-primary);
+        text-transform: capitalize;
+      }
+
+      p {
+        font-weight: 700;
+        opacity: 0.7;
+      }
+    }
+  }
+
+  &__progress-bar {
+    height: 8px;
+    border-radius: 100vh;
+    width: 100%;
+    margin: 30px 0 50px 0;
+    background-color: var(--orange-50);
+    position: relative;
+    overflow: hidden;
+
+    > span {
+      display: block;
+      width: 20%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-radius: inherit;
+      background-color: var(--orange-primary);
+      transition: 0.2s ease;
+    }
+  }
+
+  &__form {
+    max-width: 972px;
+
+    &-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 40px;
+      row-gap: 10px;
+    }
+
+    &__title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    &-footer {
+      display: flex;
+      align-items: center;
+      margin-top: 30px;
+      gap: 20px;
+
+      button,
+      a {
+        width: fit-content;
+        font-size: 15px;
+        padding: 10px 40px;
+      }
+    }
+  }
+
+  &__roles-header {
+    background: #f9fafa;
+    border: 1px solid var(--grey-divider);
+    padding: 15px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    p {
+      color: #6b7280;
+      font-weight: 800;
+    }
+
+    span {
+      color: red;
+      font-size: 14px;
+    }
+  }
+
+  &__role {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0 0 0;
+    padding: 24px 0 0 0;
+    border-top: 1px solid var(--grey-divider);
+    cursor: pointer;
+
+    &:first-child {
+      border-top: none;
+      margin-top: 0;
+    }
+  }
+
+  &__attachment-form {
+    > p {
+      margin-bottom: 64px;
+    }
+
+    > label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 26px;
+      cursor: pointer;
+    }
+
+    .app-register__form-footer {
+      margin-top: 50px;
+    }
+  }
+}
+
+.app-container {
+  max-width: 1280px;
+  margin-right: auto;
+  margin-left: auto;
+  width: 100%;
+
+  &-wrapper {
+    padding: 22px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .app-register {
+    &__nav {
+      display: grid;
+
+      .permit-logo {
+        display: none;
+      }
+    }
+    &__content {
+      padding: 25px;
+    }
+
+    // img {
+    //   height: 100%;
+    // }
+
+    h5 {
+      margin: 10px 0;
+    }
+
+    &__form {
+      max-width: 972px;
+
+      &-grid {
+        display: block;
+        row-gap: 10px;
+      }
+    }
+  }
+}
