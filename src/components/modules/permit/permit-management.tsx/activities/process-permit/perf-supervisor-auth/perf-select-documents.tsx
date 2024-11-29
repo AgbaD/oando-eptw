@@ -1,18 +1,17 @@
 import * as Yup from "yup";
 
-import useForm from "../../../../../../hooks/use-form";
-import Button from "../../../../../ui/button";
-import Checkbox from "../../../../../ui/form/checkbox";
-import Select from "../../../../../ui/form/select";
-import { useIssuingActivityContext } from "../../../../../../context/issuing-activity-context";
-
-import { documentOptions } from "../../../create-permit/documents";
-
 import { useState } from "preact/hooks";
-import SendToAuthority from "./send-back-to-authority";
+import SendToAuthority from "../send-back-to-authority";
+import { documentOptions } from "../../../../create-permit/documents";
 
-export default function Documents() {
-  const { state, send } = useIssuingActivityContext();
+import Select from "../../../../../../ui/form/select";
+import Button from "../../../../../../ui/button";
+import useForm from "../../../../../../../hooks/use-form";
+import Checkbox from "../../../../../../ui/form/checkbox";
+import { usePerfSupervisorActivityContext } from "../../../../../../../context/perf-supervisor-activity.context";
+
+export default function PerfSupervisorDocuments() {
+  const { state, send } = usePerfSupervisorActivityContext();
 
   const { setFieldValue, values, getFieldProps, handleSubmit } = useForm({
     validationSchema,
@@ -76,11 +75,8 @@ export default function Documents() {
           <Button variant="primary" onClick={() => handleSubmit}>
             Next
           </Button>
-
-          {/* <button onClick={onSubmit}>Next</button> */}
         </div>
       </form>
-
       {isModalOpen && (
         <SendToAuthority setModalOpen={() => setModalOpen(false)} />
       )}

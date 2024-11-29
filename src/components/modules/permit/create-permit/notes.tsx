@@ -9,6 +9,7 @@ import { toast } from "../../../ui/toast";
 import Section from "../../../ui/sections";
 
 import { HAZARDS } from "./work-hazards";
+import { formatDateForBackend } from "../permit-management.tsx/activities/process-permit/auth-submit";
 
 export default function AdditionalNotes() {
   const { state, send } = usePermitContext();
@@ -126,16 +127,6 @@ export default function AdditionalNotes() {
       ));
   };
 
-  function formatForBackend(fromDate, fromTime) {
-    if (!fromDate || !fromTime) {
-      throw new Error("Both fromDate and fromTime are required");
-    }
-
-    const timeISO = new Date(`1970-01-01T${fromTime}:00Z`).toISOString();
-
-    return timeISO;
-  }
-
   const documents = [
     {
       section: "E",
@@ -162,12 +153,12 @@ export default function AdditionalNotes() {
       environmentalConsideration:
         state.context.work_description?.environmental_issues,
       fromDate: state.context.work_description?.from_date,
-      fromTime: formatForBackend(
+      fromTime: formatDateForBackend(
         state.context.work_description?.from_date,
         state.context.work_description?.from_time
       ),
       toDate: state.context.work_description?.to_date,
-      toTime: formatForBackend(
+      toTime: formatDateForBackend(
         state.context.work_description?.to_date,
         state.context.work_description?.to_time
       ),

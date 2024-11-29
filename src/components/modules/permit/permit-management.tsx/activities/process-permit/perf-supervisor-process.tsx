@@ -6,26 +6,20 @@ import { RoleProvider } from "../../../../../../context/role.context";
 import { Link } from "preact-router";
 
 import { capitalize } from "../../../../../../assets/utils";
-import UpdateTimeDate from "./adjust-time-date";
 import Button from "../../../../../ui/button";
 import { useState } from "preact/hooks";
 
-import PopupModal from "../../../../../ui/popup";
 import {
   PermitProvider,
-  useAuthorizingActivityContext,
-} from "../../../../../../context/authorizing-activity-context";
-import AuthWorkHazards from "./authorizing-auth/work-hazards";
-import AuthPersonalProtectiveEquipment from "./authorizing-auth/auth-personal-protective";
-import AuthFireFightingEquipment from "./authorizing-auth/auth-firefighting";
-import AuthDocuments from "./authorizing-auth/auth-document-uploads";
-import AuthFinalUpload from "./authorizing-auth/auth-final-upload";
-import AuthMechanicalIsolation from "./authorizing-auth/auth-mechanical-isolation";
-import AuthElectricalIsolation from "./authorizing-auth/auth-electrical";
-import AuthProcessSubmit from "./auth-submit";
+  usePerfSupervisorActivityContext,
+} from "../../../../../../context/perf-supervisor-activity.context";
+import PerfSupervisorDocuments from "./perf-supervisor-auth/perf-select-documents";
+import PerfSupervisorFinalUpload from "./perf-supervisor-auth/perf-upload-documents";
+import PerfProcessSubmit from "./perf-supervisor-auth/perf-submit";
+import ViewPermitDetails from "./view-permit-details";
 
 function Module() {
-  const { state } = useAuthorizingActivityContext();
+  const { state } = usePerfSupervisorActivityContext();
   const stateAsString = state.toStrings()[0];
   const currentIdx = STEPS.indexOf(stateAsString) + 1;
 
@@ -84,23 +78,10 @@ function Module() {
             </>
           )}
 
-          {state.matches("work_hazards") && <AuthWorkHazards />}
-          {state.matches("personal_protective_equipment") && (
-            <AuthPersonalProtectiveEquipment />
-          )}
-          {state.matches("firefighting_equipment") && (
-            <AuthFireFightingEquipment />
-          )}
-          {state.matches("selected_documents") && <AuthDocuments />}
-          {state.matches("document_uploads") && <AuthFinalUpload />}
-          {state.matches("mechanical_precaution") && (
-            <AuthMechanicalIsolation />
-          )}
-          {state.matches("electrical_precaution") && (
-            <AuthElectricalIsolation />
-          )}
-          {state.matches("adjust_date_time") && <UpdateTimeDate />}
-          {state.matches("submit") && <AuthProcessSubmit />}
+          {state.matches("selected_documents") && <PerfSupervisorDocuments />}
+          {state.matches("document_uploads") && <PerfSupervisorFinalUpload />}
+
+          {state.matches("submit") && <PerfProcessSubmit />}
         </div>
 
         <img src="/svgs/auth-blur.svg" alt="auth-blur" />
@@ -108,60 +89,16 @@ function Module() {
 
       <div className="">
         {isModalOpen && (
-          <PopupModal
-            type="table"
-            title="Permit Details"
-            tableData={permitDetails}
-            onClose={() => setModalOpen(false)}
-          />
+          <ViewPermitDetails setModalOpen={() => setModalOpen(false)} />
         )}
       </div>
     </div>
   );
 }
 
-const STEPS = [
-  "work_hazards",
-  "personal_protective_equipment",
-  "firefighting_equipment",
-  "selected_documents",
-  "document_uploads",
-  "mechanical_precaution",
-  "electrical_precaution",
-  "adjust_time_date",
-  "submit",
-];
+const STEPS = ["selected_documents", "document_uploads", "submit"];
 
-const permitDetails = [
-  {
-    header: "Role",
-    description: "Supervisor",
-  },
-  {
-    header: "Performing Person / Person In Charge",
-    description: "External (Contractor)",
-  },
-  {
-    header: "Work Details",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vitae nunc neque. Mauris tincidunt ipsum sed lacus commodo.",
-  },
-  {
-    header: "Equipment / Tools / Materials",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vitae nunc neque. Mauris tincidunt ipsum sed lacus commodo.",
-  },
-  {
-    header: "Work Location / Work Area",
-    description: "Ebocha Oil Centre / Unit 232",
-  },
-  {
-    header: "Permit Valid From - To (Date & Time)",
-    description: "17 / 04 / 2022  08:00 AM  -  17 / 04 / 2022  08:00 AM ",
-  },
-];
-
-export default function ProcessAuthorizingPermit({}: any) {
+export default function ProcessPerfSupervisorPermit({}: any) {
   return (
     <PermitProvider>
       <RoleProvider>
@@ -172,17 +109,6 @@ export default function ProcessAuthorizingPermit({}: any) {
 }
 
 export const ROLE_CONFIG = {
-  authorizingAuth: [
-    "work_hazards",
-    "personal_protective_equipment",
-    "firefighting_equipment",
-    "selected_documents",
-    "document_uploads",
-    "mechanical_precaution",
-    "electrical_precaution",
-    "adjust_time_date",
-    "submit",
-  ],
   perfAuthSupervisor: ["selected_documents", "document_uploads", "submit"],
   safetyOfficer: ["selected_documents", "document_uploads", "submit"],
   issuingSupervisor: [

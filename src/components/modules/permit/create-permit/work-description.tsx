@@ -36,12 +36,6 @@ export default function WorkDescription() {
   return (
     <form onSubmit={handleSubmit} className="app-register__form">
       <div className="app-register__form-grid">
-        {/* <Select
-          label="Performing Department"
-          {...getFieldProps("performing_department")}
-          options={[{ text: "Performing department 1", value: "BU_1" }]}
-          required
-        /> */}
         <Input
           label="Role"
           placeholder="Enter role (e.g., electrician, supervisor)"
@@ -56,12 +50,7 @@ export default function WorkDescription() {
           ]}
           // required
         />
-        {/* <Select
-          label="Location of Work"
-          {...getFieldProps("location_of_work")}
-          options={locationOptions}
-          // required
-        /> */}
+
         <Textarea
           label="Work Description / Details"
           placeholder="Describe of the type of process or work to be performed."
@@ -90,89 +79,7 @@ export default function WorkDescription() {
           {...getFieldProps("environmental_issues")}
         />
         <div></div>
-        {/* <Input
-          label="Plant / Equipment to be worked upon"
-          placeholder="Enter plant / equipment"
-          {...getFieldProps("equipment_to_be_worked")}
-        /> */}
-        {/* <Input
-          label="Type of Process"
-          placeholder="Enter process type"
-          {...getFieldProps("type_of_process")}
-        /> */}
-
-        {/* {state.context.permit_type === "cold_permit" ? (
-          <>
-            <Select
-              label="Entrusted company"
-              placeholder="Select entrusted company"
-              {...getFieldProps("entrusted_company")}
-              options={companyOptions}
-              required
-            />
-            <Select
-              label="Executing Company"
-              placeholder="Select executing Company"
-              {...getFieldProps("executing_company")}
-              options={companyOptions}
-              required
-            />
-            <Input
-              label="Performer"
-              placeholder="Performer"
-              {...getFieldProps("performer")}
-            />
-
-            <Input
-              label="Contractor No"
-              placeholder="Enter contractor number"
-              {...getFieldProps("contractor_no")}
-            />
-          </>
-        ) : (
-          <Select
-            label="Contractor"
-            {...getFieldProps("contractor")}
-            options={companyOptions}
-            required
-          />
-        )} */}
-
-        {/* <Input
-          label="Contact Tel. No."
-          placeholder="Enter phone no."
-          {...getFieldProps("contact_tel")}
-        />
-        <Input
-          label="Contact Phone No."
-          placeholder="Enter phone no."
-          {...getFieldProps("contact_phone")}
-        />
-        <Input
-          label="No of Personnel for Activity"
-          placeholder="Enter no. of personnel"
-          {...getFieldProps("no_of_personnel")}
-        /> */}
       </div>
-
-      {/* <Textarea
-        label="Work to be Performed"
-        placeholder="Write here..."
-        {...getFieldProps("work_to_be_done")}
-      />
-
-      <div className="app-register__form-grid">
-        <Textarea
-          label="Equipment / Tools / Materials"
-          placeholder="Write here..."
-          {...getFieldProps("tools")}
-        />
-        <Textarea
-          label="What Type of Environmental Issues"
-          placeholder="Write here..."
-          {...getFieldProps("environmental_issues")}
-        />
-      </div> */}
 
       <h4>Permit Valid Form / To</h4>
 
@@ -201,34 +108,6 @@ export default function WorkDescription() {
             {...getFieldProps("to_time")}
           />
         </div>
-
-        {state.context.permit_type === "cold_permit" ? (
-          <>
-            {/* <Input
-              label="Reference to Sequential PTW (No.)"
-              placeholder="Enter reference"
-              {...getFieldProps("sequential_ptw_ref")}
-            />
-            <Input
-              label="Reference to Parallel PTW (No.)"
-              placeholder="Enter reference"
-              {...getFieldProps("parallel_ptw_ref")}
-            /> */}
-          </>
-        ) : (
-          <>
-            {/* <Input
-              label="Reference to Previous PTW (No.)"
-              placeholder="Enter reference"
-              {...getFieldProps("from_reference_to_previous_work")}
-            />
-            <Input
-              label="Reference to Previous PTW (No.)"
-              placeholder="Enter reference"
-              {...getFieldProps("to_reference_to_previous_work")}
-            /> */}
-          </>
-        )}
       </div>
 
       <div className="app-register__form-footer">

@@ -2,12 +2,12 @@ import { createContext } from "preact";
 import { useContext, useEffect } from "preact/hooks";
 import { useMachine } from "@xstate/react";
 
-import ActivityIssuingSupervisorMachine from "../machines/process-permit/issuing-supervisor-activity.machine";
+import ActivityPerfSupervisorMachine from "../machines/perf-supervisor-activity";
 
 const Context = createContext({} as any);
 
 function PermitProvider({ children }) {
-  const [state, send, service] = useMachine(ActivityIssuingSupervisorMachine);
+  const [state, send, service] = useMachine(ActivityPerfSupervisorMachine);
 
   useEffect(() => {
     const subscription = service.subscribe(() => window.scroll(0, 0));
@@ -21,8 +21,8 @@ function PermitProvider({ children }) {
   );
 }
 
-function useIssuingSupervisorActivityContext() {
+function usePerfSupervisorActivityContext() {
   return useContext(Context);
 }
 
-export { PermitProvider, useIssuingSupervisorActivityContext };
+export { PermitProvider, usePerfSupervisorActivityContext };

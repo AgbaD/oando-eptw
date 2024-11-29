@@ -7,9 +7,11 @@ import Radio from "../../../../../ui/form/radio";
 import Section from "../../../../../ui/sections";
 import { useIssuingActivityContext } from "../../../../../../context/issuing-activity-context";
 
-import { route } from "preact-router";
+import SendToAuthority from "./send-back-to-authority";
+import { useState } from "preact/hooks";
 
 export default function WorkHazards() {
+  const [isModalOpen, setModalOpen] = useState(false);
   const { send, state } = useIssuingActivityContext();
 
   // Initialize hazards state with all possible hazard keys
@@ -61,57 +63,63 @@ export default function WorkHazards() {
   ];
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="app-register__form">
-        <Section
-          type="Hazards"
-          header="Hazards"
-          children={hazards[0]}
-          section={hazards[0].section}
-        />
-      </div>
+    <>
+      <form onSubmit={handleSubmit}>
+        <div className="app-register__form">
+          <Section
+            type="Hazards"
+            header="Hazards"
+            children={hazards[0]}
+            section={hazards[0].section}
+          />
+        </div>
 
-      <div className="app-create-permit__group-header">
-        Identification of Hazards
-      </div>
-      <div className="app-register__form">
-        {HAZARDS.map((hazard) => (
-          <div className="app-create-permit__radio-container">
-            <p>{hazard.text}</p>
-            <div>
-              <Radio
-                checked={values.hazards?.[hazard.value] === true}
-                onChange={() => updateHazards(hazard.value, true)}
-                label="YES"
-              />
-              <Radio
-                checked={values.hazards?.[hazard.value] === false}
-                onChange={() => updateHazards(hazard.value, false)}
-                label="NO"
-              />
+        <div className="app-create-permit__group-header">
+          Identification of Hazards
+        </div>
+        <div className="app-register__form">
+          {HAZARDS.map((hazard) => (
+            <div className="app-create-permit__radio-container">
+              <p>{hazard.text}</p>
+              <div>
+                <Radio
+                  checked={values.hazards?.[hazard.value] === true}
+                  onChange={() => updateHazards(hazard.value, true)}
+                  label="YES"
+                />
+                <Radio
+                  checked={values.hazards?.[hazard.value] === false}
+                  onChange={() => updateHazards(hazard.value, false)}
+                  label="NO"
+                />
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <div className="app-register__form-footer">
-        <Button
-          variant="danger"
-          type="button"
-          onClick={() => route("/process-permits")}
-        >
-          Send Back To Authority
-        </Button>
-        <Button
-          variant="secondary"
-          type="button"
-          onClick={() => send("go_back")}
-        >
-          Previous
-        </Button>
-        <Button variant="primary">Next</Button>
-      </div>
-    </form>
+        <div className="app-register__form-footer">
+          <Button
+            variant="danger"
+            type="button"
+            onClick={() => setModalOpen(true)}
+          >
+            Send Back To Authority
+          </Button>
+          <Button
+            variant="secondary"
+            type="button"
+            onClick={() => send("go_back")}
+          >
+            Previous
+          </Button>
+          <Button variant="primary">Next</Button>
+        </div>
+      </form>
+
+      {isModalOpen && (
+        <SendToAuthority setModalOpen={() => setModalOpen(false)} />
+      )}
+    </>
   );
 }
 

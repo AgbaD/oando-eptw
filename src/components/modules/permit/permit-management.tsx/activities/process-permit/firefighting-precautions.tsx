@@ -5,7 +5,8 @@ import Button from "../../../../../ui/button";
 import Radio from "../../../../../ui/form/radio";
 import { useIssuingActivityContext } from "../../../../../../context/issuing-activity-context";
 
-import { route } from "preact-router";
+import { useState } from "preact/hooks";
+import SendToAuthority from "./send-back-to-authority";
 
 export const FIREFIGHTING_EQUIPMENT = [
   { text: "FIRE EXTINGUISHER (CO2)", value: "fireExtinguisherCO2" },
@@ -46,6 +47,8 @@ export default function FireFightingEquipment() {
     send("submit", { data: { firefighting_equipment } });
   }
 
+  const [isModalOpen, setModalOpen] = useState(false);
+
   return (
     <>
       <form onSubmit={handleSubmit} className="app-register__attachment-form">
@@ -75,7 +78,7 @@ export default function FireFightingEquipment() {
           <Button
             variant="danger"
             type="button"
-            onClick={() => route("/process-permits")}
+            onClick={() => setModalOpen(true)}
           >
             Send Back To Authority
           </Button>
@@ -91,6 +94,10 @@ export default function FireFightingEquipment() {
           {/* <button onClick={onSubmit}>Next</button> */}
         </div>
       </form>
+
+      {isModalOpen && (
+        <SendToAuthority setModalOpen={() => setModalOpen(false)} />
+      )}
     </>
   );
 }

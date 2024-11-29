@@ -6,25 +6,21 @@ import { RoleProvider } from "../../../../../../context/role.context";
 import { Link } from "preact-router";
 
 import { capitalize } from "../../../../../../assets/utils";
-import UpdateTimeDate from "./adjust-time-date";
 import Button from "../../../../../ui/button";
 import { useState } from "preact/hooks";
 
 import {
   PermitProvider,
-  useAuthorizingActivityContext,
-} from "../../../../../../context/authorizing-activity-context";
-import AuthWorkHazards from "./authorizing-auth/work-hazards";
-import AuthPersonalProtectiveEquipment from "./authorizing-auth/auth-personal-protective";
-import AuthFireFightingEquipment from "./authorizing-auth/auth-firefighting";
-import AuthDocuments from "./authorizing-auth/auth-document-uploads";
-import AuthFinalUpload from "./authorizing-auth/auth-final-upload";
-import AuthMechanicalIsolation from "./authorizing-auth/auth-mechanical-isolation";
-import AuthElectricalIsolation from "./authorizing-auth/auth-electrical";
-import AuthProcessSubmit from "./auth-submit";
+  useIssuingSupervisorActivityContext,
+} from "../../../../../../context/issuing-supervisor-context";
+
+import IssuSupervisorFinalUpload from "./issu-supervisor/issu-upload-documents";
+import ToolKitTime from "./issu-supervisor/tool-kit-time";
+import IssuSupervisorProcessSubmit from "./issu-supervisor/issu-submit";
+import IssuSupervisorDocuments from "./issu-supervisor/issu-select-documents";
 import ViewPermitDetails from "./view-permit-details";
 function Module() {
-  const { state } = useAuthorizingActivityContext();
+  const { state } = useIssuingSupervisorActivityContext();
   const stateAsString = state.toStrings()[0];
   const currentIdx = STEPS.indexOf(stateAsString) + 1;
 
@@ -83,23 +79,10 @@ function Module() {
             </>
           )}
 
-          {state.matches("work_hazards") && <AuthWorkHazards />}
-          {state.matches("personal_protective_equipment") && (
-            <AuthPersonalProtectiveEquipment />
-          )}
-          {state.matches("firefighting_equipment") && (
-            <AuthFireFightingEquipment />
-          )}
-          {state.matches("selected_documents") && <AuthDocuments />}
-          {state.matches("document_uploads") && <AuthFinalUpload />}
-          {state.matches("mechanical_precaution") && (
-            <AuthMechanicalIsolation />
-          )}
-          {state.matches("electrical_precaution") && (
-            <AuthElectricalIsolation />
-          )}
-          {state.matches("adjust_date_time") && <UpdateTimeDate />}
-          {state.matches("submit") && <AuthProcessSubmit />}
+          {state.matches("selected_documents") && <IssuSupervisorDocuments />}
+          {state.matches("document_uploads") && <IssuSupervisorFinalUpload />}
+          {state.matches("tool_kit_time") && <ToolKitTime />}
+          {state.matches("submit") && <IssuSupervisorProcessSubmit />}
         </div>
 
         <img src="/svgs/auth-blur.svg" alt="auth-blur" />
@@ -115,18 +98,13 @@ function Module() {
 }
 
 const STEPS = [
-  "work_hazards",
-  "personal_protective_equipment",
-  "firefighting_equipment",
   "selected_documents",
   "document_uploads",
-  "mechanical_precaution",
-  "electrical_precaution",
-  "adjust_time_date",
+  "tool_kit_time",
   "submit",
 ];
 
-export default function ProcessAuthorizingPermit({}: any) {
+export default function ProcessIssuSupervisorPermit({}: any) {
   return (
     <PermitProvider>
       <RoleProvider>
@@ -135,17 +113,3 @@ export default function ProcessAuthorizingPermit({}: any) {
     </PermitProvider>
   );
 }
-
-export const ROLE_CONFIG = {
-  authorizingAuth: [
-    "work_hazards",
-    "personal_protective_equipment",
-    "firefighting_equipment",
-    "selected_documents",
-    "document_uploads",
-    "mechanical_precaution",
-    "electrical_precaution",
-    "adjust_time_date",
-    "submit",
-  ],
-};

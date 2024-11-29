@@ -1,29 +1,20 @@
 import { useEffect, useState } from "react";
-import Button from "../../../../../ui/button";
 
 import { route } from "preact-router";
 
-import useRequest from "../../../../../../hooks/use-request";
-import { approveAuthorizingAuth } from "../../../../../../assets/api/permit";
+import useRequest from "../../../../../../../hooks/use-request";
+import { approvePerfSupervisor } from "../../../../../../../assets/api/permit";
 
-import { toast } from "../../../../../ui/toast";
-import { useIDContext } from "../../../../../../context/id.context";
+import { usePerfSupervisorActivityContext } from "../../../../../../../context/perf-supervisor-activity.context";
 
-import { useAuthorizingActivityContext } from "../../../../../../context/authorizing-activity-context";
+import { useIDContext } from "../../../../../../../context/id.context";
 
-export function formatDateForBackend(fromDate, fromTime) {
-  if (!fromDate || !fromTime) {
-    throw new Error("Both fromDate and fromTime are required");
-  }
+import { toast } from "../../../../../../ui/toast";
+import Button from "../../../../../../ui/button";
 
-  const timeISO = new Date(`1970-01-01T${fromTime}:00Z`).toISOString();
-
-  return timeISO;
-}
-
-export default function AuthProcessSubmit() {
-  const { state } = useAuthorizingActivityContext();
-  const { makeRequest } = useRequest(approveAuthorizingAuth);
+export default function PerfProcessSubmit() {
+  const { state } = usePerfSupervisorActivityContext();
+  const { makeRequest } = useRequest(approvePerfSupervisor);
 
   const [loading, setLoading] = useState(false);
   const { valueID } = useIDContext();
@@ -35,16 +26,6 @@ export default function AuthProcessSubmit() {
       setLoading(true);
       const payload = {
         permitId: permitId,
-        hazards: {
-          potentialHazardDescription:
-            state.context.work_hazards?.potentialHazardDescription || "",
-          ...state.context.work_hazards?.hazards,
-        },
-        protectiveEquipment:
-          state.context.personal_protective_equipment?.protectiveEquipment,
-
-        firefightingPrecaution:
-          state.context.firefighting_equipment?.firefightingEquipment,
 
         documents: {
           gasClearanceCertType: "MANUAL",
@@ -56,25 +37,6 @@ export default function AuthProcessSubmit() {
           manBasketCertType: "MANUAL",
           manBasketCert: "...",
         },
-        mechanicalIsolationPrecaution:
-          state.context.mechanical_precaution?.mechanicalPrecaution,
-
-        electricalIsolationPrecaution:
-          state.context.electrical_precaution?.electricalPrecaution,
-        fromDate: state.context.adjust_date_time?.from_date,
-        fromTime:
-          formatDateForBackend(
-            state.context.adjust_date_time?.from_date,
-            state.context.adjust_date_time?.from_time
-          ) || "",
-        toDate: state.context.adjust_date_time?.to_date,
-        toTime:
-          formatDateForBackend(
-            state.context.adjust_date_time?.to_date,
-            state.context.adjust_date_time?.to_time
-          ) || "",
-        authorizingAuthorityTimeAdjustment:
-          state.context.adjust_date_time?.from_date === "" ? false : true,
       };
 
       const [_, error] = await makeRequest(payload);

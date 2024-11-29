@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
-import { route } from "preact-router";
-
+import { useState } from "preact/hooks";
+import SendToAuthority from "../send-back-to-authority";
 import { documentOptions } from "../../../../create-permit/documents";
 import { useAuthorizingActivityContext } from "../../../../../../../context/authorizing-activity-context";
 import Select from "../../../../../../ui/form/select";
@@ -27,6 +27,8 @@ export default function AuthDocuments() {
   function onSubmit(selected_documents) {
     send("submit", { data: { selected_documents } });
   }
+
+  const [isModalOpen, setModalOpen] = useState(false);
 
   return (
     <>
@@ -58,7 +60,7 @@ export default function AuthDocuments() {
           <Button
             variant="danger"
             type="button"
-            onClick={() => route("/process-permits")}
+            onClick={() => setModalOpen(true)}
           >
             Send Back To Authority
           </Button>
@@ -76,6 +78,10 @@ export default function AuthDocuments() {
           {/* <button onClick={onSubmit}>Next</button> */}
         </div>
       </form>
+
+      {isModalOpen && (
+        <SendToAuthority setModalOpen={() => setModalOpen(false)} />
+      )}
     </>
   );
 }

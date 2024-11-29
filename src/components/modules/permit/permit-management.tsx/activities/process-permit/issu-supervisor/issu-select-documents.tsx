@@ -1,18 +1,17 @@
 import * as Yup from "yup";
 
-import useForm from "../../../../../../hooks/use-form";
-import Button from "../../../../../ui/button";
-import Checkbox from "../../../../../ui/form/checkbox";
-import Select from "../../../../../ui/form/select";
-import { useIssuingActivityContext } from "../../../../../../context/issuing-activity-context";
-
-import { documentOptions } from "../../../create-permit/documents";
-
 import { useState } from "preact/hooks";
-import SendToAuthority from "./send-back-to-authority";
+import SendToAuthority from "../send-back-to-authority";
+import { documentOptions } from "../../../../create-permit/documents";
 
-export default function Documents() {
-  const { state, send } = useIssuingActivityContext();
+import Select from "../../../../../../ui/form/select";
+import Button from "../../../../../../ui/button";
+import useForm from "../../../../../../../hooks/use-form";
+import Checkbox from "../../../../../../ui/form/checkbox";
+import { useIssuingSupervisorActivityContext } from "../../../../../../../context/issuing-supervisor-context";
+
+export default function IssuSupervisorDocuments() {
+  const { state, send } = useIssuingSupervisorActivityContext();
 
   const { setFieldValue, values, getFieldProps, handleSubmit } = useForm({
     validationSchema,

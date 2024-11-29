@@ -7,9 +7,12 @@ import Radio from "../../../../../ui/form/radio";
 
 import { useIssuingActivityContext } from "../../../../../../context/issuing-activity-context";
 
-import { route } from "preact-router";
+import SendToAuthority from "./send-back-to-authority";
+import { useState } from "preact/hooks";
 
 export default function PersonalProtectiveEquipment() {
+  const [isModalOpen, setModalOpen] = useState(false);
+
   const { send, state } = useIssuingActivityContext();
   const { handleSubmit, setFieldValue, values } = useForm({
     validationSchema,
@@ -31,50 +34,62 @@ export default function PersonalProtectiveEquipment() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="app-register__form"></div>
+    <>
+      <form onSubmit={handleSubmit}>
+        <div className="app-register__form"></div>
 
-      <div className="app-create-permit__group-header">
-        Select applicable option(s) below
-      </div>
-      <div className="app-register__form">
-        {EQUIPMENT.map((equipment) => (
-          <div className="app-create-permit__radio-container">
-            <p>{equipment.text}</p>
-            <div>
-              <Radio
-                checked={values.protectiveEquipment[equipment.value] === true}
-                onChange={() => updatePersonalEquipment(equipment.value, true)}
-                label="YES"
-              />
-              <Radio
-                checked={values.protectiveEquipment[equipment.value] === false}
-                onChange={() => updatePersonalEquipment(equipment.value, false)}
-                label="NO"
-              />
+        <div className="app-create-permit__group-header">
+          Select applicable option(s) below
+        </div>
+        <div className="app-register__form">
+          {EQUIPMENT.map((equipment) => (
+            <div className="app-create-permit__radio-container">
+              <p>{equipment.text}</p>
+              <div>
+                <Radio
+                  checked={values.protectiveEquipment[equipment.value] === true}
+                  onChange={() =>
+                    updatePersonalEquipment(equipment.value, true)
+                  }
+                  label="YES"
+                />
+                <Radio
+                  checked={
+                    values.protectiveEquipment[equipment.value] === false
+                  }
+                  onChange={() =>
+                    updatePersonalEquipment(equipment.value, false)
+                  }
+                  label="NO"
+                />
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <div className="app-register__form-footer">
-        <Button
-          variant="danger"
-          type="button"
-          onClick={() => route("/process-permits")}
-        >
-          Send Back To Authority
-        </Button>
-        <Button
-          variant="secondary"
-          type="button"
-          onClick={() => send("go_back")}
-        >
-          Previous
-        </Button>
-        <Button variant="primary">Next</Button>
-      </div>
-    </form>
+        <div className="app-register__form-footer">
+          <Button
+            variant="danger"
+            type="button"
+            onClick={() => setModalOpen(true)}
+          >
+            Send Back To Authority
+          </Button>
+          <Button
+            variant="secondary"
+            type="button"
+            onClick={() => send("go_back")}
+          >
+            Previous
+          </Button>
+          <Button variant="primary">Next</Button>
+        </div>
+      </form>
+
+      {isModalOpen && (
+        <SendToAuthority setModalOpen={() => setModalOpen(false)} />
+      )}
+    </>
   );
 }
 

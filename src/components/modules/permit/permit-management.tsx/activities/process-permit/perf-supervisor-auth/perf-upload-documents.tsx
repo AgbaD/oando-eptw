@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 import { randomHash } from "../../../../../../../assets/utils";
-import { useAuthorizingActivityContext } from "../../../../../../../context/authorizing-activity-context";
+
 import useForm from "../../../../../../../hooks/use-form";
 import Button from "../../../../../../ui/button";
 import UploadDocument from "../../../../../../ui/form/upload";
@@ -9,13 +9,16 @@ import UploadDocument from "../../../../../../ui/form/upload";
 import { useState } from "preact/hooks";
 import SendToAuthority from "../send-back-to-authority";
 
-export default function AuthFinalUpload() {
-  const { state, send } = useAuthorizingActivityContext();
+import { usePerfSupervisorActivityContext } from "../../../../../../../context/perf-supervisor-activity.context";
+export default function PerfSupervisorFinalUpload() {
+  const { state, send } = usePerfSupervisorActivityContext();
   const { setFieldValue, getFieldProps, handleSubmit } = useForm({
     initialValues: state.context.document_uploads,
     onSubmit,
     validationSchema,
   });
+
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const selectedPreviously: any = state.context.selected_documents;
 
@@ -37,8 +40,6 @@ export default function AuthFinalUpload() {
   function onSubmit(document_uploads) {
     send("submit", { data: { document_uploads } });
   }
-
-  const [isModalOpen, setModalOpen] = useState(false);
 
   return (
     <>
@@ -84,7 +85,7 @@ export default function AuthFinalUpload() {
           >
             Previous
           </Button>
-          <Button variant="primary">Next</Button>
+          <Button variant="primary">SUBMIT</Button>
         </div>
       </form>
 

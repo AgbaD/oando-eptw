@@ -1,16 +1,16 @@
 import * as Yup from "yup";
 
 import { randomHash } from "../../../../../../../assets/utils";
-import { useAuthorizingActivityContext } from "../../../../../../../context/authorizing-activity-context";
+
 import useForm from "../../../../../../../hooks/use-form";
 import Button from "../../../../../../ui/button";
 import UploadDocument from "../../../../../../ui/form/upload";
 
 import { useState } from "preact/hooks";
 import SendToAuthority from "../send-back-to-authority";
-
-export default function AuthFinalUpload() {
-  const { state, send } = useAuthorizingActivityContext();
+import { useIssuingSupervisorActivityContext } from "../../../../../../../context/issuing-supervisor-context";
+export default function IssuSupervisorFinalUpload() {
+  const { state, send } = useIssuingSupervisorActivityContext();
   const { setFieldValue, getFieldProps, handleSubmit } = useForm({
     initialValues: state.context.document_uploads,
     onSubmit,

@@ -28,6 +28,8 @@ export default function WorkAuthoriesFlow({}: any) {
     getPermitDetails();
   }, [valueID]);
 
+  console.log(permitDetails, "permitDetails");
+
   const { tabs, activeTab } = useTabs([
     "Performing Auth.",
     "Issuing Auth",

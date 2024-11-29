@@ -1,25 +1,25 @@
 import * as Yup from "yup";
 
-import useForm from "../../../../../../hooks/use-form";
-import Input from "../../../../../ui/form/input";
-import Button from "../../../../../ui/button";
+import useForm from "../../../../../../../hooks/use-form";
+import Input from "../../../../../../ui/form/input";
+import Button from "../../../../../../ui/button";
 
-import { useIssuingActivityContext } from "../../../../../../context/issuing-activity-context";
+import { useIssuingSupervisorActivityContext } from "../../../../../../../context/issuing-supervisor-context";
 
 export default function ToolKitTime() {
-  const { state, send } = useIssuingActivityContext();
+  const { state, send } = useIssuingSupervisorActivityContext();
 
   const { getFieldProps, handleSubmit } = useForm({
     validationSchema,
     initialValues: {
-      ...state.context.work_description,
+      ...state.context.tool_kit_time,
       //   permit_type: state.context.permit_type,
     },
     onSubmit,
   });
 
-  function onSubmit(update_time_date) {
-    send("submit", { data: { update_time_date } });
+  function onSubmit(tool_kit_time) {
+    send("submit", { data: { tool_kit_time } });
   }
 
   return (
@@ -30,12 +30,12 @@ export default function ToolKitTime() {
         <Input
           label="Identity Leader"
           placeholder="Enter fullname"
-          {...getFieldProps("entrusted_company")}
+          {...getFieldProps("toolBoxLeaderIdentity")}
         />
         <Input
           label="Position"
           placeholder="Enter position"
-          {...getFieldProps("executing_company")}
+          {...getFieldProps("toolBoxPosition")}
         />
       </div>
 
@@ -63,7 +63,7 @@ export default function ToolKitTime() {
             label="Time"
             type="time"
             placeholder="00:00AM"
-            {...getFieldProps("to_time")}
+            {...getFieldProps("startTime")}
           />
         </div>
       </div>

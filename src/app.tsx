@@ -62,6 +62,9 @@ import StorageDetails from "./components/modules/permit/permit-storage/storage-d
 import OnsiteCommentsView from "./components/modules/permit/permit-management.tsx/activities/process-permit/onsite-comments.tsx";
 import ProcessHsePermit from "./components/modules/permit/permit-management.tsx/activities/process-permit/hse-auth-process.tsx";
 import ProcessAuthorizingPermit from "./components/modules/permit/permit-management.tsx/activities/process-permit/authorizing-process.tsx";
+import ProcessPerfSupervisorPermit from "./components/modules/permit/permit-management.tsx/activities/process-permit/perf-supervisor-process.tsx";
+import ProcessSafetyOfficerPermit from "./components/modules/permit/permit-management.tsx/activities/process-permit/safety-officer-process.tsx";
+import ProcessIssuSupervisorPermit from "./components/modules/permit/permit-management.tsx/activities/process-permit/issu-supervisor-process.tsx";
 
 function App() {
   return (
@@ -81,6 +84,9 @@ function App() {
           <ProcessIssuingPermit path="/activities-process" />
           <ProcessHsePermit path="/activities-process/hse" />
           <ProcessAuthorizingPermit path="/activities-process/auth" />
+          <ProcessPerfSupervisorPermit path="/activities-process/perf-supervisor" />
+          <ProcessSafetyOfficerPermit path="/activities-process/safety-officer" />
+          <ProcessIssuSupervisorPermit path="/activities-process/issu-supervisor" />
 
           <RevalidatePerfAuth path="/revalidate-perf-auth" />
           <RevalidateSafetyOfficer path="/revalidate-safety-officer" />

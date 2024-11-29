@@ -1,6 +1,8 @@
 import * as Yup from "yup";
 
-import { route } from "preact-router";
+import { useState } from "preact/hooks";
+import SendToAuthority from "../send-back-to-authority";
+
 import useForm from "../../../../../../../hooks/use-form";
 import Button from "../../../../../../ui/button";
 import Radio from "../../../../../../ui/form/radio";
@@ -27,49 +29,56 @@ export default function AuthMechanicalIsolation() {
     send("submit", { data: { mechanical_precaution } });
   }
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <div className="app-create-permit__group-header">
-        Select applicable option(s)
-      </div>
-      <div className="app-register__form">
-        {LIST.map((item) => (
-          <div className="app-create-permit__radio-container">
-            <p>{item.text}</p>
-            <div>
-              <Radio
-                checked={values.mechanicalPrecaution[item.value] === true}
-                onChange={() => updateMechanicalIsolation(item.value, true)}
-                label="YES"
-              />
-              <Radio
-                checked={values.mechanicalPrecaution[item.value] === false}
-                onChange={() => updateMechanicalIsolation(item.value, false)}
-                label="NO"
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+  const [isModalOpen, setModalOpen] = useState(false);
 
-      <div className="app-register__form-footer">
-        <Button
-          variant="danger"
-          type="button"
-          onClick={() => route("/process-permits")}
-        >
-          Send Back To Authority
-        </Button>
-        <Button
-          variant="secondary"
-          type="button"
-          onClick={() => send("go_back")}
-        >
-          Previous
-        </Button>
-        <Button variant="primary">Next</Button>
-      </div>
-    </form>
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <div className="app-create-permit__group-header">
+          Select applicable option(s)
+        </div>
+        <div className="app-register__form">
+          {LIST.map((item) => (
+            <div className="app-create-permit__radio-container">
+              <p>{item.text}</p>
+              <div>
+                <Radio
+                  checked={values.mechanicalPrecaution[item.value] === true}
+                  onChange={() => updateMechanicalIsolation(item.value, true)}
+                  label="YES"
+                />
+                <Radio
+                  checked={values.mechanicalPrecaution[item.value] === false}
+                  onChange={() => updateMechanicalIsolation(item.value, false)}
+                  label="NO"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="app-register__form-footer">
+          <Button
+            variant="danger"
+            type="button"
+            onClick={() => setModalOpen(true)}
+          >
+            Send Back To Authority
+          </Button>
+          <Button
+            variant="secondary"
+            type="button"
+            onClick={() => send("go_back")}
+          >
+            Previous
+          </Button>
+          <Button variant="primary">Next</Button>
+        </div>
+      </form>
+      {isModalOpen && (
+        <SendToAuthority setModalOpen={() => setModalOpen(false)} />
+      )}
+    </>
   );
 }
 

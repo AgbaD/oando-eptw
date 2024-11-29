@@ -1,7 +1,7 @@
 import { createMachine } from "xstate";
-import { randomHash } from "../assets/utils";
+import { randomHash } from "../../assets/utils";
 
-const ActivityPerfSupervisorMachine = () =>
+const ActivityIssuingSupervisorMachine = () =>
   createMachine(
     {
       context: {
@@ -13,6 +13,12 @@ const ActivityPerfSupervisorMachine = () =>
           [`document_${randomHash(8)}`]: null,
           [`document_${randomHash(8)}`]: null,
           [`document_${randomHash(8)}`]: null,
+        },
+        tool_kit_time: {
+          toolBoxLeaderIdentity: "",
+          toolBoxPosition: "",
+          issuingAuthoritySupervisorTimeAdjustment: false,
+          startTime: "",
         },
         submit: {},
       },
@@ -33,11 +39,24 @@ const ActivityPerfSupervisorMachine = () =>
           on: {
             submit: [
               {
-                target: "submit",
+                target: "tool_kit_time",
                 actions: ["updateContext"],
               },
             ],
             go_back: "selected_documents",
+          },
+        },
+
+        tool_kit_time: {
+          meta: { title: "Tool - Box Talk Details" },
+          on: {
+            submit: [
+              {
+                target: "submit",
+                actions: ["updateContext"],
+              },
+            ],
+            go_back: "document_uploads",
           },
         },
         submit: {
@@ -47,7 +66,7 @@ const ActivityPerfSupervisorMachine = () =>
               target: "submit",
               actions: ["updateContext"],
             },
-            go_back: "document_uploads",
+            go_back: "tool_kit_time",
           },
         },
       },
@@ -61,4 +80,4 @@ const ActivityPerfSupervisorMachine = () =>
     }
   );
 
-export default ActivityPerfSupervisorMachine;
+export default ActivityIssuingSupervisorMachine;

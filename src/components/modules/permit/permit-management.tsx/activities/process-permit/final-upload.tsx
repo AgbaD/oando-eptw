@@ -6,7 +6,9 @@ import Button from "../../../../../ui/button";
 import useForm from "../../../../../../hooks/use-form";
 import { useIssuingActivityContext } from "../../../../../../context/issuing-activity-context";
 
-import { route } from "preact-router";
+import { useState } from "preact/hooks";
+import SendToAuthority from "./send-back-to-authority";
+
 export default function FinalUpload() {
   const { state, send } = useIssuingActivityContext();
   const { setFieldValue, getFieldProps, handleSubmit } = useForm({
@@ -14,6 +16,8 @@ export default function FinalUpload() {
     onSubmit,
     validationSchema,
   });
+
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const selectedPreviously: any = state.context.selected_documents;
 
@@ -69,7 +73,7 @@ export default function FinalUpload() {
           <Button
             variant="danger"
             type="button"
-            onClick={() => route("/process-permits")}
+            onClick={() => setModalOpen(true)}
           >
             Send Back To Authority
           </Button>
@@ -83,6 +87,10 @@ export default function FinalUpload() {
           <Button variant="primary">Next</Button>
         </div>
       </form>
+
+      {isModalOpen && (
+        <SendToAuthority setModalOpen={() => setModalOpen(false)} />
+      )}
     </>
   );
 }

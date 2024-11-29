@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
-import { route } from "preact-router";
+import { useState } from "preact/hooks";
+import SendToAuthority from "../send-back-to-authority";
 import { useAuthorizingActivityContext } from "../../../../../../../context/authorizing-activity-context";
 import Radio from "../../../../../../ui/form/radio";
 import Button from "../../../../../../ui/button";
@@ -45,6 +46,8 @@ export default function AuthFireFightingEquipment() {
     send("submit", { data: { firefighting_equipment } });
   }
 
+  const [isModalOpen, setModalOpen] = useState(false);
+
   return (
     <>
       <form onSubmit={handleSubmit} className="app-register__attachment-form">
@@ -74,7 +77,7 @@ export default function AuthFireFightingEquipment() {
           <Button
             variant="danger"
             type="button"
-            onClick={() => route("/process-permits")}
+            onClick={() => setModalOpen(true)}
           >
             Send Back To Authority
           </Button>
@@ -90,6 +93,10 @@ export default function AuthFireFightingEquipment() {
           {/* <button onClick={onSubmit}>Next</button> */}
         </div>
       </form>
+
+      {isModalOpen && (
+        <SendToAuthority setModalOpen={() => setModalOpen(false)} />
+      )}
     </>
   );
 }

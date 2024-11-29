@@ -33,8 +33,24 @@ function approveAuthorizingAuth(data) {
   return createRequest("/permit/approve/authorizing-auth", "POST", data);
 }
 
+function approveIssuingSupervisor(data) {
+  return createRequest("/permit/approve/issuing-auth-supervisor", "POST", data);
+}
+
 function rejectAuthorizingAuth(data) {
   return createRequest("/permit/reject/authorizing", "PUT", data);
+}
+
+function approvePerfSupervisor(data) {
+  return createRequest(
+    "/permit/approve/performing-auth-supervisor",
+    "POST",
+    data
+  );
+}
+
+function approveSafetyOfficer(data) {
+  return createRequest("/permit/approve/safety-officer", "POST", data);
 }
 
 function renewPermit(data) {
@@ -147,8 +163,13 @@ function approveIssuingAuthContinuation(data) {
   );
 }
 
+function sendBackToAuthority(data) {
+  return createRequest(`/permit/send-back`, "POST", data);
+}
+
 export {
   createPermit,
+  sendBackToAuthority,
   getPermits,
   getPermit,
   approveIssuingAuth,
@@ -157,6 +178,9 @@ export {
   rejectHseAuth,
   rejectAuthorizingAuth,
   approveAuthorizingAuth,
+  approvePerfSupervisor,
+  approveSafetyOfficer,
+  approveIssuingSupervisor,
   renewPermit,
   AddOnsiteNote,
   suspendPermit,
