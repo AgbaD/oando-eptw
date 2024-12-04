@@ -1,5 +1,5 @@
 import { useState } from "preact/hooks";
-import { getExternalUsers } from "../../../assets/api/user";
+import { getAllInternalUsers } from "../../../assets/api/user";
 import useModal from "../../../hooks/use-modal";
 import useRequest from "../../../hooks/use-request";
 
@@ -26,9 +26,9 @@ import { siteOptions } from "../locations/data";
 export default function InternalUsers() {
   const [selectedUser, viewUser] = useState<any>();
   const { toggle, modals } = useModal({ user_details: false });
-  const { response, isLoading } = useRequest(getExternalUsers, {}, true);
+  const { response, isLoading } = useRequest(getAllInternalUsers, {}, true);
 
-  const isInternalUsers = false;
+  const isInternalUsers = true;
 
   const handleItemClick = (item) => {
     viewUser(item);

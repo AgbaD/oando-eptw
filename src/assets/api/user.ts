@@ -59,6 +59,10 @@ function blockCompany(data) {
   return createRequest(`/profile/company/block/${data.id}`, "PUT", data);
 }
 
+function createInternalUser(data) {
+  return createRequest("/profile/internal", "POST", data);
+}
+
 function createNewCompany(data) {
   return createRequest("/profile/company", "POST", data);
 }
@@ -77,6 +81,9 @@ function getExternalUsers() {
 
 function getAllExternalUsers() {
   return createRequest("/auth/profile/external", "GET");
+}
+function getAllInternalUsers() {
+  return createRequest("/auth/profile/internal", "GET");
 }
 
 // All endpoints for audits
@@ -113,7 +120,9 @@ export {
   getSites,
   getLocationsArea,
   createExternalUser,
+  createInternalUser,
   getExternalUsers,
+  getAllInternalUsers,
   getAllExternalUsers,
   getAudits,
   getAllCompanies,
