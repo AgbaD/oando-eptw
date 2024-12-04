@@ -81,15 +81,6 @@ export default function IssuAuthSupervisor({ response }: any) {
     });
   };
 
-  const currentAuthority = details?.currentAuthority;
-
-  if (currentAuthority === "ISSUING_SUPERVISOR") {
-    <div className="base-empty">
-      <img src="/svgs/document.svg" />
-      <p>{"Approval in progress."}</p>
-    </div>;
-  }
-
   return (
     <div className={"app-permit__sections"}>
       <br />

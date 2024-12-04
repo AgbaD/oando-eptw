@@ -51,16 +51,7 @@ export default function AuthorizingAuth({ permit }: any) {
     window.location.reload();
   }
 
-  if (permit.hseAuthorityStatus !== "APPROVED") {
-    return (
-      <div className="app-section">
-        <div className="base-empty">
-          <img src="/svgs/document.svg" />
-          <p>Approval In Progress.</p>
-        </div>
-      </div>
-    );
-  }
+  
 
   return (
     <div className="app-section">

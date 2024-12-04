@@ -51,17 +51,6 @@ export default function HseAuth({ permit }: any) {
     window.location.reload();
   }
 
-  if (permit.issuringAuthorityStatus !== "APPROVED") {
-    return (
-      <div className="app-section">
-        <div className="base-empty">
-          <img src="/svgs/document.svg" />
-          <p>Approval In Progress.</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="app-section">
       {permit.hseAuthorityStatus === "IN_PROGRESS" ? (

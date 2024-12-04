@@ -81,15 +81,6 @@ export default function SafetyOfficer({ response }: any) {
     });
   };
 
-  const currentAuthority = details?.currentAuthority;
-
-  if (currentAuthority === "SAFETY_OFFICER") {
-    <div className="base-empty">
-      <img src="/svgs/document.svg" />
-      <p>{"Approval in progress."}</p>
-    </div>;
-  }
-
   return (
     <div className={"app-permit__sections"}>
       <br />

@@ -56,20 +56,24 @@ export default function CompanyDetails() {
             placeholder={companyName}
             {...getFieldProps("entrusted_company")}
             options={options}
-            onChange={(e) =>
-              setCompanyName((e.target as HTMLInputElement).value)
-            }
+            onChange={(e) => {
+              const value = Number((e.target as HTMLSelectElement).value);
+              getFieldProps("locationId").onChange(e);
+              console.log(`Selected company: ${value}`);
+            }}
             // required
           />
-          <Input
-            label="Entrusted Company (Optional)"
-            placeholder="Write here..."
-            {...getFieldProps("entrusted_company")}
-          />
-          <Input
+
+          <Select
             label="Executing Company (Optional)"
             placeholder="Write here..."
             {...getFieldProps("executing_company")}
+            options={options}
+            onChange={(e) => {
+              const value = Number((e.target as HTMLSelectElement).value);
+              getFieldProps("locationId").onChange(e);
+              console.log(`Selected company: ${value}`);
+            }}
           />
           <Input
             label="Performing Department"
@@ -80,7 +84,12 @@ export default function CompanyDetails() {
           <Input
             label="Contact Phone Number (Optional)"
             placeholder="Enter contact number"
+            type="text"
             {...getFieldProps("company_contact_phone")}
+            onInput={(e) => {
+              const input = e.target as HTMLInputElement;
+              input.value = input.value.replace(/[^0-9]/g, "");
+            }}
           />
         </div>
       </div>

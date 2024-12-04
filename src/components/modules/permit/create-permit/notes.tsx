@@ -108,17 +108,18 @@ export default function AdditionalNotes() {
       ],
     },
   ];
-
   const selectedHazards = state.context.work_hazards?.hazards || {};
-  // Filter and map over the selected hazards
   const renderHazards = () => {
-    return HAZARDS.filter((hazard) =>
-      selectedHazards.hasOwnProperty(hazard.value)
-    ) // Only include hazards that are selected
+    return HAZARDS.filter(
+      (hazard) =>
+        selectedHazards.hasOwnProperty(hazard.value) &&
+        selectedHazards[hazard.value] !== undefined &&
+        selectedHazards[hazard.value] !== null
+    ) // Only include hazards that are defined and not null
       .map((hazard) => (
         <div key={hazard.value} className="hazard-item">
           <p>
-            <span class="hazard-value">
+            <span className="hazard-value">
               {selectedHazards[hazard.value] ? "YES" : "NO"}
             </span>{" "}
             - {hazard.text}
@@ -143,10 +144,21 @@ export default function AdditionalNotes() {
 
   async function onSubmit(data) {
     console.log(data);
+
+    console.log("selectedHazards", selectedHazards);
+    const filteredHazards = {};
+
+    Object.entries(selectedHazards).forEach(([key, value]) => {
+      console.log(key, value);
+      if (value !== undefined) {
+        filteredHazards[key] = value;
+      }
+    });
+
     const payload = {
       type: state.context.permit_type.toUpperCase(),
       workArea: state.context.work_description?.work_area,
-      locationId: state.context.work_description?.locationId,
+      locationId: Number(state.context.work_description?.locationId),
       performerRole: state.context.work_description?.role,
       performerPersonInCharge: state.context.work_description?.performer,
       workDescription: state.context.work_description?.work_description,
@@ -164,9 +176,12 @@ export default function AdditionalNotes() {
         state.context.work_description?.to_date,
         state.context.work_description?.to_time
       ),
-      entrustedCompanyId: 1,
-      // state.context.company_details?.entrusted_company,
-      executingCompanyId: 1,
+      entrustedCompanyId: Number(
+        state.context.company_details?.entrusted_company
+      ),
+      executingCompanyId: Number(
+        state.context.company_details?.executing_company
+      ),
       performingDepartment:
         state.context.company_details?.performing_department,
       contractorPhoneNumber:
@@ -174,7 +189,7 @@ export default function AdditionalNotes() {
       hazard: {
         potentialHazardDescription:
           state.context.work_hazards?.potentialHazardDescription || "",
-        ...state.context.work_hazards?.hazards,
+        ...filteredHazards,
       },
 
       documents: {

@@ -27,17 +27,6 @@ export default function IssuingAuth({ permit }: any) {
     window.location.reload();
   }
 
-  if (permit.continuationHseOfficerStatus !== "APPROVED") {
-    return (
-      <div className="app-section">
-        <div className="base-empty">
-          <img src="/svgs/document.svg" />
-          <p>Approval In Progress.</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="app-section">
       {permit.continuationIssuringAuthSupStatus === "IN_PROGRESS" ? (

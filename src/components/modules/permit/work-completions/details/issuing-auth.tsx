@@ -42,24 +42,15 @@ export default function IssuingAuth({ permit }: any) {
     window.location.reload();
   }
 
-  if (permit.completionHseOfficerStatus !== "APPROVED") {
-    return (
-      <div className="app-section">
-        <div className="base-empty">
-          <img src="/svgs/document.svg" />
-          <p>Approval In Progress.</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="app-section">
       {permit.completionIssuringAuthSupStatus === "IN_PROGRESS" ? (
         <div className="app-ptw__details__module">
           <h4>Approval Section</h4>
           <p>
-          To approve the completion fo this project, you can confirm the work is completed, all tools an equipment are reinstated in their initial position, and worksite is left clean and safe.
+            To approve the completion fo this project, you can confirm the work
+            is completed, all tools an equipment are reinstated in their initial
+            position, and worksite is left clean and safe.
           </p>
 
           <div className="app-ptw__details__module__btn-footer">

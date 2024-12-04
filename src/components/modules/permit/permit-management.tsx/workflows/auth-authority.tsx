@@ -184,14 +184,6 @@ export default function AuthAuthority({ response }: any) {
       ],
     },
   ];
-  const currentAuthority = details?.currentAuthority;
-
-  if (currentAuthority === "AUTHORIZING") {
-    <div className="base-empty">
-      <img src="/svgs/document.svg" />
-      <p>{"Approval in progress."}</p>
-    </div>;
-  }
 
   return (
     <div className={"app-permit__sections"}>
@@ -209,7 +201,7 @@ export default function AuthAuthority({ response }: any) {
         </div>
         <div className="section__content">
           <p className="title">Identification of potential hazards</p>
-          <p className="info">{renderDisplayItems(hazardsArray.hazard)}</p>
+          <p className="info">{renderDisplayItems(hazardsArray)}</p>
         </div>
       </div>
 
