@@ -21,6 +21,9 @@ import {
 import { useIDContext } from "../../../../context/id.context";
 
 import { route } from "preact-router";
+import useRequest from "../../../../hooks/use-request";
+import { getAllPermits } from "../../../../assets/api/user";
+import { usePermitDetails } from "../../../../context/permit-details.context";
 
 export default function Storage({}: any) {
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
@@ -28,30 +31,13 @@ export default function Storage({}: any) {
   const work_types = ["All Work Types", "Cold Work", "Hot Work"];
 
   const { setID } = useIDContext();
+  const { updatePermit } = usePermitDetails();
 
-  const dummy = [
-    {
-      id: 1,
-      ptw_id: "1044/23",
-      type: "Hot Work",
-      work_to_be_performed: "Coiled tubing nitrogen lift by weafri at IDU 11",
-      work_location: "AKRI",
-      company: "Indomie",
-      status: "Closed",
-    },
-    {
-      id: 2,
-      ptw_id: "1044/23",
-      type: "Hot Work",
-      work_to_be_performed: "Coiled tubing nitrogen lift by weafri at IDU 11",
-      work_location: "AKRI",
-      company: "Nestle",
-      status: "Cancelled",
-    },
-  ];
+  const { response, isLoading } = useRequest(getAllPermits, {}, true);
 
   const handleItemClick = (item) => {
     setID(item.id);
+    updatePermit(item);
     route("/permit-storage/details");
   };
 
@@ -109,41 +95,51 @@ export default function Storage({}: any) {
                 <TableCell>Work Location</TableCell>
                 <TableCell>Company</TableCell>
                 <TableCell>Status / Authority</TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
-              {dummy.map((data) => (
-                <>
-                  {" "}
-                  <TableRow key={data.id}>
+              {response?.data
+                .filter(
+                  (data) =>
+                    data.status === "CLOSED" || data.status === "CANCELED"
+                )
+                .map((data) => (
+                  <>
                     {" "}
-                    <TableCell>{data.ptw_id}</TableCell>
-                    <TableCell>{data.type}</TableCell>
-                    {/* <TableCell>{data.type?.toLowerCase()}</TableCell> */}
-                    <TableCell>{data.work_to_be_performed}</TableCell>
-                    <TableCell>{data.work_location}</TableCell>
-                    <TableCell>{data.company}</TableCell>
-                    <TableCell>
-                      <h6
-                        className={`${
-                          data.status === "Draft"
-                            ? "draft-status"
-                            : "others-status"
-                        }`}
-                      >
-                        {data.status}
-                      </h6>
-                    </TableCell>
-                    <TableCell>
-                      <Button onClick={() => handleItemClick(data)}>
-                        View
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                  <br />
-                </>
-              ))}
+                    <TableRow key={data.id}>
+                      {" "}
+                      <TableCell>{data.publicId}</TableCell>
+                      <TableCell>{data.type}</TableCell>
+                      {/* <TableCell>{data.type?.toLowerCase()}</TableCell> */}
+                      <TableCell>{data.workDescription}</TableCell>
+                      <TableCell>
+                        <span>
+                          {data.workArea} / {data.location?.locationArea}
+                        </span>
+                      </TableCell>
+                      <TableCell>{data.entrustedCompany?.name}</TableCell>
+                      <TableCell>
+                        <h6
+                          className={`${
+                            data.status === "Draft"
+                              ? "draft-status"
+                              : "others-status"
+                          }`}
+                        >
+                          {data.status} / {data.currentAuthority}
+                        </h6>
+                      </TableCell>
+                      <TableCell>
+                        <Button onClick={() => handleItemClick(data)}>
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                    <br />
+                  </>
+                ))}
             </TableBody>
           </Table>
         </div>
@@ -151,39 +147,46 @@ export default function Storage({}: any) {
         <div className="app-section__sm-table">
           <Table>
             <TableBody>
-              {dummy.map((dataItem) => (
-                <div
-                  key={dataItem.id}
-                  className="container"
-                  onClick={() => handleItemClick(dataItem)}
-                >
+              {response?.data
+                .filter(
+                  (dataItem) =>
+                    dataItem.status === "CLOSED" ||
+                    dataItem.status === "CANCELED"
+                )
+                .map((dataItem) => (
                   <div
-                    className="location-flex"
-                    // onClick={() => handleItemClick(dataItem)}
+                    key={dataItem.id}
+                    className="container"
+                    onClick={() => handleItemClick(dataItem)}
                   >
-                    <p>{dataItem.ptw_id}</p>
-                    <h6 className={"gray"}>{dataItem.type}</h6>
-                  </div>
-                  <p>{dataItem.work_to_be_performed}</p>
-                  <div className="location-flex">
-                    <div className="items-center">
-                      <p className={"gray"}>Status / Authority:</p>
-                      <h6
-                        className={` ${
-                          dataItem.status === "Draft"
-                            ? "draft-status"
-                            : "others-status"
-                        }`}
-                      >
-                        {dataItem.status}
-                      </h6>
+                    <div className="location-flex">
+                      <p>{dataItem.publicId}</p>
+                      <h6 className={"gray"}>{dataItem.type}</h6>
+                    </div>
+                    <p>{dataItem.workDescription}</p>
+                    <div className="location-flex">
+                      <div className="items-center">
+                        <p className={"gray"}>Status / Authority:</p>
+                        <h6 className="others-status">
+                          {dataItem.status} / {dataItem.currentAuthority}
+                        </h6>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </TableBody>
           </Table>
         </div>
+        {!response?.data?.length && (
+          <div className="base-empty">
+            <img src="/svgs/document.svg" />
+            <p>
+              {isLoading
+                ? "Fetching permits, please wait..."
+                : "No permits yet"}
+            </p>
+          </div>
+        )}
       </div>
     </>
   );

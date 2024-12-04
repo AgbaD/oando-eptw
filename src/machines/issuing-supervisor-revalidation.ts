@@ -4,7 +4,9 @@ import { randomHash } from "../assets/utils";
 const IssuingSupervisorRevalidationMachine = createMachine(
   {
     context: {
-      verification: {},
+      verification: {
+        revalidateWorkAreaConfirmation: false,
+      },
       selected_documents: {
         documents: [],
       },
@@ -14,7 +16,12 @@ const IssuingSupervisorRevalidationMachine = createMachine(
         [`document_${randomHash(8)}`]: null,
         [`document_${randomHash(8)}`]: null,
       },
-      tool_kit_time: {},
+      tool_kit_time: {
+        toolBoxPosition: "",
+        toolBoxLeaderIdentity: "",
+        from_time: "",
+        issuingAuthoritySupervisorTimeAdjustment: false,
+      },
     },
     predictableActionArguments: true,
     initial: "verification",

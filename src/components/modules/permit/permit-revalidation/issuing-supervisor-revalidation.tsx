@@ -8,8 +8,6 @@ import {
 
 import { Link } from "preact-router";
 
-import Submit from "../permit-management.tsx/activities/process-permit/submit";
-
 import Button from "../../../ui/button";
 import { useState } from "preact/hooks";
 
@@ -19,6 +17,7 @@ import IssuingVerification from "./modules/issuing-supervisor-verification";
 import IssuingSelectDocuments from "./modules/issuing-select-documents";
 import IssuingUploadDocuments from "./modules/issuing-upload-documents";
 import IssuingToolKitTime from "./modules/issuing-toolkit-time";
+import IssuingRevalidationSubmit from "./issuing-supervisor-submit";
 
 function Module() {
   const { state } = useIssuingSupervisorRevalidationContext();
@@ -82,7 +81,7 @@ function Module() {
           {state.matches("selected_documents") && <IssuingSelectDocuments />}
           {state.matches("document_uploads") && <IssuingUploadDocuments />}
           {state.matches("tool_kit_time") && <IssuingToolKitTime />}
-          {state.matches("submit") && <Submit />}
+          {state.matches("submit") && <IssuingRevalidationSubmit />}
         </div>
 
         <img src="/svgs/auth-blur.svg" alt="auth-blur" />

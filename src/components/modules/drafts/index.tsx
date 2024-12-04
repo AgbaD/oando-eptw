@@ -112,7 +112,9 @@ export default function Drafts({}: any) {
                   </TableCell>
                   <TableCell>{data.type}</TableCell>
                   {/* <TableCell>Lagos, Nigeria</TableCell> */}
-                  <TableCell>{data.workArea}</TableCell>
+                  <TableCell>
+                    <>{data.workArea}</>
+                  </TableCell>
                   <TableCell>Alize Cornet</TableCell>
                   <TableCell>
                     <Button

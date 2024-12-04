@@ -8,8 +8,6 @@ import {
 
 import { Link } from "preact-router";
 
-import Submit from "../permit-management.tsx/activities/process-permit/submit";
-
 import Button from "../../../ui/button";
 import { useState } from "preact/hooks";
 
@@ -17,6 +15,7 @@ import PopupModal from "../../../ui/popup";
 import Verification from "../permit-management.tsx/activities/process-permit/verification";
 import SelectDocuments from "./modules/select-documents";
 import PerfUploadDocuments from "./modules/upload-documents";
+import PerfRevalidationSubmit from "./perf-submit";
 
 function Module() {
   const { state } = usePerfRevalidationContext();
@@ -78,7 +77,7 @@ function Module() {
           {state.matches("verification") && <Verification />}
           {state.matches("selected_documents") && <SelectDocuments />}
           {state.matches("document_uploads") && <PerfUploadDocuments />}
-          {state.matches("submit") && <Submit />}
+          {state.matches("submit") && <PerfRevalidationSubmit />}
         </div>
 
         <img src="/svgs/auth-blur.svg" alt="auth-blur" />

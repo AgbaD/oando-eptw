@@ -11,8 +11,27 @@ import useTabs from "../../../../hooks/use-tabs";
 import PerformingAuthActivities from "../permit-management.tsx/activities/performing-auth-activities";
 import SafetyOfficer from "../permit-management.tsx/workflows/safety-officer";
 import IssuAuthSupervisor from "../permit-management.tsx/workflows/issu-auth-supervisor";
+import { useIDContext } from "../../../../context/id.context";
+import { useEffect, useState } from "preact/hooks";
+
+import { createRequest } from "../../../../assets/api";
 
 export default function ClosurePermitIndex({}: any) {
+  const { valueID, setID } = useIDContext();
+  const id = valueID;
+
+  const [permitDetails, setPermitDetails] = useState({});
+  useEffect(() => {
+    async function getPermitDetails() {
+      const permitResponse = await createRequest(`/permit/${id}`, "GET");
+      const permitData = permitResponse[0].data;
+      setPermitDetails(permitData);
+      setID(permitData.id);
+    }
+
+    getPermitDetails();
+  }, [valueID]);
+
   const { tabs, activeTab } = useTabs([
     "Performing Auth.",
     "Issuing Auth",
@@ -33,8 +52,21 @@ export default function ClosurePermitIndex({}: any) {
     // Rejected: 60,
   };
 
-  const handleNavigate = () => {
-    route("/revalidate-perf-auth");
+  const handleNavigate = (data: any) => {
+    switch (data.currentAuthority) {
+      case "PERFORMING_SUPERVISOR":
+        route("/closure-perf-auth");
+        break;
+      case "SAFETY_OFFICER":
+        route("/closure-safety-officer");
+        break;
+      case "ISSUING_SUPERVISOR":
+        route("/closure-issuing-supervisor");
+        break;
+      default:
+        route("/closure-perf-auth");
+        break;
+    }
   };
   return (
     <>
@@ -49,7 +81,10 @@ export default function ClosurePermitIndex({}: any) {
               <p>Click the button to process the closure of this permit</p>{" "}
             </div>
 
-            <button className={"flex-center"} onClick={handleNavigate}>
+            <button
+              className={"flex-center"}
+              onClick={() => handleNavigate(permitDetails)}
+            >
               <Icon name="process" />
               Process Closure
             </button>

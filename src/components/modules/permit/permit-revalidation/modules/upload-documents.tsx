@@ -9,14 +9,11 @@ import Button from "../../../../ui/button";
 
 export default function PerfUploadDocuments({}: any) {
   const { send, state } = usePerfRevalidationContext();
-  const { setFieldValue, values, getFieldProps, handleSubmit } = useForm({
+  const { setFieldValue, getFieldProps, handleSubmit } = useForm({
     initialValues: state.context.document_uploads,
     validationSchema,
     onSubmit,
   });
-
-  const documentFieldKeys = Object.keys(values);
-  // const selectedPreviously = [state.context.selected_documents];
 
   function addDocumentUploadField() {
     setFieldValue(`documents_${randomHash(8)}`, {
@@ -37,23 +34,32 @@ export default function PerfUploadDocuments({}: any) {
         </p>
 
         <div className="app-register__form-grid app-create-permit__docs">
-          {documentFieldKeys.map((key) => (
-            <UploadDocument
-              label="Document Name"
-              key={key}
-              {...getFieldProps(key)}
-              onChange={(v) => setFieldValue(key, v)}
-            />
-          ))}
-          {/* 
-          {selectedPreviously.map((doc) => (
-            <UploadDocument
-              label={doc}
-              key={doc}
-              {...getFieldProps(doc)}
-              onChange={(v) => setFieldValue(doc, v)}
-            />
-          ))} */}
+          <UploadDocument
+            label="Tool Box Stock"
+            key="toolbox"
+            {...getFieldProps("toolbox")}
+            onChange={(v) => setFieldValue("toolbox", v)}
+          />
+          <UploadDocument
+            label="Radiography Cert."
+            key="radiography"
+            {...getFieldProps("radiography")}
+            onChange={(v) => setFieldValue("radiography", v)}
+          />
+
+          <UploadDocument
+            label="Confined Space Cert."
+            key="confinedSpace"
+            {...getFieldProps("confinedSpace")}
+            onChange={(v) => setFieldValue("confinedSpace", v)}
+          />
+
+          <UploadDocument
+            label="Gas Safety Cert."
+            key="gasClearance"
+            {...getFieldProps("gasClearance")}
+            onChange={(v) => setFieldValue("gasClearance", v)}
+          />
         </div>
         <button
           className="app-create-permit__add-doc"

@@ -1,14 +1,10 @@
-import { useState } from "preact/hooks";
 import Section from "../../../../ui/sections";
-import Icon from "../../../../ui/icon";
 
-import PopupModal from "../../../../ui/popup";
-import PermitPopupModal from "../../permit-monitoring/permit-popup-modal";
-
-import { HAZARDS } from "../../create-permit/work-hazards";
+import RenderButtonsOnPath from "../../render-buttons-by-path";
 
 export default function PerformingAuthorities({ response }: any) {
   const details = response;
+  console.log(details);
   const hazardsArray =
     details?.permitHazards && details.permitHazards.length > 0
       ? details.permitHazards[0]
@@ -126,22 +122,40 @@ export default function PerformingAuthorities({ response }: any) {
     },
   ];
 
-  const selectedHazards = hazardsArray?.hazard || {};
-  // Filter and map over the selected hazards
-  const renderHazards = () => {
-    return HAZARDS.filter((hazard) =>
-      selectedHazards.hasOwnProperty(hazard.value)
-    ) // Only include hazards that are selected
-      .map((hazard) => (
-        <div key={hazard.value} className="hazard-item">
-          <p>
-            <span class="hazard-value">
-              {selectedHazards[hazard.value] ? "YES" : "NO"}
-            </span>{" "}
-            - {hazard.text}
-          </p>
-        </div>
-      ));
+  const hazards = [
+    {
+      section: "D",
+      header: "Hazard Identification",
+      content: [
+        {
+          id: 1,
+          title: "Describe the potential hazards",
+          info: hazardsArray?.hazard?.potentialHazardDescription || "",
+        },
+      ],
+    },
+  ];
+
+  const renderDisplayItems = (itemArray) => {
+    const displayItems = itemArray || {};
+
+    const itemEntries = Object.entries(displayItems)
+      .filter(
+        ([key, value]) =>
+          value !== null && !["id", "createdAt", "updatedAt"].includes(key)
+      )
+      .map(([key, value]) => {
+        return { key, value: value ?? false };
+      });
+
+    return itemEntries.map(({ key, value }) => (
+      <div key={key} className="firefighting-item">
+        <p>
+          <span className="firefighting-value">{value ? "YES" : "NO"}</span> -{" "}
+          {key.replace(/([A-Z])/g, " $1").toUpperCase()}{" "}
+        </p>
+      </div>
+    ));
   };
 
   const renderDocuments = () => {
@@ -150,6 +164,10 @@ export default function PerformingAuthorities({ response }: any) {
     return documentEntries.map(([key, value]) => {
       // Filter out technical fields like `id`, `createdAt`, `updatedAt`, and `draftId`
       if (["id", "createdAt", "updatedAt", "draftId"].includes(key)) {
+        return null;
+      }
+
+      if ((key.includes("Type") || key.includes("Doc")) && !value) {
         return null;
       }
 
@@ -193,130 +211,7 @@ export default function PerformingAuthorities({ response }: any) {
     });
   };
 
-  const [deletePopUp, setDeletePopUp] = useState(false);
-  const handleDeletePopUp = (value: boolean) => {
-    setDeletePopUp(value);
-  };
-
-  const [isModalOpen, setModalOpen] = useState(false);
-  const handleSuspensionModal = (value: boolean) => {
-    setModalOpen(value);
-  };
-
-  const [isCancelPopup, setIsCancelPopup] = useState(false);
-  const handleCancelPoopup = (value: boolean) => {
-    setIsCancelPopup(value);
-  };
-
   const currentPath = window.location.pathname;
-
-  const RenderButtonsOnPath = (currentPath: string) => {
-    switch (currentPath) {
-      case "/monitoring-details":
-        return (
-          <>
-            <div className="actions">
-              <div className="print">
-                <div>
-                  <h4>Print </h4>
-                  <p>
-                    Click the button to get a hardcopy version of this permit
-                  </p>
-                </div>
-
-                <button className={"flex-center"}>
-                  <Icon name="print" />
-                  Print Permit
-                </button>
-              </div>
-              <div className="closure">
-                <div>
-                  <h4>Request for closure</h4>
-                  <p>Click the button to process closure of this permit</p>
-                </div>
-
-                <button
-                  className={"flex-center"}
-                  onClick={() => handleDeletePopUp(true)}
-                >
-                  <Icon name="export" />
-                  Request Closure{" "}
-                </button>
-              </div>
-
-              <div className="double">
-                <div className="suspension">
-                  <div>
-                    <h4>Permit Suspension </h4>
-                    <p>Click the button below to process permit suspension.</p>
-                  </div>
-                  <br />
-
-                  <button
-                    className={"flex-center"}
-                    onClick={() => handleSuspensionModal(true)}
-                  >
-                    Suspend Permit{" "}
-                  </button>
-                </div>
-                <div className="cancel">
-                  <div>
-                    <h4>Permit Cancellation</h4>
-                    <p>
-                      {" "}
-                      Click the button below to process cancel this permit.
-                    </p>
-                  </div>
-                  <br />
-
-                  <button
-                    className={"flex-center"}
-                    onClick={() => handleCancelPoopup(true)}
-                  >
-                    Cancel Permit
-                  </button>
-                </div>
-              </div>
-            </div>
-          </>
-        );
-
-      case "/permit-management":
-        return (
-          <>
-            <div className="actions">
-              <div className="print">
-                <div>
-                  <h4>Print </h4>
-                  <p>
-                    Click the button to get a hardcopy version of this permit
-                  </p>
-                </div>
-
-                <button className={"flex-center"}>
-                  <Icon name="print" />
-                  Print Permit
-                </button>
-              </div>
-              <div className="delete">
-                <div>
-                  <h4>Delete</h4>
-                  <p>Click the button to delete this permit</p>
-                </div>
-
-                <button
-                  className={"flex-center"}
-                  onClick={() => handleDeletePopUp(true)}
-                >
-                  <Icon name="delete" />
-                  Delete Permit
-                </button>
-              </div>
-            </div>
-          </>
-        );
-    }
-  };
 
   return (
     <div className={"app-permit__sections"}>
@@ -330,16 +225,20 @@ export default function PerformingAuthorities({ response }: any) {
         />
       ))}
 
+      <Section
+        type="Primary"
+        header="HAZARD IDENTIFICATION"
+        children={hazards[0]}
+        section={hazards[0].section}
+      />
       <div className="section">
         <div className="section__content">
+          <p className="title">Description of potential hazards</p>
+          <p>{hazardsArray?.hazard?.potentialHazardDescription}</p>
+        </div>
+        <div className="section__content">
           <p className="title">Identification of potential hazards</p>
-          <p className="info">
-            {Object.keys(selectedHazards).length > 0 ? (
-              renderHazards()
-            ) : (
-              <p>No hazards selected.</p>
-            )}
-          </p>
+          <p className="info">{renderDisplayItems(hazardsArray.hazard)}</p>
         </div>
       </div>
 
@@ -365,69 +264,6 @@ export default function PerformingAuthorities({ response }: any) {
       <br />
 
       {RenderButtonsOnPath(currentPath)}
-
-      <div className="">
-        {deletePopUp && (
-          <PopupModal
-            icon={<img src="/svgs/delete_img.png" />} // Pass your custom icon here
-            title="Delete Role"
-            message="Are you sure you want to delete this role? This action cannot be undone."
-            onClose={() => setDeletePopUp(false)}
-            primaryButton={{
-              label: "Delete",
-              onClick: () => handleDeletePopUp(false),
-              color: "#D30021",
-            }}
-            secondaryButton={{
-              label: "Cancel",
-              onClick: () => handleDeletePopUp(false),
-              color: "#E86E18",
-            }}
-          />
-        )}
-      </div>
-
-      <div className="">
-        {isModalOpen && (
-          <PermitPopupModal
-            icon={<img src="/svgs/reject.svg" />}
-            title="Suspend Permit"
-            message="Kindly state the reason for suspending this permit below"
-            onClose={() => setModalOpen(false)}
-            primaryButton={{
-              label: "Suspend Permit",
-              onClick: () => handleSuspensionModal(false),
-              color: "#D30021",
-            }}
-            secondaryButton={{
-              label: "Back",
-              onClick: () => handleSuspensionModal(false),
-              color: "#E86E180D",
-            }}
-          />
-        )}
-      </div>
-
-      <div className="">
-        {isCancelPopup && (
-          <PermitPopupModal
-            icon={<img src="/svgs/reject.svg" />}
-            title="Cancel Permit"
-            message="Kindly state the reason for cancelling this permit below"
-            onClose={() => setIsCancelPopup(false)}
-            primaryButton={{
-              label: "Cancel Permit",
-              onClick: () => handleCancelPoopup(false),
-              color: "#D30021",
-            }}
-            secondaryButton={{
-              label: "Back",
-              onClick: () => handleCancelPoopup(false),
-              color: "#E86E180D",
-            }}
-          />
-        )}
-      </div>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import Router, { route } from "preact-router";
 import { useEffect } from "preact/hooks";
 import "./assets/styles/index.scss";
+import { msalInstance } from "./main.tsx";
+
 import Login from "./components/modules/auth/login";
 import ForgotPassword from "./components/modules/auth/forgot-password";
 import ResetPassword from "./components/modules/auth/reset-password";
@@ -65,6 +67,8 @@ import ProcessAuthorizingPermit from "./components/modules/permit/permit-managem
 import ProcessPerfSupervisorPermit from "./components/modules/permit/permit-management.tsx/activities/process-permit/perf-supervisor-process.tsx";
 import ProcessSafetyOfficerPermit from "./components/modules/permit/permit-management.tsx/activities/process-permit/safety-officer-process.tsx";
 import ProcessIssuSupervisorPermit from "./components/modules/permit/permit-management.tsx/activities/process-permit/issu-supervisor-process.tsx";
+import { PermitDetailsProvider } from "./context/permit-details.context.tsx";
+import { MsalProvider } from "@azure/msal-react";
 
 function App() {
   return (
@@ -171,14 +175,18 @@ function App() {
   );
 }
 
-export default function Module() {
+export default function Module({}: any) {
   return (
-    <UserProvider>
-      <IDProvider>
-        <App />
-        <ToastBar />
-      </IDProvider>
-    </UserProvider>
+    <MsalProvider instance={msalInstance}>
+      <UserProvider>
+        <IDProvider>
+          <PermitDetailsProvider>
+            <App />
+            <ToastBar />
+          </PermitDetailsProvider>
+        </IDProvider>
+      </UserProvider>
+    </MsalProvider>
   );
 }
 

@@ -3,8 +3,36 @@ import useForm from "../../../../hooks/use-form";
 import Input from "../../../ui/form/input";
 import Button from "../../../ui/button";
 import { usePermitContext } from "../../../../context/permit.context";
+import useRequest from "../../../../hooks/use-request";
+import { getAllCompanies } from "../../../../assets/api/user";
+import { useEffect, useState } from "preact/hooks";
+
+import Select from "../../../ui/form/select";
 
 export default function CompanyDetails() {
+  const companyApi = useRequest(getAllCompanies, {}, true);
+  const [companyName, setCompanyName] = useState(
+    "--select entrusted company--"
+  );
+
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    if (companyName && companyApi?.response) {
+      const companyData = companyApi.response.data;
+
+      const items = companyData
+        ? companyData.map((company) => ({
+            text: company.name,
+            value: company.id,
+          }))
+        : [{ text: "No company found", value: "" }];
+
+      setOptions(items);
+      console.log(companyData);
+    }
+  }, [companyName, companyApi.response]);
+
   const { send, state } = usePermitContext();
   const { getFieldProps, handleSubmit } = useForm({
     validationSchema,
@@ -23,6 +51,16 @@ export default function CompanyDetails() {
     <form onSubmit={handleSubmit}>
       <div className="app-register__form">
         <div className="app-register__form-grid">
+          <Select
+            label="Entrusted Company (Optional)"
+            placeholder={companyName}
+            {...getFieldProps("entrusted_company")}
+            options={options}
+            onChange={(e) =>
+              setCompanyName((e.target as HTMLInputElement).value)
+            }
+            // required
+          />
           <Input
             label="Entrusted Company (Optional)"
             placeholder="Write here..."

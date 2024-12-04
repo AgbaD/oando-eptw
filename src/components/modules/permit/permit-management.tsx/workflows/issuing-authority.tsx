@@ -1,32 +1,9 @@
 import Section from "../../../../ui/sections";
 import Icon from "../../../../ui/icon";
-import { HAZARDS } from "../../create-permit/work-hazards";
-import { PERSONAL_EQUIPMENT } from "../approve/personal-equipments";
-import { FIREFIGHTING_EQUIPMENT } from "../activities/process-permit/firefighting-precautions";
 
 export default function IssuingAuthorities({ response }: any) {
   const details = response;
-  console.log(details);
-  const hazardsArray =
-    details?.permitHazards && details.permitHazards.length > 0
-      ? details.permitHazards[1]
-      : null;
-
-  const selectedHazards = hazardsArray?.hazard || {};
-
-  const hazards = [
-    {
-      section: "D",
-      header: "Hazard Identification",
-      content: [
-        {
-          id: 1,
-          title: "Describe the potential hazards",
-          info: hazardsArray?.hazard?.potentialHazardDescription || "",
-        },
-      ],
-    },
-  ];
+  const currentAuthority = details?.currentAuthority;
 
   const equipment = [
     {
@@ -48,83 +25,34 @@ export default function IssuingAuthorities({ response }: any) {
   const documents = [
     {
       section: "",
+      header: "Document Uploads",
+      content: [],
+    },
+  ];
+
+  const hazardsArray =
+    details?.permitHazards && details.permitHazards.length > 0
+      ? details.permitHazards[1]
+      : null;
+
+  const hazards = [
+    {
+      section: "D",
+      header: "Hazard Identification",
       content: [
         {
           id: 1,
-          title: "Entry Certificate",
-          upload_option: "LAR / MBE / RA / 9851 / 2023",
-        },
-        {
-          id: 2,
-          title: "Explosives Cert.",
-          upload_option: "LAR / MBE / RA / 9851 / 2023",
-        },
-        {
-          id: 3,
-          title: "Gas Clearance Cert.",
-          upload_option: "LAR / MBE / RA / 9851 / 2023",
+          title: "Describe the potential hazards",
+          info: hazardsArray?.hazard?.potentialHazardDescription || "",
         },
       ],
     },
   ];
 
-  const renderHazards = () => {
-    return HAZARDS.filter((hazard) =>
-      selectedHazards.hasOwnProperty(hazard.value)
-    ) // Only include hazards that are selected
-      .map((hazard) => (
-        <div key={hazard.value} className="hazard-item">
-          <p>
-            <span class="hazard-value">
-              {selectedHazards[hazard.value] ? "YES" : "NO"}
-            </span>{" "}
-            - {hazard.text}
-          </p>
-        </div>
-      ));
-  };
-
   const personalProtectiveArray =
     details?.protectiveEquipments && details.protectiveEquipments.length > 0
       ? details.protectiveEquipments[0].protectiveEquipment
       : null;
-
-  const selectedProtectiveEquipment = personalProtectiveArray || {};
-
-  const EQUIPMENT_MAP = {
-    "SAFETY HELMET": "safetyHardHats",
-    "BEATING APPARATUS": "breathingAparatus",
-    "SAFETY BOOTS (boots / rubber boots)": "safetyShoes",
-    "DUST / FUMES / SPECIAL GAS FILTER MASKS": "dustMasks", // Update key if necessary
-    "BODY CLOTHING (coverall / full chem / APRON)": "bodyProtection",
-    "LIFE JACKET / WORK VESTS": "lifeVest",
-    "GLOVES (chemical / work / weld)": "safetyGloves",
-    "ELECTRICAL RESCUE (Shepherds) HOOK": "electricalRescueHook", // Update key if necessary
-    "SAFETY GLASSES / FACE SHIELD": "safetyGlasses",
-    "ELECTRICAL STATIC DISCHARGE STICK": "staticDischargeStick", // Update key if necessary
-    "HEARING PROTECTION (ear muff / ear plugs)": "hearingProtection",
-    "FOAM MAKING EQUIPMENT / FIRE TRUCK": "foamEquipment", // Update key if necessary
-    "SAFETY HARNESS (full body type only) / LIFELINE": "safetyHarness", // Update key if necessary
-    "ABOVE 6KV PERSONNEL MUST BE TRAINED TO WORK ON THE SYSTEM":
-      "highVoltageTraining", // Update key if necessary
-    "PORTABLE GROUNDING KIT": "portableGroundingKit", // Update key if necessary
-  };
-
-  const renderPersonalEquipment = () => {
-    return PERSONAL_EQUIPMENT.map((item) => {
-      const equipmentKey = EQUIPMENT_MAP[item.label];
-      const isSelected = selectedProtectiveEquipment[equipmentKey] || false;
-
-      return (
-        <div key={item.label} className="personal-item">
-          <p>
-            <span className="personal-value">{isSelected ? "YES" : "NO"}</span>{" "}
-            - {item.label}
-          </p>
-        </div>
-      );
-    });
-  };
 
   const firefightingEquipment =
     details?.firefightingPrecautions &&
@@ -132,35 +60,123 @@ export default function IssuingAuthorities({ response }: any) {
       ? details.firefightingPrecautions[0].firefightingPrecaution
       : null;
 
-  const selectedFireFightingEquipment = firefightingEquipment || {};
+  const mechanicalPrecautionEquipment =
+    details?.mechanicalIsolationPrecaution &&
+    details.mechanicalIsolationPrecaution.length > 0
+      ? details.mechanicalIsolationPrecaution[0].mechanicalIsolationPrecaution
+      : null;
 
-  const FIRE_FIGHTING_MAP = {
-    "FIRE EXTINGUISHER (CO2)": "fireExtinguisherCO2", // Adjust the key if necessary
-    "FIRE EXTINGUISHER (DCP)": "fireExtinguisherDCP", // Adjust the key if necessary
-    "REMOVAL OF FLAMMABLE SUBSTANCES": "flammableSubstanceRemoval", // Adjust the key if necessary
-    "EXPLOSION-PROOF WORKING TOOLS (e.g. bronze tools)": "explosionProofTools", // Adjust the key if necessary
-    "FLAME PROOF BLANKET": "flameProofBlanket", // Adjust the key if necessary
-    "GROUNDING OF EQUIPMENT": "equipmentGrounding", // Adjust the key if necessary
-    "CONTINOUS GAS MONITORING": "continuousGasMonitoring", // Adjust the key if necessary
-    "FIREWATCHER / STANDBY MAN": "fireWatcherStandby", // Adjust the key if necessary
+  const eletricalIsolationPrecaution =
+    details?.eletricalIsolationPrecaution &&
+    details.eletricalIsolationPrecaution.length > 0
+      ? details.eletricalIsolationPrecaution[0].eletricalIsolationPrecaution
+      : null;
+
+  const documentsArray =
+    details?.permitDocuments && details.permitDocuments.length > 0
+      ? details.permitDocuments[1]
+      : null;
+
+  const documentObject = documentsArray?.document || {};
+
+  const renderDisplayItems = (itemArray) => {
+    const displayItems = itemArray || {};
+
+    const itemEntries = Object.entries(displayItems)
+      .filter(
+        ([key, value]) =>
+          value !== null && !["id", "createdAt", "updatedAt"].includes(key)
+      )
+      .map(([key, value]) => {
+        return { key, value: value ?? false };
+      });
+
+    if (itemEntries.length === 0) {
+      return <p>--- No items uploaded ---</p>;
+    }
+
+    return (
+      itemEntries.map(({ key, value }) => (
+        <div key={key} className="firefighting-item">
+          <p>
+            <span className="firefighting-value">{value ? "YES" : "NO"}</span> -{" "}
+            {key.replace(/([A-Z])/g, " $1").toUpperCase()}{" "}
+          </p>
+        </div>
+      )) || <p>No item found</p>
+    );
   };
 
-  const renderFirefightingEquipment = () => {
-    return FIREFIGHTING_EQUIPMENT.map((equipment) => (
-      <div key={equipment} className="firefighting-item">
-        <p>
-          <span className="firefighting-value">
-            {firefightingEquipment.some((precaution) =>
-              precaution.hasOwnProperty(FIRE_FIGHTING_MAP[equipment.text])
-            )
-              ? "YES"
-              : "NO"}
-          </span>{" "}
-          - {equipment}
-        </p>
-      </div>
-    ));
+  const renderDocuments = () => {
+    const documentEntries = Object.entries(documentObject);
+
+    // Filter out invalid entries
+    const filteredEntries = documentEntries.filter(([key, value]) => {
+      // Exclude technical fields and entries where Type or Doc is null
+      if (
+        ["id", "createdAt", "updatedAt", "draftId"].includes(key) ||
+        ((key.includes("Type") || key.includes("Doc")) && !value)
+      ) {
+        return false;
+      }
+      return true;
+    });
+
+    // If no valid entries exist, return a fallback message
+    if (filteredEntries.length === 0) {
+      return <p>--- No items uploaded ---</p>;
+    }
+
+    // Map through valid entries and render them
+    return filteredEntries.map(([key, value]) => {
+      // If it's a type field, format the text
+      if (key.includes("Type")) {
+        return (
+          <div key={key} className="document-item">
+            <div className="section__content__document_section">
+              <p className="section__header">
+                {key.replace(/([A-Z])/g, " $1").toUpperCase()}
+              </p>
+            </div>
+            <div className="section__content">
+              <p className="document">
+                <span>Upload Option</span>
+              </p>
+              <p>{String(value) || "No document provided"}</p>
+            </div>
+          </div>
+        );
+      }
+
+      // If it's a document field, render it
+      if (key.includes("Doc")) {
+        return (
+          <div key={key} className="document-item">
+            <div className="section__content">
+              <p className="document">
+                <span>Document</span>
+              </p>
+              <p className="document_item">
+                {value}
+                <span>
+                  <img src="/svgs/document_download.svg" alt="" />
+                </span>
+              </p>
+            </div>
+          </div>
+        );
+      }
+
+      return null;
+    });
   };
+
+  if (currentAuthority === "ISSUING") {
+    <div className="base-empty">
+      <img src="/svgs/document.svg" />
+      <p>{"Approval in progress."}</p>
+    </div>;
+  }
 
   return (
     <div className={"app-permit__sections"}>
@@ -178,13 +194,7 @@ export default function IssuingAuthorities({ response }: any) {
         </div>
         <div className="section__content">
           <p className="title">Identification of potential hazards</p>
-          <p className="info">
-            {Object.keys(selectedHazards).length > 0 ? (
-              renderHazards()
-            ) : (
-              <p>No hazards selected.</p>
-            )}
-          </p>
+          <p className="info">{renderDisplayItems(hazardsArray.hazard)}</p>
         </div>
       </div>
 
@@ -197,13 +207,7 @@ export default function IssuingAuthorities({ response }: any) {
 
       <div className="section">
         <div className="section__content">
-          <p className="info">
-            {Object.keys(selectedProtectiveEquipment).length > 0 ? (
-              renderPersonalEquipment()
-            ) : (
-              <p>No personal protective equipment selected.</p>
-            )}
-          </p>
+          <p className="info">{renderDisplayItems(personalProtectiveArray)}</p>
         </div>
       </div>
 
@@ -216,13 +220,7 @@ export default function IssuingAuthorities({ response }: any) {
 
       <div className="section">
         <div className="section__content">
-          <p className="info">
-            {Object.keys(selectedFireFightingEquipment).length > 0 ? (
-              renderFirefightingEquipment()
-            ) : (
-              <p>No firefighting equipment selected.</p>
-            )}
-          </p>
+          <p className="info">{renderDisplayItems(firefightingEquipment)}</p>
         </div>
       </div>
 
@@ -233,18 +231,45 @@ export default function IssuingAuthorities({ response }: any) {
         section={documents[0].section}
       />
 
+      <div className="section">
+        <div className="">
+          <p className="info">
+            {Object.keys(documentObject).length > 0 ? (
+              renderDocuments()
+            ) : (
+              <p>No documents uploaded.</p>
+            )}
+          </p>
+        </div>
+      </div>
+
       <Section
         type="List"
         header="MECHANICAL ISOLATION (MEASURES ON EQUIPMENT / LINES)"
         children={equipment[0]}
         section={equipment[0].section}
       />
+      <div className="section">
+        <div className="section__content">
+          <p className="info">
+            {renderDisplayItems(mechanicalPrecautionEquipment)}
+          </p>
+        </div>
+      </div>
+
       <Section
         type="List"
         header="ELECTRICAL ISOLATION"
         children={equipment[0]}
         section={equipment[0].section}
       />
+      <div className="section">
+        <div className="section__content">
+          <p className="info">
+            {renderDisplayItems(eletricalIsolationPrecaution)}
+          </p>
+        </div>
+      </div>
 
       <br />
 

@@ -97,7 +97,7 @@ export const EQUIPMENT = [
   { text: "SAFETY HARD HATS (Type I, Type II)", value: "safetyHardHats" },
   {
     text: "SAFETY SHOES OR BOOTS (Anti-slip, Steel toe, Chemical Resistant, rain boots)",
-    value: "safetyShoesOrBoots",
+    value: "safetyShoes",
   },
   {
     text: "BODY PROTECTION (Coverall) (Chemical resistant, apron, fire retardant, fire resistant)",
@@ -109,7 +109,7 @@ export const EQUIPMENT = [
   },
   {
     text: "BREATHING APPARATUS (Dust, Fumes, Chemical, SCBA)",
-    value: "breathingApparatus",
+    value: "breathingAparatus",
   },
   {
     text: "SAFETY GLASSES / FACE SHIELD / ELECTRIC ARC SHIELD / GRINDING SHIELD",

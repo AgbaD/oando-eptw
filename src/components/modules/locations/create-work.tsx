@@ -52,13 +52,21 @@ export default function CreateWork({}: any) {
       workArea: data.workArea.filter(Boolean),
     });
     if (error) {
+      route("/locations");
+
       return toast({
         variant: "error",
         message:
-          error?.message ?? "Failed to create location, please try again.",
+          error?.message ?? "Failed to create work area, please try again.",
+      });
+    } else {
+      route("/locations");
+
+      return toast({
+        variant: "success",
+        message: "Work area created successfully",
       });
     }
-    route("/locations");
   }
 
   const addNewLocationField = () => {

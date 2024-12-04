@@ -13,13 +13,12 @@ export default function IssuingToolKitTime() {
     validationSchema,
     initialValues: {
       ...state.context.tool_kit_time,
-      //   permit_type: state.context.permit_type,
     },
     onSubmit,
   });
 
-  function onSubmit(update_time_date) {
-    send("submit", { data: { update_time_date } });
+  function onSubmit(tool_kit_time) {
+    send("submit", { data: { tool_kit_time } });
   }
 
   return (
@@ -30,12 +29,12 @@ export default function IssuingToolKitTime() {
         <Input
           label="Identity Leader"
           placeholder="Enter fullname"
-          {...getFieldProps("entrusted_company")}
+          {...getFieldProps("toolBoxLeaderIdentity")}
         />
         <Input
           label="Position"
           placeholder="Enter position"
-          {...getFieldProps("executing_company")}
+          {...getFieldProps("toolBoxPosition")}
         />
       </div>
 
@@ -63,7 +62,7 @@ export default function IssuingToolKitTime() {
             label="Time"
             type="time"
             placeholder="00:00AM"
-            {...getFieldProps("to_time")}
+            {...getFieldProps("from_time")}
           />
         </div>
       </div>

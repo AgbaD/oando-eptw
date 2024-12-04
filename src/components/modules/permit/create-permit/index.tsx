@@ -10,15 +10,87 @@ import {
 } from "../../../../context/permit.context";
 import PermitType from "./permit-type";
 import { capitalize } from "../../../../assets/utils";
-import { Link } from "preact-router";
+import { Link, route } from "preact-router";
 import CompanyDetails from "./company-details";
 import UploadDocuments from "./upload-documents";
+
+import { useState } from "preact/hooks";
+import useRequest from "../../../../hooks/use-request";
+import { createDraft } from "../../../../assets/api/permit";
+import PopupModal from "../../../ui/popup";
+
+import { toast } from "../../../ui/toast";
+import { formatDateForBackend } from "../permit-closure/modules/perf-closure-submit";
+import Button from "../../../ui/button";
 
 function Module() {
   const { state } = usePermitContext();
   const stateAsString = state.toStrings()[0];
   const currentIdx = STEPS.indexOf(stateAsString) + 1;
   const stateMeta: any = Object.values(state.meta)?.[0];
+
+  const [draftPopup, setDraftPopup] = useState(false);
+  const { makeRequest } = useRequest(createDraft);
+
+  function handlePopup(value: boolean) {
+    setDraftPopup(value);
+  }
+
+  async function handleCreateDraft() {
+    const payload = {
+      type: state.context.permit_type.toUpperCase(),
+      workArea: state.context.work_description?.work_area,
+      locationId: 1,
+      performerRole: state.context.work_description?.role,
+      performerPersonInCharge: state.context.work_description?.performer,
+      workDescription: state.context.work_description?.work_description,
+      equipmentToolsMaterials:
+        state.context.work_description?.equipment_to_be_worked,
+      environmentalConsideration:
+        state.context.work_description?.environmental_issues,
+      fromDate: state.context.work_description?.from_date,
+      fromTime: formatDateForBackend(
+        state.context.work_description?.from_date,
+        state.context.work_description?.from_time
+      ),
+      toDate: state.context.work_description?.to_date,
+      toTime: formatDateForBackend(
+        state.context.work_description?.to_date,
+        state.context.work_description?.to_time
+      ),
+      entrustedCompanyId: 1,
+      executingCompanyId: 1,
+      performingDepartment:
+        state.context.company_details?.performing_department,
+      contractorPhoneNumber:
+        state.context.company_details?.company_contact_phone,
+      hazard: {
+        potentialHazardDescription:
+          state.context.work_hazards?.potentialHazardDescription || "",
+        ...(state.context.work_hazards?.hazards || {}),
+      },
+
+      documents: {
+        jobSafetyAnalysisType: "MANUAL",
+        jobSafetyAnalysisDoc: "...",
+        workProcedureType: "MANUAL",
+        workProcedureDoc: "...",
+      },
+    };
+
+    const [_, error] = await makeRequest(payload);
+    if (error) {
+      return toast({
+        variant: "error",
+        message: error.message ?? "Failed to create draft, please try again",
+      });
+    }
+    route("/");
+    toast({
+      variant: "success",
+      message: "Draft created successfully",
+    });
+  }
 
   return (
     <div className="app-create-permit app-register">
@@ -39,9 +111,18 @@ function Module() {
               : ""}
           </h5>
 
-          <Link href="/" className="app-link">
-            Click here to go back?
-          </Link>
+          {state.matches("permit_type") ||
+          state.matches("work_description") ||
+          state.matches("company_details") ? (
+            <Link href="/" className="app-link">
+              Click here to go back
+            </Link>
+          ) : (
+            <Button className="app-link" onClick={() => handlePopup(true)}>
+              {" "}
+              Click here to go back
+            </Button>
+          )}
         </div>
       </div>
 
@@ -75,6 +156,27 @@ function Module() {
         </div>
 
         <img src="/svgs/auth-blur.svg" alt="auth-blur" />
+      </div>
+
+      <div className="">
+        {draftPopup && (
+          <PopupModal
+            icon={<img src="/svgs/save-draft.svg" />}
+            title="Save Draft"
+            message="You can save as draft, so you can be able to continue from where you stopped"
+            onClose={() => handlePopup(false)}
+            primaryButton={{
+              label: "Save As Draft",
+              onClick: handleCreateDraft,
+              color: "#D30021",
+            }}
+            secondaryButton={{
+              label: "Cancel",
+              onClick: () => route("/"),
+              color: "#E86E18",
+            }}
+          />
+        )}
       </div>
     </div>
   );

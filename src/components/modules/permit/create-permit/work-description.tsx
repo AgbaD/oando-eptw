@@ -6,7 +6,54 @@ import Textarea from "../../../ui/form/text-area";
 import Button from "../../../ui/button";
 import { usePermitContext } from "../../../../context/permit.context";
 
+import { siteOptions } from "../../locations/data";
+import useRequest from "../../../../hooks/use-request";
+import { getSites } from "../../../../assets/api/user";
+import { useState, useEffect } from "preact/hooks";
+import { createRequest } from "../../../../assets/api";
+
 export default function WorkDescription() {
+  const siteApi = useRequest(getSites, {}, true);
+
+  const [siteName, setSiteName] = useState("--select work site--");
+  const [locationName, setLocationName] = useState(
+    "--select work location area --"
+  );
+  const [locationOptions, setLocationOptions] = useState([]);
+  const [workAreaOptions, setWorkAreaOptions] = useState([]);
+
+  useEffect(() => {
+    if (siteName && siteApi.response) {
+      const siteData = siteApi.response.data[siteName];
+
+      // Map locations for the selected site, or show "No locations found"
+      const locations = siteData
+        ? siteData.map((location) => ({
+            text: location.locationArea,
+            value: location.id,
+          }))
+        : [{ text: "No location areas found", value: "" }];
+
+      setLocationOptions(locations);
+    }
+  }, [siteName, siteApi.response]);
+
+  async function handleLocationAreaChange(id: number) {
+    const locations = await createRequest(`/location/${id}`, "GET");
+
+    const name = locations[0]?.locationArea;
+    setLocationName(name);
+
+    const locationData = locations[0]?.data?.workAreas;
+
+    const options = locationData.map((area) => ({
+      text: area,
+      value: "",
+    }));
+    console.log(locationData);
+    setWorkAreaOptions(options || [{ text: "No work areas found", value: "" }]);
+  }
+
   const { state, send } = usePermitContext();
 
   const { getFieldProps, handleSubmit } = useForm({
@@ -21,12 +68,6 @@ export default function WorkDescription() {
   function onSubmit(work_description) {
     send("submit", { data: { work_description } });
   }
-
-  const locationOptions = [
-    { text: "Location A", value: 1 },
-    { text: "Location B", value: 2 },
-    { text: "Location C", value: 3 },
-  ];
 
   // const companyOptions = response?.data?.map((opt) => ({
   //   text: `${opt.firstname} ${opt.lastname}`,
@@ -62,17 +103,35 @@ export default function WorkDescription() {
           {...getFieldProps("equipment_to_be_worked")}
         />
         <Select
-          label="Work Location"
-          {...getFieldProps("locationId")}
-          options={locationOptions}
+          label="Site"
+          placeholder={siteName}
+          {...getFieldProps("site")}
+          options={siteOptions}
+          onChange={(e) => setSiteName((e.target as HTMLInputElement).value)}
           // required
         />
         <Select
-          label="Work Area (Unit / Installation)"
-          {...getFieldProps("work_area")}
+          label="Work Location"
+          placeholder={locationName}
+          {...getFieldProps("locationId")}
           options={locationOptions}
-          // required
+          onChange={(e) => {
+            const value = parseInt((e.target as HTMLSelectElement).value);
+            handleLocationAreaChange(value);
+            getFieldProps("locationId").onChange(e);
+          }}
         />
+
+        <Select
+          label="Work Area (Unit / Installation)"
+          placeholder="--select work area / unit--"
+          {...getFieldProps("work_area")}
+          options={workAreaOptions}
+          onChange={(e) => {
+            getFieldProps("work_area").onChange(e);
+          }}
+        />
+
         <Textarea
           label="Environmental Considerations"
           placeholder="Identify environmental issues related to the task."

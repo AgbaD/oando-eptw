@@ -4,7 +4,10 @@ import { randomHash } from "../assets/utils";
 const PerfRevalidationMachine = createMachine(
   {
     context: {
-      verification: {},
+      verification: {
+        closureWorkAreaConfirmation: false,
+        revalidateWorkAreaConfirmation: false,
+      },
       selected_documents: {
         documents: [],
       },

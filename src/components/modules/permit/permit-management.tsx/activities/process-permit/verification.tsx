@@ -9,15 +9,20 @@ import Radio from "../../../../../ui/form/radio";
 export default function Verification() {
   const { state, send } = usePerfRevalidationContext();
 
-  const onSubmit = (selected_documents) => {
-    send("submit", { data: { selected_documents } });
+  const onSubmit = () => {
+    send("submit", {
+      data: {
+        verification: {
+          revalidateWorkAreaConfirmation: true,
+        },
+      },
+    });
   };
 
   const { values, handleSubmit } = useForm({
     validationSchema,
     initialValues: {
-      ...state.context.additional_values,
-      // permit_type: state.context.permit_type,
+      ...state.context.verification,
     },
     onSubmit,
   });
@@ -30,13 +35,23 @@ export default function Verification() {
         {currentPath === "/revalidate-safety-officer" ||
         currentPath === "/revalidate-issuing-supervisor" ? (
           <label class="verification">
-            <Radio checked={values.consentGiven} />
+            <Radio
+              checked={values.consentGiven}
+              onChange={(e) => {
+                values.consentGiven = e.target.value;
+              }}
+            />
             <p>Confirm work area is safe to commence work</p>
           </label>
         ) : (
           <>
             <label class="verification">
-              <Radio checked={values.consentGiven} />
+              <Radio
+                checked={values.consentGiven}
+                onChange={(e) => {
+                  values.consentGiven = e.target.value;
+                }}
+              />
 
               <p>
                 Confirm work area is checked and everything is safe to{" "}
@@ -44,7 +59,12 @@ export default function Verification() {
               </p>
             </label>
             <label class="verification">
-              <Radio checked={values.consentGiven} />
+              <Radio
+                checked={values.consentGiven}
+                onChange={(e) => {
+                  values.consentGiven = e.target.value;
+                }}
+              />
               <p>
                 Confirm work area is checked and everything is safe to{" "}
                 <span className="revalidate">Revalidate</span>

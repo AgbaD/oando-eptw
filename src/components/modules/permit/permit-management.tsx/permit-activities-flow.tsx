@@ -103,11 +103,13 @@ export default function ActivitiesFlow({}: any) {
             </TableHead>
 
             <TableBody>
-              {response?.data?.map((data) => (
-                <>
-                  {" "}
+              {response?.data
+                ?.filter(
+                  (data) =>
+                    data.status !== "CLOSED" && data.status !== "CANCELED"
+                )
+                .map((data) => (
                   <TableRow key={data.id}>
-                    {" "}
                     <TableCell>{data.publicId}</TableCell>
                     <TableCell>{data.type}</TableCell>
                     {/* <TableCell>{data.type?.toLowerCase()}</TableCell> */}
@@ -135,9 +137,7 @@ export default function ActivitiesFlow({}: any) {
                       </Button>
                     </TableCell>
                   </TableRow>
-                  <br />
-                </>
-              ))}
+                ))}
             </TableBody>
           </Table>
         </div>

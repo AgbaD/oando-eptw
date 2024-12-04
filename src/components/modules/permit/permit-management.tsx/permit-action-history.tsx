@@ -1,3 +1,4 @@
+import { usePermitDetails } from "../../../../context/permit-details.context";
 import {
   Table,
   TableBody,
@@ -7,15 +8,9 @@ import {
 } from "../../../ui/table";
 
 export default function PermitActionHistory() {
-  const actions = [
-    {
-      id: 1,
-      name: "Jennifer Joe",
-      authority: "Perf. Authority",
-      date: "13/07/2023 • 11:30 am",
-      action: "Created the permit",
-    },
-  ];
+  const { permit } = usePermitDetails();
+  const actions = permit?.actions;
+
   return (
     <div>
       <div className="app-section">

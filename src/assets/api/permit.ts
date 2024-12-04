@@ -5,6 +5,10 @@ function createPermit({ permit_type, ...data }) {
   return createRequest(`/permit/`, "POST", data);
 }
 
+function createDraft(data) {
+  return createRequest(`/permit/draft`, "POST", data);
+}
+
 function getPermits(data: any) {
   return createRequest(`/permit?${createParams(data)}`, "GET");
 }
@@ -49,8 +53,24 @@ function approvePerfSupervisor(data) {
   );
 }
 
+function approveRevalidationPerfSupervisor(data) {
+  return createRequest(
+    "/permit/revalidation/approve/performing-auth-supervisor",
+    "POST",
+    data
+  );
+}
+
 function approveSafetyOfficer(data) {
   return createRequest("/permit/approve/safety-officer", "POST", data);
+}
+
+function approveRevalidationSafetyOfficer(data) {
+  return createRequest(
+    "/permit/revalidation/approve/safety-officer",
+    "POST",
+    data
+  );
 }
 
 function renewPermit(data) {
@@ -63,6 +83,10 @@ function AddOnsiteNote(data) {
 
 function suspendPermit(data) {
   return createRequest("/permit/suspend", "PUT", data);
+}
+
+function cancelPermit(data) {
+  return createRequest("/permit/cancel", "PUT", data);
 }
 
 function completePermit(data) {
@@ -167,11 +191,53 @@ function sendBackToAuthority(data) {
   return createRequest(`/permit/send-back`, "POST", data);
 }
 
+function requestPermitClosure(data) {
+  return createRequest(`/permit/closure/request/${data}`, "PUT", {});
+}
+
+function requestPermitRevalidation(data) {
+  return createRequest(`/permit/revalidation/request/${data}`, "PUT");
+}
+
+function closurePerfSupervisor(data) {
+  return createRequest(
+    `/permit/closure/approve/performing-auth-supervisor`,
+    "POST",
+    data
+  );
+}
+function closureSafetyOfficer(data) {
+  return createRequest(`/permit/closure/approve/safety-officer`, "POST", data);
+}
+function closureIssuingSupervisor(data) {
+  return createRequest(
+    `/permit/closure/approve/issuing-auth-supervisor`,
+    "POST",
+    data
+  );
+}
+
+function reactivatePermit(data) {
+  return createRequest(`/permit/reactivate/${data.id}`, "PUT");
+}
+
+function approveRevalidationIssuingSupervisor(data) {
+  return createRequest(
+    "/permit/revalidation/approve/issuing-auth-supervisor",
+    "POST",
+    data
+  );
+}
+
 export {
   createPermit,
+  createDraft,
   sendBackToAuthority,
+  requestPermitClosure,
+  requestPermitRevalidation,
   getPermits,
   getPermit,
+  reactivatePermit,
   approveIssuingAuth,
   rejectIssuingAuth,
   approveHseAuth,
@@ -179,7 +245,14 @@ export {
   rejectAuthorizingAuth,
   approveAuthorizingAuth,
   approvePerfSupervisor,
+  closurePerfSupervisor,
+  approveRevalidationPerfSupervisor,
+  closureSafetyOfficer,
+  approveRevalidationSafetyOfficer,
+  closureIssuingSupervisor,
+  approveRevalidationIssuingSupervisor,
   approveSafetyOfficer,
+  cancelPermit,
   approveIssuingSupervisor,
   renewPermit,
   AddOnsiteNote,

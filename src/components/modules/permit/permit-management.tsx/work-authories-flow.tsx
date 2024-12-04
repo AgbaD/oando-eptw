@@ -8,25 +8,14 @@ import AuthAuthority from "./workflows/auth-authority";
 import IssuAuthSupervisor from "./workflows/issu-auth-supervisor";
 import PerfAuthSupervisor from "./workflows/perf-auth-supervisor";
 import SafetyOfficer from "./workflows/safety-officer";
-import { useIDContext } from "../../../../context/id.context";
-import { useEffect, useState } from "preact/hooks";
-import { createRequest } from "../../../../assets/api";
+
+import { usePermitDetails } from "../../../../context/permit-details.context";
 
 export default function WorkAuthoriesFlow({}: any) {
-  const { valueID } = useIDContext();
-  const id = valueID;
+  const { permit } = usePermitDetails();
+  const permitDetails = permit;
 
-  const [permitDetails, setPermitDetails] = useState({});
-
-  useEffect(() => {
-    async function getPermitDetails() {
-      const permitResponse = await createRequest(`/permit/${id}`, "GET");
-      const permitData = permitResponse[0].data;
-      setPermitDetails(permitData);
-    }
-
-    getPermitDetails();
-  }, [valueID]);
+  console.log(permitDetails);
 
   console.log(permitDetails, "permitDetails");
 
@@ -61,11 +50,19 @@ export default function WorkAuthoriesFlow({}: any) {
         {activeTab === "Issuing Auth" && (
           <IssuingAuthorities response={permitDetails} />
         )}
-        {activeTab === "HSE Auth" && <HSEAuthority />}
-        {activeTab === "Authorizing Auth" && <AuthAuthority />}
-        {activeTab === "Safety Officer" && <SafetyOfficer />}
-        {activeTab === "Perf. Auth. Supervisor" && <PerfAuthSupervisor />}
-        {activeTab === "Issuing. Auth. Supervisor" && <IssuAuthSupervisor />}
+        {activeTab === "HSE Auth" && <HSEAuthority response={permitDetails} />}
+        {activeTab === "Authorizing Auth" && (
+          <AuthAuthority response={permitDetails} />
+        )}
+        {activeTab === "Safety Officer" && (
+          <SafetyOfficer response={permitDetails} />
+        )}
+        {activeTab === "Perf. Auth. Supervisor" && (
+          <PerfAuthSupervisor response={permitDetails} />
+        )}
+        {activeTab === "Issuing. Auth. Supervisor" && (
+          <IssuAuthSupervisor response={permitDetails} />
+        )}
       </div>
     </div>
   );

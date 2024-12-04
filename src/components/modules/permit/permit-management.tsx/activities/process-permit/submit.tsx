@@ -7,7 +7,7 @@ import useRequest from "../../../../../../hooks/use-request";
 import { approveIssuingAuth } from "../../../../../../assets/api/permit";
 
 import { toast } from "../../../../../ui/toast";
-import { useIDContext } from "../../../../../../context/id.context";
+import { usePermitDetails } from "../../../../../../context/permit-details.context";
 
 export default function Submit() {
   const { state } = useIssuingActivityContext();
@@ -15,15 +15,12 @@ export default function Submit() {
 
   const [loading, setLoading] = useState(false);
 
-  const { valueID } = useIDContext();
-
-  const permitId = valueID;
-
+  const { permit } = usePermitDetails();
   useEffect(() => {
     async function submitForm() {
       setLoading(true);
       const payload = {
-        permitId: permitId,
+        permitId: permit?.id,
         hazards: {
           potentialHazardDescription:
             state.context.work_hazards?.potentialHazardDescription || "",

@@ -40,9 +40,9 @@ export default function UpdateTimeDate() {
             label="From Date"
             placeholder="dd / mm / yyyy"
             type="date"
-            {...getFieldProps("from_date")}
+            {...getFieldProps("fromDate")}
           />
-          <Input label="Time" type="time" {...getFieldProps("from_time")} />
+          <Input label="Time" type="time" {...getFieldProps("fromTime")} />
         </div>
 
         <div className="app-register__form-grid show">
@@ -50,13 +50,13 @@ export default function UpdateTimeDate() {
             label="To Date"
             placeholder="dd / mm / yyyy"
             type="date"
-            {...getFieldProps("to_date")}
+            {...getFieldProps("toDate")}
           />
           <Input
             label="Time"
             type="time"
             placeholder="00:00AM"
-            {...getFieldProps("to_time")}
+            {...getFieldProps("toTime")}
           />
         </div>
       </div>

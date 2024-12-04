@@ -1,5 +1,4 @@
 import * as Yup from "yup";
-
 import { usePerfRevalidationContext } from "../../../../../context/perf-revalidation-context";
 import useForm from "../../../../../hooks/use-form";
 import Button from "../../../../ui/button";
@@ -8,15 +7,19 @@ import Radio from "../../../../ui/form/radio";
 export default function VerificationClosure() {
   const { state, send } = usePerfRevalidationContext();
 
-  const onSubmit = (selected_documents) => {
-    send("submit", { data: { selected_documents } });
+  // Function to handle form submission
+  const onSubmit = () => {
+    send("submit", {
+      data: {
+        verification: { closureWorkAreaConfirmation: true },
+      },
+    });
   };
 
   const { values, handleSubmit } = useForm({
     validationSchema,
     initialValues: {
-      ...state.context.additional_values,
-      // permit_type: state.context.permit_type,
+      ...state.context.verification,
     },
     onSubmit,
   });
@@ -28,15 +31,24 @@ export default function VerificationClosure() {
       <form onSubmit={handleSubmit}>
         {currentPath === "/closure-safety-officer" ||
         currentPath === "/closure-issuing-supervisor" ? (
-          <label class="verification">
-            <Radio checked={values.consentGiven} />
+          <label className="verification">
+            <Radio
+              checked={values.consentGiven}
+              onChange={(e) => {
+                values.consentGiven = e.target.checked;
+              }}
+            />
             <p>Confirm work area is safe to commence work</p>
           </label>
         ) : (
           <>
-            <label class="verification">
-              <Radio checked={values.consentGiven} />
-
+            <label className="verification">
+              <Radio
+                checked={values.consentGiven}
+                onChange={(e) => {
+                  values.consentGiven = e.target.checked;
+                }}
+              />
               <p>
                 Confirm work area is checked and everything is safe to{" "}
                 <span className="close">Close</span> permit
@@ -53,7 +65,7 @@ export default function VerificationClosure() {
           >
             Back
           </Button>
-          <Button variant="primary" onClick={() => handleSubmit}>
+          <Button variant="primary" type="submit">
             Next
           </Button>
         </div>

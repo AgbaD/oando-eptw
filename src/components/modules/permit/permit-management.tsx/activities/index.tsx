@@ -16,11 +16,18 @@ import { useIDContext } from "../../../../../context/id.context";
 import { useState, useEffect } from "preact/hooks";
 import { createRequest } from "../../../../../assets/api";
 
+interface PermitDetails {
+  status: string;
+  [key: string]: any;
+}
+
 export default function ProcessPermitsIndex({}: any) {
   const { valueID, setID } = useIDContext();
   const id = valueID;
 
-  const [permitDetails, setPermitDetails] = useState({});
+  const [permitDetails, setPermitDetails] = useState<PermitDetails>({
+    status: "",
+  });
   useEffect(() => {
     async function getPermitDetails() {
       const permitResponse = await createRequest(`/permit/${id}`, "GET");
@@ -30,7 +37,7 @@ export default function ProcessPermitsIndex({}: any) {
     }
 
     getPermitDetails();
-  }, [valueID]);
+  }, [id]);
 
   const { tabs, activeTab } = useTabs([
     "Performing Auth.",
@@ -77,6 +84,44 @@ export default function ProcessPermitsIndex({}: any) {
         break;
     }
   };
+
+  const handleClosureNavigate = (data) => {
+    switch (data.currentAuthority) {
+      case "PERFORMING_SUPERVISOR":
+        route("/closure-perf-auth");
+        break;
+
+      case "SAFETY_OFFICER":
+        route("/closure-safety-officer");
+        break;
+
+      case "ISSUING_SUPERVISOR":
+        route("/closure-issuing-supervisor");
+        break;
+
+      default:
+        route("/closure-perf-auth");
+    }
+  };
+
+  const handleRevalidateNavigate = (data) => {
+    switch (data.currentAuthority) {
+      case "PERFORMING_SUPERVISOR":
+        route("/revalidate-perf-auth");
+        break;
+
+      case "SAFETY_OFFICER":
+        route("/revalidate-safety-officer");
+        break;
+
+      case "ISSUING_SUPERVISOR":
+        route("/revalidate-issuing-supervisor");
+        break;
+
+      default:
+        route("/revalidate-perf-auth");
+    }
+  };
   return (
     <>
       {" "}
@@ -84,20 +129,60 @@ export default function ProcessPermitsIndex({}: any) {
       <br />
       <div className={"app-permit__sections"}>
         <div className="actions">
-          <div className="print">
-            <div>
-              <h4>Process Permit</h4>
-              <p>Click the button to process / approve of this permit</p>{" "}
-            </div>
+          {permitDetails?.status === "NOT_STARTED" ? (
+            <>
+              <div className="print">
+                <div>
+                  <h4>Process Permit</h4>
+                  <p>Click the button to process / approve this permit</p>{" "}
+                </div>
 
-            <button
-              className={"flex-center"}
-              onClick={() => handleNavigate(permitDetails)}
-            >
-              <Icon name="process" />
-              Process Permit
-            </button>
-          </div>
+                <button
+                  className={"flex-center"}
+                  onClick={() => handleNavigate(permitDetails)}
+                >
+                  <Icon name="process" />
+                  Process Permit
+                </button>
+              </div>
+            </>
+          ) : permitDetails?.status === "REVALIDATION_INITIATED" ? (
+            <>
+              <div className="print">
+                <div>
+                  <h4>Revalidate Permit</h4>
+                  <p>Click the button to revalidate this permit</p>{" "}
+                </div>
+
+                <button
+                  className={"flex-center"}
+                  onClick={() => handleRevalidateNavigate(permitDetails)}
+                >
+                  <Icon name="process" />
+                  Revalidate Permit
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="closure">
+                <div>
+                  <h4>Process Closure</h4>
+                  <p>
+                    Click the button to request closure for this permit
+                  </p>{" "}
+                </div>
+
+                <button
+                  className={"flex-center"}
+                  onClick={() => handleClosureNavigate(permitDetails)}
+                >
+                  <Icon name="export" />
+                  Process Closure
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
       <br />

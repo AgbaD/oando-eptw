@@ -139,12 +139,14 @@ export default function AdditionalNotes() {
     },
   ];
 
+  console.log(state.context);
+
   async function onSubmit(data) {
     console.log(data);
     const payload = {
       type: state.context.permit_type.toUpperCase(),
       workArea: state.context.work_description?.work_area,
-      locationId: 1,
+      locationId: state.context.work_description?.locationId,
       performerRole: state.context.work_description?.role,
       performerPersonInCharge: state.context.work_description?.performer,
       workDescription: state.context.work_description?.work_description,
@@ -186,6 +188,8 @@ export default function AdditionalNotes() {
         mechanicalIsolationCert: "...",
       },
     };
+
+    console.log(payload);
 
     const [_, error] = await makeRequest(payload);
     if (error) {

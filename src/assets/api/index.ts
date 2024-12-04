@@ -7,7 +7,6 @@ export async function createRequest(
   content_type?: string
 ) {
   try {
-    console.log(content_type);
     const config: any = {
       method,
       headers: {
@@ -17,8 +16,6 @@ export async function createRequest(
         Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
     };
-
-    console.log(config);
 
     if (body) config.body = JSON.stringify(body);
 

@@ -11,6 +11,10 @@ import { login } from "../../../assets/api/auth";
 import * as Yup from "yup";
 import "./index.scss";
 
+import { loginRequest } from "../../../msal-auth-config";
+
+import { useMsal } from "@azure/msal-react";
+
 export default function Login({}: any) {
   const userContext = useUserContext();
   const [activeScreen, setActiveScreen] = useState<"get_started" | "login">(
@@ -32,6 +36,19 @@ export default function Login({}: any) {
     if (error) return toast({ message: error?.message, variant: "error" });
     userContext.login(res?.data);
   }
+
+  const { instance } = useMsal();
+
+  // const activeAccount = instance.getActiveAccount();
+
+  const handleRedirect = () => {
+    instance
+      .loginRedirect({
+        ...loginRequest,
+        prompt: "create",
+      })
+      .catch((error) => console.log(error));
+  };
 
   return (
     <div className="app-login">
@@ -94,7 +111,7 @@ export default function Login({}: any) {
               <span>OR</span>
             </p>
 
-            <Button variant="outline" type="button">
+            <Button variant="outline" type="button" onClick={handleRedirect}>
               <Icon name="microsoft" />
               Sign In with Microsoft
             </Button>

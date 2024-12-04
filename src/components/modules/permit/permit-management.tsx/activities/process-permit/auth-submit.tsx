@@ -61,17 +61,17 @@ export default function AuthProcessSubmit() {
 
         electricalIsolationPrecaution:
           state.context.electrical_precaution?.electricalPrecaution,
-        fromDate: state.context.adjust_date_time?.from_date,
+        fromDate: state.context.adjust_date_time?.fromDate,
         fromTime:
           formatDateForBackend(
-            state.context.adjust_date_time?.from_date,
-            state.context.adjust_date_time?.from_time
+            state.context.adjust_date_time?.fromDate,
+            state.context.adjust_date_time?.fromTime
           ) || "",
-        toDate: state.context.adjust_date_time?.to_date,
+        toDate: state.context.adjust_date_time?.toDate,
         toTime:
           formatDateForBackend(
-            state.context.adjust_date_time?.to_date,
-            state.context.adjust_date_time?.to_time
+            state.context.adjust_date_time?.toDate,
+            state.context.adjust_date_time?.toTime
           ) || "",
         authorizingAuthorityTimeAdjustment:
           state.context.adjust_date_time?.from_date === "" ? false : true,
