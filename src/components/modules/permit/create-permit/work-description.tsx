@@ -83,7 +83,7 @@ export default function WorkDescription() {
           label="Performing Person / Person-In-Charge"
           {...getFieldProps("performer")}
           options={[
-            { text: "Internal (Eni Nigeria)", value: "INTERNAL" },
+            { text: "Internal (Oando)", value: "INTERNAL" },
             { text: "External (Contractor)", value: "EXTERNAL" },
           ]}
         />

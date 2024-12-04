@@ -59,6 +59,7 @@ export default function CompanyDetails() {
             onChange={(e) => {
               const value = Number((e.target as HTMLSelectElement).value);
               getFieldProps("locationId").onChange(e);
+              setCompanyName("value");
               console.log(`Selected company: ${value}`);
             }}
             // required
