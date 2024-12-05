@@ -9,7 +9,7 @@ export default function Header({ title }: { title: string }) {
     <div className="app-page__header">
       <h3>{title}</h3>
 
-      <Search />
+      <Search onSearch={""} />
 
       <span className="app-page__header__divider"></span>
 

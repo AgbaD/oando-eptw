@@ -54,12 +54,17 @@ export default function CreateInternalUser({}: any) {
     const [_, error] = await makeRequest({
       email: data.email,
       roleIds: data.roleIds,
-      locationId: data.locayionId,
+      locationId: Number(data.locationId),
     });
     if (error) {
       return toast({
         variant: "error",
         message: error?.message ?? "Failed to create user, please try again.",
+      });
+    } else {
+      toast({
+        variant: "success",
+        message: "User created successfully",
       });
     }
 

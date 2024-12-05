@@ -22,13 +22,16 @@ import Search from "../../ui/page/search";
 import { DropdownContent, DropdownTrigger, Dropdown } from "../../ui/dropdown";
 
 import { siteOptions } from "../locations/data";
+import { useIDContext } from "../../../context/id.context";
+import { createRequest } from "../../../assets/api";
+
+import PopupModal from "../../ui/popup";
+import { toast } from "../../ui/toast";
 
 export default function InternalUsers() {
   const [selectedUser, viewUser] = useState<any>();
   const { toggle, modals } = useModal({ user_details: false });
   const { response, isLoading } = useRequest(getAllInternalUsers, {}, true);
-
-  const isInternalUsers = true;
 
   const handleItemClick = (item) => {
     viewUser(item);
@@ -43,11 +46,42 @@ export default function InternalUsers() {
   const [selectedStatus, setSelectedStatus] = useState("All Status");
 
   const status = ["All Status", "Active", "Inactive"];
+
+  const { setID, valueID } = useIDContext();
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const startDelete = (item) => {
+    setID(item.id);
+    setModalOpen(true);
+  };
+
+  const handleDeleteRole = async () => {
+    const id = valueID;
+
+    try {
+      const response = await createRequest(`/profile/${id}`, "DELETE");
+      console.log(response);
+
+      toggle("user_details");
+      toast({
+        variant: "success",
+        message: "Internal user deleted successfully",
+      });
+    } catch (err) {
+      toast({
+        variant: "error",
+        message: `${err?.message ?? "Failed to delete user"}`,
+      });
+    }
+    setModalOpen(false);
+  };
+
   return (
     <>
       <div className="">
         <div className="app-section__header">
-          <Search placeholder="Search by user name" />
+          <Search placeholder="Search by user name" onSearch={""} />
 
           <div className="app-section__filters ">
             <span className="base-date-filter--secondary">Filter by:</span>
@@ -85,7 +119,7 @@ export default function InternalUsers() {
           </div>
         </div>
         <div>
-          {isInternalUsers ? (
+          {response?.data?.length > 0 ? (
             <div className="app-section">
               <div className="app-section__lg-table">
                 <Table>
@@ -95,7 +129,6 @@ export default function InternalUsers() {
                       <TableCell>Email</TableCell>
                       <TableCell>Location</TableCell>
                       <TableCell>Status</TableCell>
-                      {/* <TableCell>Role</TableCell> */}
                       <TableCell></TableCell>
                     </TableRow>
                   </TableHead>
@@ -105,29 +138,26 @@ export default function InternalUsers() {
                       <TableRow key={data.id}>
                         <TableCell>{data.fullname}</TableCell>
                         <TableCell>{data.email}</TableCell>
-                        {/* <TableCell>{data.type?.toLowerCase()}</TableCell> */}
+
                         <TableCell>
-                          {data?.location?.state ?? "---"} ,{" "}
-                          {data?.location?.country ?? "---"}
+                          {data?.location?.locationArea} /{" "}
+                          {data?.location?.workAreas}
                         </TableCell>
                         <TableCell>
                           <span
-                            className={`status ${
-                              data.status === "Active"
-                                ? "status.active"
-                                : ".inactive"
-                            }`}
+                            className={
+                              data.isActive
+                                ? "status-active"
+                                : "status-inactive"
+                            }
                           >
-                            Active
+                            {data.isActive ? "Active" : "Inactive"}
                           </span>
                         </TableCell>
                         <TableCell>
                           <Button
                             variant="outline"
-                            onClick={() => {
-                              viewUser(data);
-                              toggle("user_details");
-                            }}
+                            onClick={() => handleItemClick(data)}
                           >
                             View
                           </Button>
@@ -142,9 +172,11 @@ export default function InternalUsers() {
                 data={response?.data}
                 onItemClick={handleItemClick}
                 getName={getName}
+                formatCreatedAt={(item) =>
+                  dayjs(item?.createdAt).format("MMM DD, YYYY")
+                }
                 type={"Users"}
-                getDetails={""}
-                formatCreatedAt={""}
+                getDetails={(item) => item?.type}
               />
 
               {!response?.data?.length && (
@@ -202,12 +234,11 @@ export default function InternalUsers() {
               </ModalDetail>
               <ModalDetail label="Created By:">
                 <a href="" className="app-link">
-                  {selectedUser?.creator?.firstname}{" "}
-                  {selectedUser?.creator?.lastname}
+                  {selectedUser?.creator}
                 </a>
               </ModalDetail>
               <ModalDetail label="Full name:">
-                {selectedUser?.firstname}, {selectedUser?.lastname}
+                {selectedUser?.fullname}
               </ModalDetail>
               <ModalDetail label="Email Address:">
                 {selectedUser?.email}
@@ -219,21 +250,28 @@ export default function InternalUsers() {
                 <ModalDetail label="Status:">
                   {" "}
                   <span
-                    className={`status ${
-                      selectedUser?.status === "Active"
-                        ? "status.active"
-                        : "status.inactive"
-                    }`}
+                    className={
+                      selectedUser?.isActive
+                        ? "mobile-status-active"
+                        : "mobile-status-inactive"
+                    }
                   >
-                    Active
+                    {selectedUser?.isActive ? "Active" : "Inactive"}
                   </span>
                 </ModalDetail>
               </div>
               <ModalDetail label="Role:">
-                {selectedUser?.role?.name ?? "---"}
+                {selectedUser?.roles?.map((role) => {
+                  return (
+                    <span className="app-modal__detail__value" key={role.id}>
+                      {role.name}
+                    </span>
+                  );
+                })}
               </ModalDetail>
               <ModalDetail label="Location:">
-                {selectedUser?.location?.address}
+                {selectedUser?.location?.locationArea} /
+                {selectedUser?.location?.workAreas}
               </ModalDetail>
 
               <div className="app-modal__footer">
@@ -246,10 +284,34 @@ export default function InternalUsers() {
                   <Icon name="edit" />
                   Edit User
                 </button>
-                <button className="app-modal__btn--red">
+                <button
+                  className="app-modal__btn--red"
+                  onClick={() => startDelete(selectedUser)}
+                >
                   <Icon name="delete" />
                   Delete
                 </button>
+              </div>
+
+              <div className="">
+                {isModalOpen && (
+                  <PopupModal
+                    icon={<img src="/svgs/delete_img.png" />} // Pass your custom icon here
+                    title="Delete User"
+                    message="Are you sure you want to delete this user? This action cannot be undone."
+                    onClose={() => setModalOpen(false)}
+                    primaryButton={{
+                      label: "Delete",
+                      onClick: handleDeleteRole,
+                      color: "#D30021",
+                    }}
+                    secondaryButton={{
+                      label: "Cancel",
+                      onClick: () => setModalOpen(false),
+                      color: "#E86E18",
+                    }}
+                  />
+                )}
               </div>
             </ModalBody>
           </Modal>

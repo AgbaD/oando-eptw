@@ -64,12 +64,31 @@ export default function Drafts({}: any) {
     setModalOpen(false);
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const drafts = response?.data || [];
+
+  const filteredDrafts = drafts.filter((draft) => {
+    const workType = draft.type;
+    const dateCreated = draft.createdAt;
+    const locationArea = draft?.location?.locationArea?.toLowerCase() || "";
+
+    return (
+      workType.includes(searchTerm.toLowerCase()) ||
+      dateCreated.includes(
+        dayjs(searchTerm).format("MMM DD, YYYY • HH:mm A").toLowerCase()
+      ) ||
+      locationArea.includes(searchTerm.toLowerCase()) ||
+      searchTerm === ""
+    );
+  });
+
   return (
     <>
       <Header title="Drafts" />
 
       <div className="app-section__header">
-        <Search placeholder="Search by user name" />
+        <Search placeholder="Search drafts" onSearch={setSearchTerm} />
         <div className="app-section__filters">
           <DateFilter variant="secondary" />
 
@@ -105,7 +124,7 @@ export default function Drafts({}: any) {
             </TableHead>
 
             <TableBody>
-              {response?.data?.map((data) => (
+              {filteredDrafts.map((data) => (
                 <TableRow key={data.id}>
                   <TableCell>
                     {dayjs(data.createdAt).format("MMM DD, YYYY • HH:mm A")}
@@ -143,7 +162,7 @@ export default function Drafts({}: any) {
           </Table>
         </div>
 
-        {!response?.data?.length && (
+        {!filteredDrafts.length && (
           <div className="base-empty">
             <img src="/svgs/document.svg" />
             <p>

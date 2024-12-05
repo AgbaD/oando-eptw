@@ -7,9 +7,39 @@ import {
   TableRow,
 } from "../../../ui/table";
 
+import { useIDContext } from "../../../../context/id.context";
+import { useEffect, useState } from "preact/hooks";
+
+import { createRequest } from "../../../../assets/api";
+
+interface PermitDetails {
+  status: string;
+  [key: string]: any;
+}
+
 export default function PermitActionHistory() {
-  const { permit } = usePermitDetails();
-  const actions = permit?.actions;
+  const { valueID, setID } = useIDContext();
+  const id = valueID;
+
+  const { updatePermit } = usePermitDetails();
+
+  const [permitDetails, setPermitDetails] = useState<PermitDetails>({
+    status: "",
+  });
+
+  useEffect(() => {
+    async function getPermitDetails() {
+      const permitResponse = await createRequest(`/permit/${id}`, "GET");
+      const permitData = permitResponse[0].data;
+      setPermitDetails(permitData);
+      updatePermit(permitData);
+      setID(permitData.id);
+    }
+
+    getPermitDetails();
+  }, [id]);
+
+  const actions = permitDetails?.actions || [];
 
   return (
     <div>
@@ -53,6 +83,17 @@ export default function PermitActionHistory() {
               </p>
             </>
           ))}
+        </div>
+
+        <div className="">
+          {actions.length === 0 && (
+            <>
+              <div className="base-empty">
+                <img src="/svgs/checklist.png" />
+                <p>No actions on this permit yet</p>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

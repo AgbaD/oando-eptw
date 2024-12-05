@@ -4,11 +4,10 @@ import Button from "../../ui/button";
 import Input from "../../ui/form/input";
 import * as Yup from "yup";
 import Select from "../../ui/form/select";
-import UploadDocument from "../../ui/form/upload";
 
 export default function PersonalDetails() {
   const { send, state } = useRegistrationContext();
-  const { getFieldProps, handleSubmit, setFieldValue } = useForm({
+  const { getFieldProps, handleSubmit } = useForm({
     initialValues: state.context.personal_details,
     onSubmit,
     validationSchema,
@@ -55,12 +54,6 @@ export default function PersonalDetails() {
 
         <Input label="IC/Passport" {...getFieldProps("passport")} />
         <Input label="Contact number" {...getFieldProps("contact_number")} />
-
-        <UploadDocument
-          label="Profile Image"
-          {...getFieldProps("profileImg")}
-          onChange={(v) => setFieldValue("profileImg", v)}
-        />
       </div>
 
       <div className="app-register__form-footer">

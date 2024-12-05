@@ -39,12 +39,36 @@ export default function ActivitiesFlow({}: any) {
     route("/process-permits");
   };
 
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+  };
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const activities = response?.data || [];
+
+  const filteredActivities = activities.filter((permit) => {
+    const ptwID = permit.publicId;
+    const type = permit.type;
+    const workArea = permit.workArea?.toLowerCase() || "";
+    const entrustedCompany = permit.entrustedCompany?.name.toLowerCase() || "";
+
+    return (
+      ptwID.includes(searchTerm.toLowerCase()) ||
+      type.includes(searchTerm.toLowerCase()) ||
+      workArea.includes(searchTerm.toLowerCase()) ||
+      entrustedCompany.includes(searchTerm.toLowerCase()) ||
+      searchTerm === ""
+    );
+  });
+
   return (
     <>
       <Header title="Activities" />
 
       <div className="app-section__header">
-        <Search placeholder="Search by user name" />
+        <Search placeholder="Search" onSearch={setSearchTerm} />
 
         <div className="app-section__filters ">
           <span className="base-date-filter--secondary">Filter by:</span>
@@ -80,11 +104,6 @@ export default function ActivitiesFlow({}: any) {
             </Dropdown>
           </div>
         </div>
-
-        {/* <Button href="/roles/create" variant="primary" dimension="md">
-          <Icon name="plus" />
-          Create New Permit
-        </Button> */}
       </div>
 
       <div className="app-section">
@@ -103,17 +122,21 @@ export default function ActivitiesFlow({}: any) {
             </TableHead>
 
             <TableBody>
-              {response?.data
-                ?.filter(
+              {filteredActivities
+                .filter(
                   (data) =>
-                    data.status !== "CLOSED" && data.status !== "CANCELED"
+                    data.status !== "CLOSED" &&
+                    data.status !== "CANCELED" &&
+                    data.status !== "APPROVED"
                 )
                 .map((data) => (
                   <TableRow key={data.id}>
                     <TableCell>{data.publicId}</TableCell>
                     <TableCell>{data.type}</TableCell>
-                    {/* <TableCell>{data.type?.toLowerCase()}</TableCell> */}
-                    <TableCell>{data.workDescription}</TableCell>
+
+                    <TableCell>
+                      {truncateText(data.workDescription, 45)}
+                    </TableCell>
                     <TableCell>
                       <span>
                         {data.workArea} / {data.location?.locationArea}
@@ -145,41 +168,48 @@ export default function ActivitiesFlow({}: any) {
         <div className="app-section__sm-table">
           <Table>
             <TableBody>
-              {response?.data?.map((dataItem) => (
-                <div
-                  key={dataItem.id}
-                  className="container"
-                  onClick={() => handleItemClick(dataItem)}
-                >
+              {filteredActivities
+                .filter(
+                  (data) =>
+                    data.status !== "CLOSED" &&
+                    data.status !== "CANCELED" &&
+                    data.status !== "APPROVED"
+                )
+                .map((dataItem) => (
                   <div
-                    className="location-flex"
+                    key={dataItem.id}
+                    className="container"
                     onClick={() => handleItemClick(dataItem)}
                   >
-                    <p>{dataItem.publicId}</p>
-                    <h6 className={"gray"}>{dataItem.type}</h6>
-                  </div>
-                  <p>{dataItem.workDescription}</p>
-                  <div className="location-flex">
-                    <div className="items-center">
-                      <p className={"gray"}>Status / Authority:</p>
-                      <h6
-                        className={` ${
-                          dataItem.status === "Draft"
-                            ? "draft-status"
-                            : "others-status"
-                        }`}
-                      >
-                        {dataItem.status} / {dataItem.currentAuthority}
-                      </h6>
+                    <div
+                      className="location-flex"
+                      onClick={() => handleItemClick(dataItem)}
+                    >
+                      <p>{dataItem.publicId}</p>
+                      <h6 className={"gray"}>{dataItem.type}</h6>
+                    </div>
+                    <p>{truncateText(dataItem.workDescription, 45)}</p>
+                    <div className="location-flex">
+                      <div className="items-center">
+                        <p className={"gray"}>Status / Authority:</p>
+                        <h6
+                          className={` ${
+                            dataItem.status === "Draft"
+                              ? "draft-status"
+                              : "others-status"
+                          }`}
+                        >
+                          {dataItem.status} / {dataItem.currentAuthority}
+                        </h6>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </TableBody>
           </Table>
         </div>
 
-        {!response?.data?.length && (
+        {!filteredActivities.length && (
           <div className="base-empty">
             <img src="/svgs/document.svg" />
             <p>

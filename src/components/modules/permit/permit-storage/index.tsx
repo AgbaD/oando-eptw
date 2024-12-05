@@ -41,12 +41,36 @@ export default function Storage({}: any) {
     route("/permit-storage/details");
   };
 
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+  };
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const storage = response?.data || [];
+
+  const filteredStorage = storage.filter((permit) => {
+    const ptwID = permit.publicId;
+    const type = permit.type;
+    const workArea = permit.workArea?.toLowerCase() || "";
+    const entrustedCompany = permit.entrustedCompany?.name.toLowerCase() || "";
+
+    return (
+      ptwID.includes(searchTerm.toLowerCase()) ||
+      type.includes(searchTerm.toLowerCase()) ||
+      workArea.includes(searchTerm.toLowerCase()) ||
+      entrustedCompany.includes(searchTerm.toLowerCase()) ||
+      searchTerm === ""
+    );
+  });
+
   return (
     <>
       <Header title="Storage" />
 
       <div className="app-section__header">
-        <Search placeholder="Search by user name" />
+        <Search placeholder="Search permits" onSearch={setSearchTerm} />
 
         <div className="app-section__filters ">
           <span className="base-date-filter--secondary">Filter by:</span>
@@ -100,7 +124,7 @@ export default function Storage({}: any) {
             </TableHead>
 
             <TableBody>
-              {response?.data
+              {filteredStorage
                 .filter(
                   (data) =>
                     data.status === "CLOSED" || data.status === "CANCELED"
@@ -113,7 +137,9 @@ export default function Storage({}: any) {
                       <TableCell>{data.publicId}</TableCell>
                       <TableCell>{data.type}</TableCell>
                       {/* <TableCell>{data.type?.toLowerCase()}</TableCell> */}
-                      <TableCell>{data.workDescription}</TableCell>
+                      <TableCell>
+                        {truncateText(data.workDescription, 45)}
+                      </TableCell>
                       <TableCell>
                         <span>
                           {data.workArea} / {data.location?.locationArea}
@@ -147,7 +173,7 @@ export default function Storage({}: any) {
         <div className="app-section__sm-table">
           <Table>
             <TableBody>
-              {response?.data
+              {filteredStorage
                 .filter(
                   (dataItem) =>
                     dataItem.status === "CLOSED" ||
@@ -163,7 +189,7 @@ export default function Storage({}: any) {
                       <p>{dataItem.publicId}</p>
                       <h6 className={"gray"}>{dataItem.type}</h6>
                     </div>
-                    <p>{dataItem.workDescription}</p>
+                    <p>{truncateText(dataItem.workDescription, 45)}</p>
                     <div className="location-flex">
                       <div className="items-center">
                         <p className={"gray"}>Status / Authority:</p>
@@ -177,7 +203,7 @@ export default function Storage({}: any) {
             </TableBody>
           </Table>
         </div>
-        {!response?.data?.length && (
+        {!filteredStorage.length && (
           <div className="base-empty">
             <img src="/svgs/document.svg" />
             <p>

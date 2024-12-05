@@ -15,6 +15,10 @@ import IssuAuthSupervisor from "../workflows/issu-auth-supervisor";
 import { useIDContext } from "../../../../../context/id.context";
 import { useState, useEffect } from "preact/hooks";
 import { createRequest } from "../../../../../assets/api";
+import { usePermitDetails } from "../../../../../context/permit-details.context";
+
+import PopupModal from "../../../../ui/popup";
+import { toast } from "../../../../ui/toast";
 
 interface PermitDetails {
   status: string;
@@ -25,14 +29,18 @@ export default function ProcessPermitsIndex({}: any) {
   const { valueID, setID } = useIDContext();
   const id = valueID;
 
+  const { updatePermit } = usePermitDetails();
+
   const [permitDetails, setPermitDetails] = useState<PermitDetails>({
     status: "",
   });
+
   useEffect(() => {
     async function getPermitDetails() {
       const permitResponse = await createRequest(`/permit/${id}`, "GET");
       const permitData = permitResponse[0].data;
       setPermitDetails(permitData);
+      updatePermit(permitData);
       setID(permitData.id);
     }
 
@@ -122,6 +130,34 @@ export default function ProcessPermitsIndex({}: any) {
         route("/revalidate-perf-auth");
     }
   };
+
+  const [reactivatePermitPopup, setReactivatePermitPopup] = useState(false);
+
+  const handleReactivate = () => {
+    setReactivatePermitPopup(true);
+  };
+
+  const handleReactivePermit = async () => {
+    const id = permitDetails?.id;
+
+    try {
+      const response = await createRequest(`/permit/reactivate/${id}`, "PUT");
+      console.log(response);
+
+      toast({
+        variant: "success",
+        message: "Permit reactivated successfully.",
+      });
+    } catch (error) {
+      toast({
+        variant: "error",
+        message: error?.response?.error ?? "Failed to reactivate permit.",
+      });
+    }
+
+    setReactivatePermitPopup(false);
+  };
+
   return (
     <>
       {" "}
@@ -160,6 +196,23 @@ export default function ProcessPermitsIndex({}: any) {
                 >
                   <Icon name="process" />
                   Revalidate Permit
+                </button>
+              </div>
+            </>
+          ) : permitDetails?.status === "SUSPENDED" ? (
+            <>
+              <div className="print">
+                <div>
+                  <h4>Permit Suspended</h4>
+                  <p>Click the button to reactive this permit</p>{" "}
+                </div>
+
+                <button
+                  className={"flex-center"}
+                  onClick={() => handleReactivate()}
+                >
+                  <Icon name="export" />
+                  Reactivate Permit
                 </button>
               </div>
             </>
@@ -203,6 +256,27 @@ export default function ProcessPermitsIndex({}: any) {
           {activeTab === "Perf. Auth. Supervisor" && <PerfAuthSupervisor />}
           {activeTab === "Safety Officer" && <SafetyOfficer />}
           {activeTab === "Issuing. Auth. Supervisor" && <IssuAuthSupervisor />}
+        </div>
+
+        <div className="">
+          {reactivatePermitPopup && (
+            <PopupModal
+              icon={<img src="/svgs/reactivate.svg" />} // Pass your custom icon here
+              title="Reactivate Permit"
+              message="Are you sure you want to reactivate this permit? This action cannot be undone."
+              onClose={() => setReactivatePermitPopup(false)}
+              primaryButton={{
+                label: "Confirm",
+                onClick: handleReactivePermit,
+                color: "#008171",
+              }}
+              secondaryButton={{
+                label: "Cancel",
+                onClick: () => setReactivatePermitPopup(false),
+                color: "#E86E18",
+              }}
+            />
+          )}
         </div>
       </div>
     </>

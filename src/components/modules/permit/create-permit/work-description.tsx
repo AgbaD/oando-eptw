@@ -75,12 +75,12 @@ export default function WorkDescription() {
     <form onSubmit={handleSubmit} className="app-register__form">
       <div className="app-register__form-grid">
         <Input
-          label="Role"
+          label="Role *"
           placeholder="Enter role (e.g., electrician, supervisor)"
           {...getFieldProps("role")}
         />
         <Select
-          label="Performing Person / Person-In-Charge"
+          label="Performing Person / Person-In-Charge *"
           {...getFieldProps("performer")}
           options={[
             { text: "Internal (Oando)", value: "INTERNAL" },
@@ -88,17 +88,17 @@ export default function WorkDescription() {
           ]}
         />
         <Textarea
-          label="Work Description / Details"
+          label="Work Description / Details *"
           placeholder="Describe the type of process or work to be performed."
           {...getFieldProps("work_description")}
         />
         <Textarea
-          label="Equipment / Tools / Materials"
+          label="Equipment / Tools / Materials *"
           placeholder="Write here..."
           {...getFieldProps("equipment_to_be_worked")}
         />
         <Select
-          label="Site"
+          label="Site *"
           placeholder={siteName}
           {...getFieldProps("site")}
           options={siteOptions}
@@ -109,7 +109,7 @@ export default function WorkDescription() {
           }}
         />
         <Select
-          label="Work Location"
+          label="Work Location *"
           placeholder={locationName}
           {...getFieldProps("locationId")}
           options={locationOptions}
@@ -120,7 +120,7 @@ export default function WorkDescription() {
           }}
         />
         <Select
-          label="Work Area (Unit / Installation)"
+          label="Work Area (Unit / Installation) *"
           placeholder="--select work area / unit--"
           {...getFieldProps("work_area")}
           options={workAreaOptions}
@@ -131,7 +131,7 @@ export default function WorkDescription() {
           }}
         />
         <Textarea
-          label="Environmental Considerations"
+          label="Environmental Considerations *"
           placeholder="Identify environmental issues related to the task."
           {...getFieldProps("environmental_issues")}
         />
@@ -141,22 +141,22 @@ export default function WorkDescription() {
       <div className="app-register__form-grid">
         <div className="app-register__form-grid">
           <Input
-            label="From Date"
+            label="From Date *"
             placeholder="dd / mm / yyyy"
             type="date"
             {...getFieldProps("from_date")}
           />
-          <Input label="Time" type="time" {...getFieldProps("from_time")} />
+          <Input label="Time *" type="time" {...getFieldProps("from_time")} />
         </div>
         <div className="app-register__form-grid">
           <Input
-            label="To Date"
+            label="To Date *"
             placeholder="dd / mm / yyyy"
             type="date"
             {...getFieldProps("to_date")}
           />
           <Input
-            label="Time"
+            label="Time *"
             type="time"
             placeholder="00:00AM"
             {...getFieldProps("to_time")}

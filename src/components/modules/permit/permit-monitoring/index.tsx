@@ -44,12 +44,36 @@ export default function Monitoring({}: any) {
     route("monitoring-details");
   };
 
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+  };
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const monitoring = response?.data || [];
+
+  const filteredMonitoring = monitoring.filter((permit) => {
+    const ptwID = permit.publicId;
+    const type = permit.type;
+    const workArea = permit.workArea?.toLowerCase() || "";
+    const entrustedCompany = permit.entrustedCompany?.name.toLowerCase() || "";
+
+    return (
+      ptwID.includes(searchTerm.toLowerCase()) ||
+      type.includes(searchTerm.toLowerCase()) ||
+      workArea.includes(searchTerm.toLowerCase()) ||
+      entrustedCompany.includes(searchTerm.toLowerCase()) ||
+      searchTerm === ""
+    );
+  });
+
   return (
     <>
       <Header title="Monitoring" />
 
       <div className="app-section__header">
-        <Search placeholder="Search by user name" />
+        <Search placeholder="Search permits" onSearch={setSearchTerm} />
 
         <div className="app-section__filters ">
           <span className="base-date-filter--secondary">Filter by:</span>
@@ -103,37 +127,46 @@ export default function Monitoring({}: any) {
             </TableHead>
 
             <TableBody>
-              {response?.data.map((data) => (
-                <>
-                  {" "}
-                  <TableRow key={data.id}>
+              {filteredMonitoring
+                .filter(
+                  (data) =>
+                    data.status !== "NOT_STARTED" &&
+                    data.status !== "CANCELED" &&
+                    data.status !== "CLOSED"
+                )
+                .map((data) => (
+                  <>
                     {" "}
-                    <TableCell>{data.publicId}</TableCell>
-                    <TableCell>{data.type}</TableCell>
-                    <TableCell>{data.workDescription}</TableCell>
-                    <TableCell>
-                      {data.location?.locationArea} / {data.workArea}
-                    </TableCell>
-                    <TableCell>{data?.entrustedCompany?.name}</TableCell>
-                    <TableCell>
-                      <>
-                        <CountdownTimer
-                          fromDate={data.fromDate}
-                          fromTime={data.fromTime}
-                          toDate={data.toDate}
-                          toTime={data.toTime}
-                        />
-                      </>
-                    </TableCell>
-                    <TableCell>
-                      <Button onClick={() => handleItemClick(data)}>
-                        View
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                  <br />
-                </>
-              ))}
+                    <TableRow key={data.id}>
+                      {" "}
+                      <TableCell>{data.publicId}</TableCell>
+                      <TableCell>{data.type}</TableCell>
+                      <TableCell>
+                        {truncateText(data.workDescription, 45)}
+                      </TableCell>
+                      <TableCell>
+                        {data.location?.locationArea} / {data.workArea}
+                      </TableCell>
+                      <TableCell>{data?.entrustedCompany?.name}</TableCell>
+                      <TableCell>
+                        <>
+                          <CountdownTimer
+                            fromDate={data.fromDate}
+                            fromTime={data.fromTime}
+                            toDate={data.toDate}
+                            toTime={data.toTime}
+                          />
+                        </>
+                      </TableCell>
+                      <TableCell>
+                        <Button onClick={() => handleItemClick(data)}>
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                    <br />
+                  </>
+                ))}
             </TableBody>
           </Table>
         </div>
@@ -141,7 +174,7 @@ export default function Monitoring({}: any) {
         <div className="app-section__sm-table">
           <Table>
             <TableBody>
-              {response?.data.map(
+              {filteredMonitoring.map(
                 (dataItem) =>
                   dataItem.status !== "NOT_STARTED" && (
                     <div
@@ -153,7 +186,7 @@ export default function Monitoring({}: any) {
                         <p>{dataItem.publicId}</p>
                         <h6 className={"gray"}>{dataItem.type}</h6>
                       </div>
-                      <p>{dataItem.workDescription}</p>
+                      <p> {truncateText(dataItem.workDescription, 45)}</p>
                       <div className="location-flex">
                         <div className="items-center">
                           <p className={"gray"}>Time Remaining:</p>
@@ -176,7 +209,7 @@ export default function Monitoring({}: any) {
             </TableBody>
           </Table>
         </div>
-        {!response?.data?.length && (
+        {!filteredMonitoring.length && (
           <div className="base-empty">
             <img src="/svgs/document.svg" />
             <p>

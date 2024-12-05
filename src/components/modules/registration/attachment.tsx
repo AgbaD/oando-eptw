@@ -4,7 +4,6 @@ import { useRegistrationContext } from "../../../context/registration.context";
 import useForm from "../../../hooks/use-form";
 import Button from "../../ui/button";
 import Checkbox from "../../ui/form/checkbox";
-import UploadDocument from "../../ui/form/upload";
 import useRequest from "../../../hooks/use-request";
 import {
   onboardContractor,
@@ -21,7 +20,7 @@ export default function Attachment() {
   const { makeRequest, isLoading } = useRequest(onboardContractor);
   const verifyOtpApi = useRequest(verifyContractorOnboarding);
   const { send, state } = useRegistrationContext();
-  const { setFieldValue, values, getFieldProps, handleSubmit } = useForm({
+  const { setFieldValue, values, handleSubmit } = useForm({
     initialValues: state.context.attachment,
     onSubmit,
     validationSchema,
@@ -66,10 +65,10 @@ export default function Attachment() {
 
   return (
     <form onSubmit={handleSubmit} className="app-register__attachment-form">
-      <UploadDocument
+      {/* <UploadDocument
         {...getFieldProps("supportingDoc")}
         onChange={(v) => setFieldValue("supportingDoc", v)}
-      />
+      /> */}
 
       <p>
         Please upload LOA PTW letter, supporting certification such as AGT LOA
@@ -90,8 +89,8 @@ export default function Attachment() {
           onChange={(v) => setFieldValue("consentGiven", v)}
         />
         <p>
-          I Hereby Authorise, Agree And Consent To Oando's Consent
-          Statement Below:
+          I Hereby Authorise, Agree And Consent To Oando's Consent Statement
+          Below:
         </p>
       </label>
 

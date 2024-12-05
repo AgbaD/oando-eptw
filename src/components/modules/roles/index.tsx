@@ -71,12 +71,24 @@ export default function Roles({}: any) {
     setModalOpen(false);
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const roles = response?.data || [];
+
+  const filteredRoles = roles.filter((role) => {
+    const roleName = `${role.name}`.toLowerCase();
+
+    return roleName.includes(searchTerm.toLowerCase());
+  });
+
   return (
     <>
       <Header title="Roles & Permissions" />
 
       <div className="app-section__header">
-        <Search placeholder="Search by user name" />
+        <Search
+          placeholder="Search by role name or permissions"
+          onSearch={setSearchTerm}
+        />
 
         <Button href="/roles/create" variant="primary" dimension="md">
           <Icon name="plus" />
@@ -97,7 +109,7 @@ export default function Roles({}: any) {
             </TableHead>
 
             <TableBody>
-              {response?.data?.map((data) => (
+              {filteredRoles.map((data) => (
                 <TableRow key={data.id}>
                   <TableCell>
                     {data.name.replace(/\b\w/g, (char) => char.toUpperCase())}
@@ -124,7 +136,7 @@ export default function Roles({}: any) {
         </div>
 
         <ReusableMobileTable
-          data={response?.data}
+          data={filteredRoles}
           onItemClick={handleItemClick}
           formatCreatedAt={formatCreatedAt}
           getName={getName}
@@ -132,7 +144,7 @@ export default function Roles({}: any) {
           type={"Default"}
         />
 
-        {!response?.data?.length && (
+        {!filteredRoles.length && (
           <div className="base-empty">
             <img src="/svgs/document.svg" />
             <p>

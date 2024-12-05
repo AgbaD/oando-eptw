@@ -16,6 +16,7 @@ export default function Submit() {
   const [loading, setLoading] = useState(false);
 
   const { permit } = usePermitDetails();
+
   useEffect(() => {
     async function submitForm() {
       setLoading(true);
@@ -58,7 +59,7 @@ export default function Submit() {
             error.message ?? "Failed to approve permit, please try again",
         });
       }
-      route("/process-permit");
+      route("/process-permits");
       toast({
         variant: "success",
         message: "Permit created successfully",

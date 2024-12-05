@@ -13,16 +13,6 @@ export default function Sidebar() {
       </div>
 
       <div className="app-layout__sidebar__nav">
-        {/* <div className="app-layout__sidebar__nav__profile">
-          <div className="avatar">{profile.firstname[0]}</div>
-          <div className="text">
-            <p>
-              {profile.firstname} {profile.lastname}
-            </p>
-            <p>{profile.email}</p>
-          </div>
-        </div> */}
-
         {ROUTES.map((group) => (
           <div className="app-layout__sidebar__nav__links">
             {group.title ? <p>{group.title}</p> : null}
@@ -105,26 +95,6 @@ const ROUTES = [
   {
     title: "Permit Management",
     pages: [
-      // {
-      //   path: "/permit-management",
-      //   label: "Permit Approvals",
-      //   iconName: "sidebar.permit",
-      // },
-      // {
-      //   path: "/permit-renewals",
-      //   label: "Permit Renewals",
-      //   iconName: "sidebar.permit-renewals",
-      // },
-      // {
-      //   path: "/permit-suspensions",
-      //   label: "Work Suspension",
-      //   iconName: "sidebar.work-suspension",
-      // },
-      // {
-      //   path: "/permit-completions",
-      //   label: "Work Completion",
-      //   iconName: "sidebar.work-completion",
-      // },
       {
         path: "/permit-drafts",
         label: "Drafts",
@@ -175,11 +145,6 @@ const ROUTES = [
   {
     title: "",
     pages: [
-      {
-        path: "/profile",
-        label: "Profile",
-        iconName: "sidebar.profile",
-      },
       {
         path: "",
         label: "Logout",

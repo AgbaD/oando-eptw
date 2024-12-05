@@ -11,17 +11,24 @@ import Button from "../../../../../../ui/button";
 import { approveIssuingSupervisor } from "../../../../../../../assets/api/permit";
 import useRequest from "../../../../../../../hooks/use-request";
 
-function formatDateForBackend(fromTime) {
-  if (!fromTime) {
-    throw new Error("Both fromDate and fromTime are required");
+function convertToISO8601(startTime) {
+  const now = new Date();
+  let datePart = now.toISOString().split("T")[0];
+
+  if (startTime.trim() === "") {
+    return now.toISOString();
   }
 
-  const timeISO =
-    fromTime == ""
-      ? new Date(`1970-01-01T00:00:00Z`).toISOString()
-      : new Date(`1970-01-01T${fromTime}:00Z`).toISOString();
+  const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+  if (!timeRegex.test(startTime)) {
+    throw new Error(
+      "Invalid time format. Please provide a valid time in 'HH:mm' format."
+    );
+  }
 
-  return timeISO;
+  const isoString = `${datePart}T${startTime}:00.000Z`;
+
+  return isoString;
 }
 
 export default function IssuSupervisorProcessSubmit() {
@@ -35,26 +42,30 @@ export default function IssuSupervisorProcessSubmit() {
 
   useEffect(() => {
     async function submitForm() {
+      const approvedTime: string = convertToISO8601(
+        state.context.tool_kit_time?.startTime
+      ).toString();
+
+      console.log(typeof approvedTime);
+
       setLoading(true);
       const payload = {
         permitId: permitId,
         documents: {
-          gasClearanceCertType: "MANUAL",
-          gasClearanceCert: "...",
-          scaffoldingCertType: "MANUAL",
-          scaffoldingCert: "...",
-          mewpCertType: "MANUAL",
-          mewpCert: "...",
-          manBasketCertType: "MANUAL",
-          manBasketCert: "...",
+          // gasClearanceCertType: "MANUAL",
+          // gasClearanceCert: "...",
+          // radiographyCertType: "MANUAL",
+          // radiographyCert: "...",
+          // confinedSpaceCertType: "MANUAL",
+          // confinedSpaceCert: "...",
+          // toolBoxStockType: "MANUAL",
+          // toolBoxStockCert: "...",
         },
         toolBoxLeaderIdentity:
           state.context.tool_kit_time?.toolBoxLeaderIdentity,
         toolBoxPosition: state.context.tool_kit_time?.toolBoxPosition,
-        startTime:
-          state.context.tool_kit_time?.startTime === ""
-            ? "1970-01-01T00:00:00Z"
-            : formatDateForBackend(state.context.tool_kit_time?.startTime),
+        startTime: approvedTime,
+
         issuingAuthoritySupervisorTimeAdjustment:
           state.context.tool_kit_time?.startTime === "" ? false : true,
       };

@@ -39,12 +39,36 @@ export default function Workflows({}: any) {
     route("/permit-management");
   };
 
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+  };
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const workflows = response?.data || [];
+
+  const filteredWorkflows = workflows.filter((permit) => {
+    const ptwID = permit.publicId;
+    const type = permit.type;
+    const workArea = permit.workArea?.toLowerCase() || "";
+    const entrustedCompany = permit.entrustedCompany?.name.toLowerCase() || "";
+
+    return (
+      ptwID.includes(searchTerm.toLowerCase()) ||
+      type.includes(searchTerm.toLowerCase()) ||
+      workArea.includes(searchTerm.toLowerCase()) ||
+      entrustedCompany.includes(searchTerm.toLowerCase()) ||
+      searchTerm === ""
+    );
+  });
+
   return (
     <>
       <Header title="Workflow" />
 
       <div className="app-section__header">
-        <Search placeholder="Search by user name" />
+        <Search placeholder="Search permits" onSearch={setSearchTerm} />
 
         <div className="app-section__filters ">
           <span className="base-date-filter--secondary">Filter by:</span>
@@ -103,7 +127,7 @@ export default function Workflows({}: any) {
             </TableHead>
 
             <TableBody>
-              {response?.data?.map((data) => (
+              {filteredWorkflows.map((data) => (
                 <>
                   {" "}
                   <TableRow key={data.id}>
@@ -111,7 +135,9 @@ export default function Workflows({}: any) {
                     <TableCell>{data.publicId}</TableCell>
                     <TableCell>{data.type}</TableCell>
                     {/* <TableCell>{data.type?.toLowerCase()}</TableCell> */}
-                    <TableCell>{data.workDescription}</TableCell>
+                    <TableCell>
+                      {truncateText(data.workDescription, 45)}
+                    </TableCell>
                     <TableCell>
                       <span>
                         {data.workArea} / {data.location?.locationArea}
@@ -145,7 +171,7 @@ export default function Workflows({}: any) {
         <div className="app-section__sm-table">
           <Table>
             <TableBody>
-              {response?.data.map((dataItem) => (
+              {filteredWorkflows.map((dataItem) => (
                 <div
                   key={dataItem.id}
                   className="container"
@@ -158,7 +184,7 @@ export default function Workflows({}: any) {
                     <p>{dataItem.publicId}</p>
                     <h6 className={"gray"}>{dataItem.type}</h6>
                   </div>
-                  <p>{dataItem.workDescription}</p>
+                  <p>{truncateText(dataItem.workDescription, 45)}</p>
                   <div className="location-flex">
                     <div className="items-center">
                       <p className={"gray"}>Status / Authority:</p>
@@ -179,7 +205,7 @@ export default function Workflows({}: any) {
           </Table>
         </div>
 
-        {!response?.data?.length && (
+        {!filteredWorkflows.length && (
           <div className="base-empty">
             <img src="/svgs/document.svg" />
             <p>

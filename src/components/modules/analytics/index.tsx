@@ -99,12 +99,12 @@ export default function Analytics({}: any) {
             <div className="counts">
               <div>
                 <h4>{response?.data?.permits?.totalApprovedCount ?? 0}</h4>
-                <p>Approved</p>
+                <p>Closed</p>
               </div>
 
               <div>
                 <h4>{response?.data?.permits?.totalRejectedCount ?? 0}</h4>
-                <p>Rejected</p>
+                <p>Issued</p>
               </div>
             </div>
 

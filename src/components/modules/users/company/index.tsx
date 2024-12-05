@@ -72,7 +72,7 @@ export default function Company() {
     <>
       <div className="">
         <div className="app-section__header">
-          <Search placeholder="Search by name or Contract ID" />
+          <Search placeholder="Search by name or Contract ID" onSearch={""} />
 
           <div className="app-section__filters ">
             <span className="base-date-filter--secondary">Filter by:</span>

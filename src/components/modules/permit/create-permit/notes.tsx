@@ -11,6 +11,8 @@ import Section from "../../../ui/sections";
 import { HAZARDS } from "./work-hazards";
 import { formatDateForBackend } from "../permit-management.tsx/activities/process-permit/auth-submit";
 
+import { Link } from "preact-router";
+
 export default function AdditionalNotes() {
   const { state, send } = usePermitContext();
   const { makeRequest, isLoading } = useRequest(createPermit);
@@ -103,7 +105,7 @@ export default function AdditionalNotes() {
         {
           id: 1,
           title: "Describe the potential hazards",
-          info: state.context.work_hazards?.potential_hazards,
+          info: state.context.work_hazards?.potentialHazardDescription,
         },
       ],
     },
@@ -132,13 +134,18 @@ export default function AdditionalNotes() {
     {
       section: "E",
       header: "Document Uploads",
-      content: [
-        { id: 1, title: "Job Safety Analysis", upload_option: "Manual" },
-        { id: 2, title: "Work Procedure", upload_option: "Online" },
-        { id: 3, title: "Explosives Cert.", upload_option: "Manual" },
-      ],
+      content: [],
     },
   ];
+
+  const selectedDocuments = Array.isArray(state.context.formattedDocuments)
+    ? state.context.formattedDocuments
+    : Object.entries(state.context.formattedDocuments || {}).map(
+        ([, value]) => ({
+          type: (value as { type: string }).type || "MANUAL",
+          doc: (value as { doc: string }).doc || "",
+        })
+      );
 
   console.log(state.context);
 
@@ -220,6 +227,21 @@ export default function AdditionalNotes() {
     });
   }
 
+  function extractFileName(data) {
+    const url = data;
+
+    if (!url) {
+      throw new Error("URL is required.");
+    }
+
+    const segments = url.split("/");
+    const fileName = segments[segments.length - 1];
+
+    const name = fileName.split("-").slice(1).join("-");
+
+    return name;
+  }
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -265,6 +287,35 @@ export default function AdditionalNotes() {
         children={documents[0]}
         section={documents[0]?.section}
       />
+
+      {selectedDocuments?.length > 0 ? (
+        selectedDocuments.map((item, index) => (
+          <div key={index} className="section__content__document_section">
+            <p className="section__header">{item.type}</p>
+            <div className="section__content">
+              <p className="document">
+                <span>Upload Option</span>
+              </p>
+              <p>{item.type}</p>
+              <p className="document">
+                <span>Document</span>
+              </p>
+              <p className="document_item">
+                <Link className="app-link" href={item.doc}>
+                  {" "}
+                  {extractFileName(`${item.doc}`)}
+                </Link>
+                <span>
+                  <img src="/svgs/document_download.svg" alt="" />
+                </span>
+              </p>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p>No documents uploaded.</p>
+      )}
+
       <div className="app-register__form-footer">
         <Button
           variant="secondary"

@@ -34,9 +34,9 @@ export default function SelectDocuments({}: any) {
     currentPath === "/closure-safety-officer" ||
     currentPath === "/closure-perf-auth" ||
     currentPath === "/closure-issuing-supervisor"
-      ? ["Tool Box Talk"]
+      ? ["Tool Box Stock"]
       : [
-          "Tool Box Talk",
+          "Tool Box Stock",
           "Radiography cert.",
           "Confined Space Cert.",
           "Gas Testing Cert.",

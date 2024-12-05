@@ -83,7 +83,7 @@ function getAllExternalUsers() {
   return createRequest("/auth/profile/external", "GET");
 }
 function getAllInternalUsers() {
-  return createRequest("/auth/profile/internal", "GET");
+  return createRequest("/profile?type=internal", "GET");
 }
 
 // All endpoints for audits

@@ -1,19 +1,18 @@
 import * as Yup from "yup";
 import useForm from "../../../../../hooks/use-form";
 import Button from "../../../../ui/button";
-import UploadDocument from "../../../../ui/form/upload";
 import { usePermitApprovalContext } from "../../../../../context/approve-permit.context";
 
 export default function UploadPermitDocs() {
   const { state, send } = usePermitApprovalContext();
-  const { handleSubmit, getFieldProps, setFieldValue } = useForm({
+  const { handleSubmit } = useForm({
     initialValues: state.context.uploadPermitDocs,
     onSubmit,
     validationSchema,
   });
 
   function onSubmit(uploadPermitDocs) {
-    send("submit", { data: {uploadPermitDocs} });
+    send("submit", { data: { uploadPermitDocs } });
   }
 
   return (
@@ -28,7 +27,7 @@ export default function UploadPermitDocs() {
 
       <br />
 
-      <div className="app-register__form-grid app-create-permit__docs">
+      {/* <div className="app-register__form-grid app-create-permit__docs">
         <UploadDocument
           label="Entry Certificate"
           {...getFieldProps("certificateDoc")}
@@ -118,7 +117,7 @@ export default function UploadPermitDocs() {
           {...getFieldProps("manRidingCertDoc")}
           onChange={(v) => setFieldValue("manRidingCertDoc", v)}
         />
-      </div>
+      </div> */}
 
       <div className="app-register__form-footer">
         <Button

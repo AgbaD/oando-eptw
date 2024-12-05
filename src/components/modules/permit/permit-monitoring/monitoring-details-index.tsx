@@ -24,6 +24,8 @@ import { toast } from "../../../ui/toast";
 import PopupModal from "../../../ui/popup";
 import { usePermitDetails } from "../../../../context/permit-details.context";
 
+import { createRequest } from "../../../../assets/api";
+
 // interface PermitDetails {
 //   from_date: string;
 //   from_time: string;
@@ -40,7 +42,6 @@ export default function MonitoringDetailsIndex({}: any) {
   ]);
 
   const { permit } = usePermitDetails();
-  console.log(permit);
 
   const counts = {
     // "All Permits": 120,
@@ -82,6 +83,33 @@ export default function MonitoringDetailsIndex({}: any) {
     setRevalidatePopup(false);
     route("/permit-management");
   }
+
+  const [reactivatePermitPopup, setReactivatePermitPopup] = useState(false);
+
+  const handleReactivate = () => {
+    setReactivatePermitPopup(true);
+  };
+
+  const handleReactivePermit = async () => {
+    const id = permit?.id;
+
+    try {
+      const response = await createRequest(`/permit/reactivate/${id}`, "PUT");
+      console.log(response);
+
+      toast({
+        variant: "success",
+        message: "Permit reactivated successfully.",
+      });
+    } catch (error) {
+      toast({
+        variant: "error",
+        message: error?.response?.error ?? "Failed to reactivate permit.",
+      });
+    }
+
+    setReactivatePermitPopup(false);
+  };
 
   return (
     <>
@@ -127,6 +155,23 @@ export default function MonitoringDetailsIndex({}: any) {
                 >
                   <Icon name="export" />
                   Request Closure
+                </button>
+              </div>
+            </>
+          ) : permit?.status === "SUSPENDED" ? (
+            <>
+              <div className="print">
+                <div>
+                  <h4>Permit Suspended</h4>
+                  <p>Click the button to reactive this permit</p>{" "}
+                </div>
+
+                <button
+                  className={"flex-center"}
+                  onClick={() => handleReactivate()}
+                >
+                  <Icon name="export" />
+                  Reactivate Permit
                 </button>
               </div>
             </>
@@ -195,6 +240,27 @@ export default function MonitoringDetailsIndex({}: any) {
             secondaryButton={{
               label: "Cancel",
               onClick: () => handleRevalidatePopup(false),
+              color: "#E86E18",
+            }}
+          />
+        )}
+      </div>
+
+      <div className="">
+        {reactivatePermitPopup && (
+          <PopupModal
+            icon={<img src="/svgs/reactivate.svg" />} // Pass your custom icon here
+            title="Reactivate Permit"
+            message="Are you sure you want to reactivate this permit? This action cannot be undone."
+            onClose={() => setReactivatePermitPopup(false)}
+            primaryButton={{
+              label: "Confirm",
+              onClick: handleReactivePermit,
+              color: "#008171",
+            }}
+            secondaryButton={{
+              label: "Cancel",
+              onClick: () => setReactivatePermitPopup(false),
               color: "#E86E18",
             }}
           />

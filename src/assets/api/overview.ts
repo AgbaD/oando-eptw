@@ -1,7 +1,7 @@
 import { createRequest } from ".";
 
 function getOverview() {
-  return createRequest("/profile/overview", "GET");
+  return createRequest("/profile/overview?days=30", "GET");
 }
 
 function getAnalytics() {

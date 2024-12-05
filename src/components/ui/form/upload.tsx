@@ -6,13 +6,12 @@ export default function UploadDocument({
   isTouched,
   error,
   label = "",
+  onUploadComplete,
   ...props
 }) {
   const objectURL = useMemo(() => {
     return props.value ? URL.createObjectURL(props.value) : null;
   }, [props.value]);
-
-  // const { makeRequest, isLoading } = useRequest(uploadFile);
 
   async function handleFileUpload(file) {
     if (!file) {
@@ -33,7 +32,7 @@ export default function UploadDocument({
           headers: {
             Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
           },
-          body: formData, // FormData
+          body: formData,
         }
       );
 
@@ -41,7 +40,12 @@ export default function UploadDocument({
         throw new Error(await response.text());
       }
 
-      return [await response.json(), null];
+      const data = await response.json();
+
+      onUploadComplete(data.data);
+      console.log(data);
+
+      // return [await response.json(), null];
     } catch (error) {
       return [null, error];
     }

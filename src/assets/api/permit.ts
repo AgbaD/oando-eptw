@@ -229,8 +229,13 @@ function approveRevalidationIssuingSupervisor(data) {
   );
 }
 
+function addOnsiteNote(data) {
+  return createRequest("/permit/note", "POST", data);
+}
+
 export {
   createPermit,
+  addOnsiteNote,
   createDraft,
   sendBackToAuthority,
   requestPermitClosure,

@@ -10,6 +10,8 @@ import { usePermitDetails } from "../../../context/permit-details.context";
 import SuspendPermit from "./permit-monitoring/suspend-permit";
 import CancelPermit from "./permit-monitoring/cancel-permit";
 
+import { createRequest } from "../../../assets/api";
+
 export default function RenderButtonsOnPath(path: string) {
   const { makeRequest } = useRequest(requestPermitClosure);
 
@@ -34,6 +36,27 @@ export default function RenderButtonsOnPath(path: string) {
 
   const handleDeletePopUp = (value: boolean) => {
     setDeletePopUp(value);
+  };
+
+  const handleDeletePermit = async () => {
+    const id = permit?.id;
+
+    try {
+      const response = await createRequest(`/permit/draft/${id}`, "DELETE");
+      console.log(response);
+
+      toast({
+        variant: "success",
+        message: "Permit deleted successfully.",
+      });
+    } catch (error) {
+      toast({
+        variant: "error",
+        message: error?.response?.error ?? "Failed to delete permit.",
+      });
+    }
+
+    setDeletePopUp(false);
   };
 
   async function closureRequest(id) {
@@ -167,12 +190,12 @@ export default function RenderButtonsOnPath(path: string) {
         {deletePopUp && (
           <PopupModal
             icon={<img src="/svgs/delete_img.png" />} // Pass your custom icon here
-            title="Delete Role"
-            message="Are you sure you want to delete this role? This action cannot be undone."
+            title="Delete Permit"
+            message="Are you sure you want to delete this permit? This action cannot be undone."
             onClose={() => setDeletePopUp(false)}
             primaryButton={{
               label: "Delete",
-              onClick: () => handleDeletePopUp(false),
+              onClick: handleDeletePermit,
               color: "#D30021",
             }}
             secondaryButton={{

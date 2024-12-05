@@ -13,7 +13,7 @@ export default function Permits({ approvedPermits }) {
   return (
     <>
       <div className="app-overview__permits-header">
-        <h4>Approved Permits</h4>
+        <h4>Recently Closed Permits</h4>
 
         <button onClick={() => route("/permit-management")}>
           View all
@@ -25,9 +25,12 @@ export default function Permits({ approvedPermits }) {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Permit ID</TableCell>
-              <TableCell>Issued by</TableCell>
-              <TableCell>Work Performed</TableCell>
+              <TableCell>PTW ID</TableCell>
+              <TableCell>Work Type</TableCell>
+              <TableCell>Work To Be Performed</TableCell>
+              <TableCell>Work Location</TableCell>
+              <TableCell>Company</TableCell>
+              <TableCell>Date Closed</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
@@ -36,21 +39,29 @@ export default function Permits({ approvedPermits }) {
             {approvedPermits?.map((permit) => (
               <TableRow key={permit?.id}>
                 <TableCell>{permit?.id}</TableCell>
-                <TableCell>{permit?.issuringAuthority?.firstname} {permit?.issuringAuthority?.lastname}</TableCell>
+                <TableCell>
+                  {permit?.issuringAuthority?.firstname}{" "}
+                  {permit?.issuringAuthority?.lastname}
+                </TableCell>
                 <TableCell>{permit?.workDescription}</TableCell>
                 <TableCell>
-                  <Button variant="outline" href={`permit-management/ptw/${permit?.id}`}>View</Button>
+                  <Button
+                    variant="outline"
+                    href={`permit-management/ptw/${permit?.id}`}
+                  >
+                    View
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      ) :
+      ) : (
         <div className="base-empty" style={{ margin: "100px auto" }}>
           <img src="/svgs/document.svg" />
-          <p>No approved permits available</p>
+          <p>No closed permits available</p>
         </div>
-      }
+      )}
     </>
   );
 }

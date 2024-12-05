@@ -59,7 +59,7 @@ const ExternalUsers = ({ company = [] }) => {
   return (
     <div>
       <div className="app-section__flex">
-        <Search placeholder="Search by user name" />
+        <Search placeholder="Search by user name" onSearch={""} />
         <div className="app-section__filters">
           <span className="base-date-filter--secondary">Filter by:</span>
           <Dropdown className="base-dropdown__dropdown-wrapper">
@@ -172,7 +172,7 @@ const ExternalUsers = ({ company = [] }) => {
           </div>
           <ModalDetail label="Role:">
             {selectedUser?.roles?.map((role) => (
-              <span key={role.name}>{role.name}, </span>
+              <span key={role.id}>{role.name}, </span>
             ))}
           </ModalDetail>
           <div className="app-modal__footer">

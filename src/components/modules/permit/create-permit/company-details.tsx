@@ -77,7 +77,7 @@ export default function CompanyDetails() {
             }}
           />
           <Input
-            label="Performing Department"
+            label="Performing Department *"
             placeholder="Enter performing Dept."
             {...getFieldProps("performing_department")}
             // required
@@ -110,7 +110,7 @@ export default function CompanyDetails() {
 }
 
 const validationSchema = Yup.object({
-  // performance_department: Yup.string().required(
-  //   "Performance Dept. is required"
-  // ),
+  performing_department: Yup.string().required(
+    "Performing Department is required"
+  ),
 });

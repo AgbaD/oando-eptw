@@ -18,15 +18,17 @@ import {
 import ReusableMobileTable from "../../ui/global/mobiletable";
 import { Dropdown, DropdownTrigger, DropdownContent } from "../../ui/dropdown";
 
+import { siteOptions } from "../locations/data";
+
 export default function Activities({}: any) {
   const [stagedActivity, stageActivity] = useState<any>();
   const { toggle, modals } = useModal({ activityDetails: false });
   const { response, isLoading } = useRequest(getAudits, {}, true);
-  const activities = response?.data;
+  const activities = response?.data || [];
 
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
 
-  const locations = ["All Locations", "Port Harcourt"];
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleItemClick = (item) => {
     stageActivity(item);
@@ -38,30 +40,48 @@ export default function Activities({}: any) {
   };
 
   const getName = (item) => {
-    return `${item.profile.firstname} ${item.profile.lastname}`;
+    return `${item.profile.fullname}`;
   };
 
   const getDetails = (item) => {
     return item.activityPerformed;
   };
 
+  const filteredActivities = activities.filter((activity) => {
+    const userName =
+      `${activity.profile.firstname} ${activity.profile.lastname}`.toLowerCase();
+    const activityPerformed = activity.activityPerformed.toLowerCase();
+    const locationArea = activity?.location?.locationArea?.toLowerCase() || "";
+    const site = activity?.location?.site?.toLowerCase() || "";
+
+    return (
+      userName.includes(searchTerm.toLowerCase()) ||
+      activityPerformed.includes(searchTerm.toLowerCase()) ||
+      locationArea.includes(searchTerm.toLowerCase()) ||
+      site.includes(searchTerm.toLowerCase())
+    );
+  });
+
   return (
     <>
       <Header title="Audits" />
 
       <div className="app-section__header">
-        <Search placeholder="Search by user name" />
+        <Search
+          placeholder="Search by user name, location or activity"
+          onSearch={setSearchTerm}
+        />
         <div className="app-section__filters">
           <DateFilter variant="secondary" />
 
           <Dropdown className="base-dropdown__dropdown-wrapper">
             <DropdownTrigger>{selectedLocation}</DropdownTrigger>
             <DropdownContent>
-              {locations.map((location) => (
+              {siteOptions.map((location) => (
                 <div
-                  key={location}
+                  key={location.value}
                   className={"base-dropdown__option"}
-                  onClick={() => setSelectedLocation(location)}
+                  onClick={() => setSelectedLocation(location.value)}
                 >
                   {location}
                 </div>
@@ -85,14 +105,12 @@ export default function Activities({}: any) {
             </TableHead>
 
             <TableBody>
-              {activities?.map((data) => (
+              {filteredActivities?.map((data) => (
                 <TableRow key={data.id}>
                   <TableCell>
                     {dayjs(data.createdAt).format("DD/MM/YYYY • HH:mm A")}
                   </TableCell>
-                  <TableCell>
-                    {data.profile.firstname} {data.profile.lastname}
-                  </TableCell>
+                  <TableCell>{data.profile.fullname}</TableCell>
                   <TableCell>
                     {data?.location?.locationArea}, {data?.location?.site}
                   </TableCell>
@@ -119,7 +137,7 @@ export default function Activities({}: any) {
         </div>
 
         <ReusableMobileTable
-          data={activities}
+          data={filteredActivities}
           onItemClick={handleItemClick}
           formatCreatedAt={formatCreatedAt}
           getName={getName}
@@ -127,7 +145,7 @@ export default function Activities({}: any) {
           type={"Default"}
         />
 
-        {!response?.data?.length && (
+        {!filteredActivities.length && (
           <div className="base-empty">
             <img src="/svgs/document.svg" />
             <p>

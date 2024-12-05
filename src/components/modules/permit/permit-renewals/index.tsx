@@ -19,7 +19,7 @@ export default function PermitRenewals({}: any) {
       <Header title="Permit Renewals" />
 
       <div className="app-section__header">
-        <Search placeholder="Search by user name" />
+        <Search placeholder="Search by user name" onSearch={""} />
         <DateFilter variant="secondary" />
       </div>
 
@@ -27,7 +27,9 @@ export default function PermitRenewals({}: any) {
 
       {activeTab === "All Permits" && <PermitRenewalsList />}
       {activeTab === "Safety Officer" && <PermitRenewalsList flag="safety" />}
-      {activeTab === "Issuing Auth. Supervisor" && <PermitRenewalsList flag="issuing" />}
+      {activeTab === "Issuing Auth. Supervisor" && (
+        <PermitRenewalsList flag="issuing" />
+      )}
       {activeTab === "Approved" && <PermitRenewalsList flag="approved" />}
       {activeTab === "Rejected" && <PermitRenewalsList flag="rejected" />}
     </>

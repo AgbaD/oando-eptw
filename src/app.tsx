@@ -28,7 +28,6 @@ import WorkCompletions from "./components/modules/permit/work-completions/index.
 import WorkCompletionDetails from "./components/modules/permit/work-completions/details/index.tsx";
 import WorkSuspensions from "./components/modules/permit/work-suspensions/index.tsx";
 import WorkContinuationDetails from "./components/modules/permit/work-suspensions/continuation-details/index.tsx";
-import Profile from "./components/modules/profile/index.tsx";
 import Analytics from "./components/modules/analytics/index.tsx";
 import EditLocation from "./components/modules/locations/edit-location.tsx";
 import EditUser from "./components/modules/users/edit-user.tsx";
@@ -49,7 +48,7 @@ import ActivitiesFlow from "./components/modules/permit/permit-management.tsx/pe
 import ProcessPermitsIndex from "./components/modules/permit/permit-management.tsx/activities/index.tsx";
 import ProcessIssuingPermit from "./components/modules/permit/permit-management.tsx/activities/process-permit/index.tsx";
 import Monitoring from "./components/modules/permit/permit-monitoring/index.tsx";
-// import MonitoringDetails from "./components/modules/permit/permit-monitoring/monitoring-details.tsx";
+
 import MonitoringDetailsIndex from "./components/modules/permit/permit-monitoring/monitoring-details-index.tsx";
 import RevalidatePermitIndex from "./components/modules/permit/permit-revalidation/index.tsx";
 import RevalidatePerfAuth from "./components/modules/permit/permit-revalidation/perf-auth-revalidation.tsx";
@@ -149,7 +148,7 @@ function App() {
               <PermitManagementDetails path="/permit-management" />
               <StorageDetails path="/permit-storage/details" />
 
-              <ProcessPermitsIndex path="/process-permits" />
+              <ProcessPermitsIndex path="process-permits" />
               <RevalidatePermitIndex path="/revalidate-permit" />
               <ClosurePermitIndex path="/permit-closure" />
 
@@ -166,7 +165,7 @@ function App() {
 
               <Drafts path="/permit-drafts" />
 
-              <Profile path="/profile" />
+              {/* <Profile path="/profile" /> */}
             </Router>
           </AppLayout>
         </Router>

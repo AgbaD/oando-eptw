@@ -3,7 +3,6 @@ import useRequest from "../../../hooks/use-request";
 import Header from "../../ui/page/header";
 import Drafts from "./drafts";
 import "./index.scss";
-import PendingActions from "./pending-actions";
 import Permits from "./permits";
 import Stats from "./stats";
 
@@ -23,7 +22,6 @@ export default function Overview({}: any) {
 
         <div>
           <Drafts {...{ drafts }} />
-          <PendingActions />
         </div>
       </div>
     </>

@@ -104,11 +104,14 @@ export default function Locations({}: any) {
     setModalOpen(true);
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+  console.log(searchTerm);
+
   return (
     <>
       <Header title="Locations" />
       <div className="app-section__header">
-        <Search placeholder="Search by user name" />
+        <Search placeholder="Search by user name" onSearch={setSearchTerm} />
 
         <div className="grid-cols-2">
           <Button
