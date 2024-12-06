@@ -8,7 +8,7 @@ import { useIssuingSupervisorRevalidationContext } from "../../../../../context/
 import * as Yup from "yup";
 
 const documentOptions = [
-  "Tool Box Talk",
+  "Tool Box Stock",
   "Radiography cert.",
   "Confined Space Cert.",
   "Gas Testing Cert.",

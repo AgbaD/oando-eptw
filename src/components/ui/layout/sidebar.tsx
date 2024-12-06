@@ -81,7 +81,7 @@ const ROUTES = [
         iconName: "sidebar.overview",
       },
       {
-        path: "/auditories",
+        path: "/audits",
         label: "Audits",
         iconName: "sidebar.activity",
       },

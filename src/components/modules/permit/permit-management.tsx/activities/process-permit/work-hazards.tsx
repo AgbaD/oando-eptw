@@ -8,13 +8,73 @@ import Section from "../../../../../ui/sections";
 import { useIssuingActivityContext } from "../../../../../../context/issuing-activity-context";
 
 import SendToAuthority from "./send-back-to-authority";
-import { useState } from "preact/hooks";
+import { useMemo, useState } from "preact/hooks";
+import { usePermitDetails } from "../../../../../../context/permit-details.context";
 
 export default function WorkHazards() {
   const [isModalOpen, setModalOpen] = useState(false);
   const { send, state } = useIssuingActivityContext();
 
-  // Initialize hazards state with all possible hazard keys
+  const { permit } = usePermitDetails();
+  const details = permit;
+
+  const hazardsArray =
+    details?.permitHazards && details.permitHazards.length > 0
+      ? details.permitHazards[0].hazard
+      : null;
+
+  const displayHazards = useMemo(() => {
+    const items = Object.entries(hazardsArray || {})
+      .filter(
+        ([key, value]) =>
+          value === null &&
+          ![
+            "id",
+            "createdAt",
+            "updatedAt",
+            "potentialHazardDescription",
+          ].includes(key)
+      )
+      .map(([key, value]) => ({
+        key,
+        value: value ?? false,
+      }));
+
+    const NEWHAZARDS = HAZARDS.filter((hazard) =>
+      items.some((item) => item.key === hazard.value)
+    );
+
+    return NEWHAZARDS;
+  }, [hazardsArray]);
+
+  const renderDisplayItems = (itemArray) => {
+    const displayItems = itemArray || {};
+
+    const itemEntries = Object.entries(displayItems)
+      .filter(
+        ([key, value]) =>
+          value !== null &&
+          ![
+            "id",
+            "createdAt",
+            "updatedAt",
+            "potentialHazardDescription",
+          ].includes(key)
+      )
+      .map(([key, value]) => {
+        return { key, value: value ?? false };
+      });
+
+    return itemEntries.map(({ key, value }) => (
+      <div key={key} className="firefighting-item">
+        <p>
+          <span className="firefighting-value">{value ? "YES" : "NO"}</span> -{" "}
+          {key.replace(/([A-Z])/g, " $1").toUpperCase()}{" "}
+        </p>
+      </div>
+    ));
+  };
+
   const initialHazards = HAZARDS.reduce((acc, hazard) => {
     acc[hazard.value] =
       state.context.work_hazards?.hazards?.[hazard.value] ?? undefined;
@@ -41,24 +101,8 @@ export default function WorkHazards() {
     {
       section: "D",
       header: "Hazard Identification",
-      second_title: "Selected potential hazards",
-      content: [
-        {
-          id: 1,
-          hazard: "NOISE",
-          value: "YES",
-        },
-        {
-          id: 2,
-          hazard: "TOXIC SUBSTANCE",
-          value: "YES",
-        },
-        {
-          id: 3,
-          hazard: "CHEMICALS",
-          value: "NO",
-        },
-      ],
+      second_title: "",
+      content: [],
     },
   ];
 
@@ -72,13 +116,20 @@ export default function WorkHazards() {
             children={hazards[0]}
             section={hazards[0].section}
           />
+
+          <div className="section">
+            <div className="section__content">
+              <p className="title">Selected hazards</p>
+              <p className="info">{renderDisplayItems(hazardsArray)}</p>
+            </div>
+          </div>
         </div>
 
         <div className="app-create-permit__group-header">
           Identification of Hazards
         </div>
         <div className="app-register__form">
-          {HAZARDS.map((hazard) => (
+          {displayHazards.map((hazard) => (
             <div className="app-create-permit__radio-container">
               <p>{hazard.text}</p>
               <div>

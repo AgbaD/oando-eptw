@@ -4,6 +4,10 @@ function login(data) {
   return createRequest("/auth/login", "post", data);
 }
 
+function socialLogin(data) {
+  return createRequest("auth/microsoft", "post", data);
+}
+
 function forgotPassword(data) {
   return createRequest("/auth/forgot-password", "post", data);
 }
@@ -24,11 +28,17 @@ function verifyContractorOnboarding(data) {
   return createRequest("/auth/contractor/verify", "post", data);
 }
 
+function completeExternalOnboarding(data) {
+  return createRequest(`/auth/external-user/onboard`, "POST", data);
+}
+
 export {
   login,
+  socialLogin,
   forgotPassword,
   verifyForgotPasswordOtp,
   resetPassword,
   onboardContractor,
-  verifyContractorOnboarding
+  verifyContractorOnboarding,
+  completeExternalOnboarding,
 };

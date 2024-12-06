@@ -41,7 +41,7 @@ export default function WorkHazards() {
       <div className="app-register__form">
         <div className="app-register__form-grid">
           <Textarea
-            label="Describe the potential hazards"
+            label="Describe the potential hazards *"
             placeholder="Write here..."
             {...getFieldProps("potentialHazardDescription")}
           />

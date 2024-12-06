@@ -68,6 +68,7 @@ import ProcessSafetyOfficerPermit from "./components/modules/permit/permit-manag
 import ProcessIssuSupervisorPermit from "./components/modules/permit/permit-management.tsx/activities/process-permit/issu-supervisor-process.tsx";
 import { PermitDetailsProvider } from "./context/permit-details.context.tsx";
 import { MsalProvider } from "@azure/msal-react";
+import CompleteOnboarding from "./components/modules/auth/complete-onboarding.tsx";
 
 function App() {
   return (
@@ -75,6 +76,7 @@ function App() {
       <Login path="/login" />
       <ForgotPassword path="/forgot-password" />
       <ResetPassword path="/reset-password" />
+      <CompleteOnboarding path="/complete-onboarding" />
 
       <AuthGuard default>
         <Router>
@@ -103,7 +105,7 @@ function App() {
           <AppLayout default>
             <Router>
               <Overview path="/" />
-              <Activities path="/auditories" />
+              <Activities path="/audits" />
 
               <Analytics path="/analytics" />
 

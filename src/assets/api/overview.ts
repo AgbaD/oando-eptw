@@ -1,11 +1,11 @@
 import { createRequest } from ".";
 
 function getOverview() {
-  return createRequest("/profile/overview?days=30", "GET");
+  return createRequest("/profile/dash/overview", "GET");
 }
 
 function getAnalytics() {
-  return createRequest("/profile/analytics", "GET");
+  return createRequest("/profile/dash/analytics", "GET");
 }
 
 export { getOverview, getAnalytics };

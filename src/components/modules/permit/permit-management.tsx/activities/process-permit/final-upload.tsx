@@ -26,7 +26,6 @@ export default function FinalUpload() {
     setUploadedURLs((prev) => ({ ...prev, [key]: url }));
   }
 
-  // Filter out online documents
   const onlineDocuments = Object.keys(selectedPreviously)
     .filter(
       (key) =>

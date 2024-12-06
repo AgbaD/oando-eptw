@@ -25,7 +25,7 @@ export default function Stats({ metrics }) {
           </svg>
 
           <p>All Permits</p>
-          <h4>{metrics?.ongoingCount ?? 0}</h4>
+          <h4>{metrics?.allPermitCount ?? 0}</h4>
         </div>
 
         <div className="app-overview__stats__stat">
@@ -37,7 +37,7 @@ export default function Stats({ metrics }) {
           </svg>
 
           <p>Drafts</p>
-          <h4>{metrics?.draftCount ?? 0}</h4>
+          <h4>{metrics?.allDraftCount ?? 0}</h4>
         </div>
 
         <div className="app-overview__stats__stat">
@@ -49,7 +49,7 @@ export default function Stats({ metrics }) {
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <circle cx="12" cy="12" r="10" fill="#3710711A" />
+    <circle cx="24" cy="24" r="10" fill="#3710711A" />
     <path
       d="M20.71 8.12001V17.53C20.71 19.99 18.7 22 16.24 22H7.76004C5.30004 22 3.29004 19.99 3.29004 17.53V8.12001C3.29004 6.41001 4.25004 4.92001 5.66004 4.17001C6.15004 3.91001 6.76004 4.26001 6.76004 4.82001C6.76004 6.41001 8.06004 7.71001 9.65004 7.71001H14.35C15.94 7.71001 17.24 6.41001 17.24 4.82001C17.24 4.26001 17.84 3.91001 18.34 4.17001C19.75 4.92001 20.71 6.41001 20.71 8.12001Z"
       fill="#371071"
@@ -61,7 +61,7 @@ export default function Stats({ metrics }) {
   </svg>
 
           <p>Ongoing</p>
-          <h4>{metrics?.approvedCount ?? 0}</h4>
+          <h4>{metrics?.ongoingPermitCount ?? 0}</h4>
         </div>
 
         <div className="app-overview__stats__stat">
@@ -72,7 +72,7 @@ export default function Stats({ metrics }) {
           <path d="M25.5733 12.82C25.5733 14.41 24.2733 15.71 22.6833 15.71H17.9833C16.3933 15.71 15.0933 14.41 15.0933 12.82C15.0933 12.26 14.4933 11.91 13.9933 12.17C12.5833 12.92 11.6233 14.41 11.6233 16.12V25.53C11.6233 27.99 13.6333 30 16.0933 30H24.5733C27.0333 30 29.0433 27.99 29.0433 25.53V16.12C29.0433 14.41 28.0833 12.92 26.6733 12.17C26.1733 11.91 25.5733 12.26 25.5733 12.82ZM23.6733 20.73L19.6733 24.73C19.5233 24.88 19.3333 24.95 19.1433 24.95C18.9533 24.95 18.7633 24.88 18.6133 24.73L17.1133 23.23C16.8233 22.94 16.8233 22.46 17.1133 22.17C17.4033 21.88 17.8833 21.88 18.1733 22.17L19.1433 23.14L22.6133 19.67C22.9033 19.38 23.3833 19.38 23.6733 19.67C23.9633 19.96 23.9633 20.44 23.6733 20.73Z" fill="#008D4E"/>
           </svg>
           <p>Closed</p>
-          <h4>{metrics?.rejectedCount ?? 0}</h4>
+          <h4>{metrics?.closedPermitsCount ?? 0}</h4>
         </div>
       </div>
     </div>

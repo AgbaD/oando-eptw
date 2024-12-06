@@ -20,12 +20,51 @@ export default function Submit() {
   useEffect(() => {
     async function submitForm() {
       setLoading(true);
+
+      const selectedHazards = state.context.work_hazards?.hazards || {};
+      const filteredHazards = {};
+
+      Object.entries(selectedHazards).forEach(([key, value]) => {
+        console.log(key, value);
+        if (value !== undefined) {
+          filteredHazards[key] = value;
+        }
+      });
+
+      const selectedDocuments = Array.isArray(state.context.formattedDocuments)
+        ? state.context.formattedDocuments
+        : Object.entries(state.context.formattedDocuments || {}).map(
+            ([name, value]) => ({
+              name,
+              type: (value as { type: string }).type || "MANUAL",
+              doc: (value as { doc: string }).doc || "",
+            })
+          );
+
+      const toCamelCase = (str) => {
+        return str
+          .replace(/\/.*|\(.*?\)/g, "") // Remove anything starting with `/` or inside brackets
+          .replace(/\./g, "") // Remove all periods
+          .trim() // Remove leading and trailing spaces
+          .replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) =>
+            index === 0 ? match.toLowerCase() : match.toUpperCase()
+          )
+          .replace(/\s+/g, ""); // Remove all spaces
+      };
+
+      const documents = selectedDocuments.reduce((acc, doc) => {
+        const camelCaseName = toCamelCase(doc.name);
+        acc[`${camelCaseName}Type`] = doc.type;
+        acc[`${camelCaseName}`] = doc.doc;
+        return acc;
+      }, {});
+
       const payload = {
         permitId: permit?.id,
         hazards: {
           potentialHazardDescription:
             state.context.work_hazards?.potentialHazardDescription || "",
-          ...state.context.work_hazards?.hazards,
+          ...filteredHazards,
         },
         protectiveEquipment:
           state.context.personal_protective_equipment?.protectiveEquipment,
@@ -33,16 +72,7 @@ export default function Submit() {
         firefightingPrecaution:
           state.context.firefighting_equipment?.firefightingEquipment,
 
-        documents: {
-          gasClearanceCertType: "MANUAL",
-          gasClearanceCert: "...",
-          scaffoldingCertType: "MANUAL",
-          scaffoldingCert: "...",
-          mewpCertType: "MANUAL",
-          mewpCert: "...",
-          manBasketCertType: "MANUAL",
-          manBasketCert: "...",
-        },
+        documents,
         mechanicalIsolationPrecaution:
           state.context.mechanical_precaution?.mechanicalPrecaution,
 

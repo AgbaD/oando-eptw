@@ -1,5 +1,4 @@
 import { route } from "preact-router";
-import Button from "../../ui/button";
 import Icon from "../../ui/icon";
 import {
   Table,
@@ -9,7 +8,7 @@ import {
   TableRow,
 } from "../../ui/table";
 
-export default function Permits({ approvedPermits }) {
+export default function Permits({ closedPermits }) {
   return (
     <>
       <div className="app-overview__permits-header">
@@ -21,7 +20,7 @@ export default function Permits({ approvedPermits }) {
         </button>
       </div>
 
-      {approvedPermits?.length ? (
+      {closedPermits?.length ? (
         <Table>
           <TableHead>
             <TableRow>
@@ -29,29 +28,23 @@ export default function Permits({ approvedPermits }) {
               <TableCell>Work Type</TableCell>
               <TableCell>Work To Be Performed</TableCell>
               <TableCell>Work Location</TableCell>
-              <TableCell>Company</TableCell>
+              {/* <TableCell>Company</TableCell> */}
+              {/* <TableCell>Date Closed</TableCell> */}
+
               <TableCell>Date Closed</TableCell>
-              <TableCell></TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {approvedPermits?.map((permit) => (
-              <TableRow key={permit?.id}>
-                <TableCell>{permit?.id}</TableCell>
-                <TableCell>
-                  {permit?.issuringAuthority?.firstname}{" "}
-                  {permit?.issuringAuthority?.lastname}
-                </TableCell>
+            {closedPermits?.map((permit) => (
+              <TableRow key={permit?.publicId}>
+                <TableCell>{permit?.publicId}</TableCell>
+                <TableCell>{permit?.type}</TableCell>
+
                 <TableCell>{permit?.workDescription}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="outline"
-                    href={`permit-management/ptw/${permit?.id}`}
-                  >
-                    View
-                  </Button>
-                </TableCell>
+                <TableCell>{permit?.workArea}</TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
               </TableRow>
             ))}
           </TableBody>

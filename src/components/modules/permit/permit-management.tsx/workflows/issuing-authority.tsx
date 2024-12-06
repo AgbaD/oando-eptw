@@ -1,8 +1,19 @@
 import Section from "../../../../ui/sections";
 import Icon from "../../../../ui/icon";
 
+import { useEffect, useState } from "preact/hooks";
+
 export default function IssuingAuthorities({ response }: any) {
   const details = response;
+  const [approved, setApproved] = useState(false);
+
+  useEffect(() => {
+    details?.issuingAuthorityStatus === "APPROVED"
+      ? setApproved(true)
+      : details?.issuingAuthorityStatus === null
+      ? setApproved(false)
+      : setApproved(false);
+  }, [details]);
 
   const equipment = [
     {
@@ -41,7 +52,7 @@ export default function IssuingAuthorities({ response }: any) {
       content: [
         {
           id: 1,
-          title: "Describe the potential hazards",
+          title: "",
           info: hazardsArray?.hazard?.potentialHazardDescription || "",
         },
       ],
@@ -84,7 +95,13 @@ export default function IssuingAuthorities({ response }: any) {
     const itemEntries = Object.entries(displayItems)
       .filter(
         ([key, value]) =>
-          value !== null && !["id", "createdAt", "updatedAt"].includes(key)
+          value !== null &&
+          ![
+            "id",
+            "createdAt",
+            "updatedAt",
+            "potentialHazardDescription",
+          ].includes(key)
       )
       .map(([key, value]) => {
         return { key, value: value ?? false };
@@ -106,49 +123,63 @@ export default function IssuingAuthorities({ response }: any) {
     );
   };
 
+  function extractFileName(data) {
+    const url = data;
+
+    if (!url) {
+      throw new Error("URL is required.");
+    }
+
+    const segments = url.split("/");
+    const fileName = segments[segments.length - 1];
+
+    const name = fileName.split("-").slice(1).join("-");
+
+    return name;
+  }
+
   const renderDocuments = () => {
     const documentEntries = Object.entries(documentObject);
 
-    // Filter out invalid entries
-    const filteredEntries = documentEntries.filter(([key, value]) => {
-      // Exclude technical fields and entries where Type or Doc is null
-      if (
-        ["id", "createdAt", "updatedAt", "draftId"].includes(key) ||
-        ((key.includes("Type") || key.includes("Doc")) && !value)
-      ) {
-        return false;
-      }
-      return true;
-    });
+    return documentEntries
+      .filter(([key, value]) => {
+        // Filter out technical fields like `id`, `createdAt`, `updatedAt`, `draftId`
+        if (["id", "createdAt", "updatedAt", "draftId"].includes(key)) {
+          return false;
+        }
 
-    // If no valid entries exist, return a fallback message
-    if (filteredEntries.length === 0) {
-      return <p>--- No items uploaded ---</p>;
-    }
+        // Skip entries where the value is null or undefined
+        if ((key.includes("Type") || key.includes("Doc")) && !value) {
+          return false;
+        }
 
-    // Map through valid entries and render them
-    return filteredEntries.map(([key, value]) => {
-      // If it's a type field, format the text
-      if (key.includes("Type")) {
-        return (
-          <div key={key} className="document-item">
-            <div className="section__content__document_section">
-              <p className="section__header">
-                {key.replace(/([A-Z])/g, " $1").toUpperCase()}
-              </p>
+        if (value === null) {
+          return false;
+        }
+
+        return true; // Keep all other valid entries
+      })
+      .map(([key, value]) => {
+        // If it's a type field, format the text
+        if (key.includes("Type")) {
+          return (
+            <div key={key} className="document-item">
+              <div className="section__content__document_section">
+                <p className="section__header">
+                  {key.replace(/([A-Z])/g, " $1").toUpperCase()}
+                </p>
+              </div>
+              <div className="section__content">
+                <p className="document">
+                  <span>Upload Option</span>
+                </p>
+                <p>{value?.toString() || "No document provided"}</p>
+              </div>
             </div>
-            <div className="section__content">
-              <p className="document">
-                <span>Upload Option</span>
-              </p>
-              <p>{String(value) || "No document provided"}</p>
-            </div>
-          </div>
-        );
-      }
+          );
+        }
 
-      // If it's a document field, render it
-      if (key.includes("Doc")) {
+        // If it's a document field, render it
         return (
           <div key={key} className="document-item">
             <div className="section__content">
@@ -156,128 +187,144 @@ export default function IssuingAuthorities({ response }: any) {
                 <span>Document</span>
               </p>
               <p className="document_item">
-                {value}
+                {/* {value} */}
+                {extractFileName(value)}
                 <span>
-                  <img src="/svgs/document_download.svg" alt="" />
+                  <img
+                    src="/svgs/document_download.svg"
+                    alt="Download document"
+                  />
                 </span>
               </p>
             </div>
           </div>
         );
-      }
-
-      return null;
-    });
+      });
   };
 
   return (
     <div className={"app-permit__sections"}>
       <br />
-      <Section
-        type="Primary"
-        header="HAZARD IDENTIFICATION"
-        children={hazards[0]}
-        section={hazards[0].section}
-      />
-      <div className="section">
-        <div className="section__content">
-          <p className="title">Description of potential hazards</p>
-          <p>{hazardsArray?.hazard?.potentialHazardDescription}</p>
-        </div>
-        <div className="section__content">
-          <p className="title">Identification of potential hazards</p>
-          <p className="info">{renderDisplayItems(hazardsArray)}</p>
-        </div>
-      </div>
-
-      <Section
-        type="List"
-        header="PERSONNEL PROTECTIVE EQUIPMENT"
-        children={equipment[0]}
-        section={equipment[0].section}
-      />
-
-      <div className="section">
-        <div className="section__content">
-          <p className="info">{renderDisplayItems(personalProtectiveArray)}</p>
-        </div>
-      </div>
-
-      <Section
-        type="List"
-        header="FIREFIGHTING PRECAUTION"
-        children={firefighting[0]}
-        section={firefighting[0].section}
-      />
-
-      <div className="section">
-        <div className="section__content">
-          <p className="info">{renderDisplayItems(firefightingEquipment)}</p>
-        </div>
-      </div>
-
-      <Section
-        type="Permits"
-        header="COMPLEMENTARY PERMITS / CERTIFICATES / DOCUMENTS"
-        children={documents[0]}
-        section={documents[0].section}
-      />
-
-      <div className="section">
-        <div className="">
-          <p className="info">
-            {Object.keys(documentObject).length > 0 ? (
-              renderDocuments()
-            ) : (
-              <p>No documents uploaded.</p>
-            )}
-          </p>
-        </div>
-      </div>
-
-      <Section
-        type="List"
-        header="MECHANICAL ISOLATION (MEASURES ON EQUIPMENT / LINES)"
-        children={equipment[0]}
-        section={equipment[0].section}
-      />
-      <div className="section">
-        <div className="section__content">
-          <p className="info">
-            {renderDisplayItems(mechanicalPrecautionEquipment)}
-          </p>
-        </div>
-      </div>
-
-      <Section
-        type="List"
-        header="ELECTRICAL ISOLATION"
-        children={equipment[0]}
-        section={equipment[0].section}
-      />
-      <div className="section">
-        <div className="section__content">
-          <p className="info">
-            {renderDisplayItems(eletricalIsolationPrecaution)}
-          </p>
-        </div>
-      </div>
-
-      <br />
-
-      <div className="actions">
-        <div className="print">
-          <div>
-            <h4>Print </h4>
-            <p>Click the button to get a hardcopy version of this permit</p>
+      {approved ? (
+        <>
+          <Section
+            type="Primary"
+            header="HAZARD IDENTIFICATION"
+            children={hazards[0]}
+            section={hazards[0].section}
+          />
+          <div className="section">
+            <div className="section__content">
+              <p className="title">Description of potential hazards</p>
+              <p>{hazardsArray?.hazard?.potentialHazardDescription}</p>
+            </div>
+            <div className="section__content">
+              <p className="title">Identification of potential hazards</p>
+              <p className="info">{renderDisplayItems(hazardsArray.hazard)}</p>
+            </div>
           </div>
 
-          <button className={"flex-center"}>
-            <Icon name="print" />
-            Print Permit
-          </button>
-        </div>
-      </div>
+          <Section
+            type="List"
+            header="PERSONNEL PROTECTIVE EQUIPMENT"
+            children={equipment[0]}
+            section={equipment[0].section}
+          />
+
+          <div className="section">
+            <div className="section__content">
+              <p className="info">
+                {renderDisplayItems(personalProtectiveArray)}
+              </p>
+            </div>
+          </div>
+
+          <Section
+            type="List"
+            header="FIREFIGHTING PRECAUTION"
+            children={firefighting[0]}
+            section={firefighting[0].section}
+          />
+
+          <div className="section">
+            <div className="section__content">
+              <p className="info">
+                {renderDisplayItems(firefightingEquipment)}
+              </p>
+            </div>
+          </div>
+
+          <Section
+            type="Permits"
+            header="COMPLEMENTARY PERMITS / CERTIFICATES / DOCUMENTS"
+            children={documents[0]}
+            section={documents[0].section}
+          />
+
+          <div className="section">
+            <div className="">
+              <p className="info">
+                {Object.keys(documentObject).length > 0 ? (
+                  renderDocuments()
+                ) : (
+                  <p>No documents uploaded.</p>
+                )}
+              </p>
+            </div>
+          </div>
+
+          <Section
+            type="List"
+            header="MECHANICAL ISOLATION (MEASURES ON EQUIPMENT / LINES)"
+            children={equipment[0]}
+            section={equipment[0].section}
+          />
+          <div className="section">
+            <div className="section__content">
+              <p className="info">
+                {renderDisplayItems(mechanicalPrecautionEquipment)}
+              </p>
+            </div>
+          </div>
+
+          <Section
+            type="List"
+            header="ELECTRICAL ISOLATION"
+            children={equipment[0]}
+            section={equipment[0].section}
+          />
+          <div className="section">
+            <div className="section__content">
+              <p className="info">
+                {renderDisplayItems(eletricalIsolationPrecaution)}
+              </p>
+            </div>
+          </div>
+
+          <br />
+
+          <div className="actions">
+            <div className="print">
+              <div>
+                <h4>Print </h4>
+                <p>Click the button to get a hardcopy version of this permit</p>
+              </div>
+
+              <button className={"flex-center"}>
+                <Icon name="print" />
+                Print Permit
+              </button>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="base-empty">
+            <img src="/svgs/checklist.png" />
+            <p>Approval in progress</p>
+          </div>
+        </>
+      )}
     </div>
   );
 }

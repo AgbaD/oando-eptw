@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import Section from "../../../../ui/sections";
 
 import RenderButtonsOnPath from "../../render-buttons-by-path";
@@ -7,8 +8,10 @@ export default function PerformingAuthorities({ response }: any) {
   console.log(details);
   const hazardsArray =
     details?.permitHazards && details.permitHazards.length > 0
-      ? details.permitHazards[0]
+      ? details.permitHazards[0].hazard
       : null;
+
+  console.log(hazardsArray);
 
   const documentsArray =
     details?.permitDocuments && details.permitDocuments.length > 0
@@ -71,7 +74,13 @@ export default function PerformingAuthorities({ response }: any) {
         {
           id: 6,
           title: "Permit Valid From - To (Date & Time)",
-          info: `${details?.fromDate} /  ${details?.fromTime} - ${details?.toDate}  / ${details?.toTime}`,
+          info: `${dayjs(details?.fromDate).format(
+            "dddd, MMM D YYYY"
+          )} /  ${dayjs(details?.fromTime).format("hh:mm A")} - ${dayjs(
+            details?.toDate
+          ).format("dddd, MMM D YYYY")}  / ${dayjs(details?.toTime).format(
+            "hh:mm A"
+          )}`,
         },
       ],
     },
@@ -142,7 +151,13 @@ export default function PerformingAuthorities({ response }: any) {
     const itemEntries = Object.entries(displayItems)
       .filter(
         ([key, value]) =>
-          value !== null && !["id", "createdAt", "updatedAt"].includes(key)
+          value !== null &&
+          ![
+            "id",
+            "createdAt",
+            "updatedAt",
+            "potentialHazardDescription",
+          ].includes(key)
       )
       .map(([key, value]) => {
         return { key, value: value ?? false };
@@ -158,57 +173,83 @@ export default function PerformingAuthorities({ response }: any) {
     ));
   };
 
+  function extractFileName(data) {
+    const url = data;
+
+    if (!url) {
+      throw new Error("URL is required.");
+    }
+
+    const segments = url.split("/");
+    const fileName = segments[segments.length - 1];
+
+    const name = fileName.split("-").slice(1).join("-");
+
+    return name;
+  }
+
   const renderDocuments = () => {
     const documentEntries = Object.entries(documentObject);
 
-    return documentEntries.map(([key, value]) => {
-      // Filter out technical fields like `id`, `createdAt`, `updatedAt`, and `draftId`
-      if (["id", "createdAt", "updatedAt", "draftId"].includes(key)) {
-        return null;
-      }
+    return documentEntries
+      .filter(([key, value]) => {
+        // Filter out technical fields like `id`, `createdAt`, `updatedAt`, `draftId`
+        if (["id", "createdAt", "updatedAt", "draftId"].includes(key)) {
+          return false;
+        }
 
-      if ((key.includes("Type") || key.includes("Doc")) && !value) {
-        return null;
-      }
+        // Skip entries where the value is null or undefined
+        if ((key.includes("Type") || key.includes("Doc")) && !value) {
+          return false;
+        }
 
-      // If it's a type field, format the text
-      if (key.includes("Type")) {
+        if (value === null) {
+          return false;
+        }
+
+        return true; // Keep all other valid entries
+      })
+      .map(([key, value]) => {
+        // If it's a type field, format the text
+        if (key.includes("Type")) {
+          return (
+            <div key={key} className="document-item">
+              <div className="section__content__document_section">
+                <p className="section__header">
+                  {key.replace(/([A-Z])/g, " $1").toUpperCase()}
+                </p>
+              </div>
+              <div className="section__content">
+                <p className="document">
+                  <span>Upload Option</span>
+                </p>
+                <p>{value?.toString() || "No document provided"}</p>
+              </div>
+            </div>
+          );
+        }
+
+        // If it's a document field, render it
         return (
           <div key={key} className="document-item">
-            <div className="section__content__document_section">
-              <p className="section__header">
-                {key.replace(/([A-Z])/g, " $1").toUpperCase()}
-              </p>
-            </div>
-            <div className="section__content">
-              <p className="document">
-                <span>Upload Option</span>
-              </p>
-              <p> {value || "No document provided"}</p>
-            </div>
-          </div>
-        );
-      }
-
-      // If it's a document field, render it
-      return (
-        <div key={key} className="document-item">
-          <>
             <div className="section__content">
               <p className="document">
                 <span>Document</span>
               </p>
               <p className="document_item">
-                {value}
+                {/* {value} */}
+                {extractFileName(value)}
                 <span>
-                  <img src="/svgs/document_download.svg" alt="" />
+                  <img
+                    src="/svgs/document_download.svg"
+                    alt="Download document"
+                  />
                 </span>
               </p>
             </div>
-          </>
-        </div>
-      );
-    });
+          </div>
+        );
+      });
   };
 
   const currentPath = window.location.pathname;

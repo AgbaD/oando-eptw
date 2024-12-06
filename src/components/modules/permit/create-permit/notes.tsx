@@ -12,6 +12,7 @@ import { HAZARDS } from "./work-hazards";
 import { formatDateForBackend } from "../permit-management.tsx/activities/process-permit/auth-submit";
 
 import { Link } from "preact-router";
+import dayjs from "dayjs";
 
 export default function AdditionalNotes() {
   const { state, send } = usePermitContext();
@@ -68,7 +69,13 @@ export default function AdditionalNotes() {
         {
           id: 7,
           title: "Permit Valid From - To (Date & Time)",
-          info: `${state.context.work_description?.from_date} - ${state.context.work_description?.to_date} ${state.context.work_description?.from_time} - ${state.context.work_description?.to_time}`,
+          info: `${dayjs(state.context.work_description?.from_date).format(
+            "dddd, MMM D YYYY"
+          )} : ${state.context.work_description?.from_time}- ${dayjs(
+            state.context.work_description?.to_date
+          ).format("dddd, MMM D YYYY")} : ${
+            state.context.work_description?.to_time
+          }`,
         },
       ],
     },
@@ -141,7 +148,8 @@ export default function AdditionalNotes() {
   const selectedDocuments = Array.isArray(state.context.formattedDocuments)
     ? state.context.formattedDocuments
     : Object.entries(state.context.formattedDocuments || {}).map(
-        ([, value]) => ({
+        ([name, value]) => ({
+          name,
           type: (value as { type: string }).type || "MANUAL",
           doc: (value as { doc: string }).doc || "",
         })
@@ -161,6 +169,23 @@ export default function AdditionalNotes() {
         filteredHazards[key] = value;
       }
     });
+
+    const toCamelCase = (str) => {
+      return str
+        .replace(/\/.*|\(.*?\)/g, "") // Remove anything starting with `/` or inside brackets
+        .trim() // Remove leading and trailing spaces
+        .replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) =>
+          index === 0 ? match.toLowerCase() : match.toUpperCase()
+        )
+        .replace(/\s+/g, ""); // Remove all spaces
+    };
+
+    const documents = selectedDocuments.reduce((acc, doc) => {
+      const camelCaseName = toCamelCase(doc.name);
+      acc[`${camelCaseName}Type`] = doc.type;
+      acc[`${camelCaseName}Doc`] = doc.doc;
+      return acc;
+    }, {});
 
     const payload = {
       type: state.context.permit_type.toUpperCase(),
@@ -198,17 +223,7 @@ export default function AdditionalNotes() {
           state.context.work_hazards?.potentialHazardDescription || "",
         ...filteredHazards,
       },
-
-      documents: {
-        jobSafetyAnalysisType: "MANUAL",
-        jobSafetyAnalysisDoc: "...",
-        workProcedureType: "MANUAL",
-        workProcedureDoc: "...",
-        explosivesCertType: "MANUAL",
-        explosivesCert: "...",
-        mechanicalIsolationCertType: "MANUAL",
-        mechanicalIsolationCert: "...",
-      },
+      documents,
     };
 
     console.log(payload);
@@ -291,7 +306,7 @@ export default function AdditionalNotes() {
       {selectedDocuments?.length > 0 ? (
         selectedDocuments.map((item, index) => (
           <div key={index} className="section__content__document_section">
-            <p className="section__header">{item.type}</p>
+            <p className="section__header">{item.name}</p>
             <div className="section__content">
               <p className="document">
                 <span>Upload Option</span>

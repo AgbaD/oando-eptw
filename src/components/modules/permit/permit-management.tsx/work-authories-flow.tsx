@@ -21,9 +21,9 @@ export default function WorkAuthoriesFlow({}: any) {
 
   const { tabs, activeTab } = useTabs([
     "Performing Auth.",
-    "Issuing Auth",
-    "HSE Auth",
-    "Authorizing Auth",
+    "Issuing Auth.",
+    "HSE Auth.",
+    "Authorizing Auth.",
     "Perf. Auth. Supervisor",
     "Safety Officer",
     "Issuing. Auth. Supervisor",
@@ -47,11 +47,11 @@ export default function WorkAuthoriesFlow({}: any) {
         {activeTab === "Performing Auth." && (
           <PerformingAuthorities response={permitDetails} />
         )}
-        {activeTab === "Issuing Auth" && (
+        {activeTab === "Issuing Auth." && (
           <IssuingAuthorities response={permitDetails} />
         )}
-        {activeTab === "HSE Auth" && <HSEAuthority response={permitDetails} />}
-        {activeTab === "Authorizing Auth" && (
+        {activeTab === "HSE Auth." && <HSEAuthority response={permitDetails} />}
+        {activeTab === "Authorizing Auth." && (
           <AuthAuthority response={permitDetails} />
         )}
         {activeTab === "Safety Officer" && (

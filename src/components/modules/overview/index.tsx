@@ -8,7 +8,12 @@ import Stats from "./stats";
 
 export default function Overview({}: any) {
   const { response } = useRequest(getOverview, {}, true);
-  const { metrics, drafts, approvedPermits } = response?.data ?? {};
+
+  const metrics = response?.data;
+  const closedPermits = response?.data?.closedPermits;
+  const drafts = response?.data?.drafts;
+
+  console.log(metrics);
 
   return (
     <>
@@ -17,7 +22,7 @@ export default function Overview({}: any) {
       <div className="app-page app-overview__grid">
         <div>
           <Stats {...{ metrics }} />
-          <Permits {...{ approvedPermits }} />
+          <Permits {...{ closedPermits }} />
         </div>
 
         <div>

@@ -2,7 +2,7 @@ import useTabs from "../../../../../hooks/use-tabs";
 import ReusableTabs from "../../../../ui/resuableTabs";
 import Icon from "../../../../ui/icon";
 import Header from "../../../../ui/page/header";
-import PerformingAuthActivities from "./performing-auth-activities";
+
 import IssuingAuthorities from "../workflows/issuing-authority";
 import HSEAuthority from "../workflows/hse-authority";
 import AuthAuthority from "../workflows/auth-authority";
@@ -19,6 +19,7 @@ import { usePermitDetails } from "../../../../../context/permit-details.context"
 
 import PopupModal from "../../../../ui/popup";
 import { toast } from "../../../../ui/toast";
+import PerformingAuthorities from "../workflows/performing-authorities";
 
 interface PermitDetails {
   status: string;
@@ -39,6 +40,8 @@ export default function ProcessPermitsIndex({}: any) {
     async function getPermitDetails() {
       const permitResponse = await createRequest(`/permit/${id}`, "GET");
       const permitData = permitResponse[0].data;
+
+      console.log(permitData);
       setPermitDetails(permitData);
       updatePermit(permitData);
       setID(permitData.id);
@@ -49,9 +52,9 @@ export default function ProcessPermitsIndex({}: any) {
 
   const { tabs, activeTab } = useTabs([
     "Performing Auth.",
-    "Issuing Auth",
-    "HSE Auth",
-    "Authorizing Auth",
+    "Issuing Auth.",
+    "HSE Auth.",
+    "Authorizing Auth.",
     "Perf. Auth. Supervisor",
     "Safety Officer",
     "Issuing. Auth. Supervisor",
@@ -246,14 +249,14 @@ export default function ProcessPermitsIndex({}: any) {
 
         <div className="app-authorities__content">
           {activeTab === "Performing Auth." && (
-            <PerformingAuthActivities response={permitDetails} />
+            <PerformingAuthorities response={permitDetails} />
           )}
-          {activeTab === "Issuing Auth" && (
+          {activeTab === "Issuing Auth." && (
             <IssuingAuthorities response={permitDetails} />
           )}
-          {activeTab === "HSE Auth" && <HSEAuthority />}
+          {activeTab === "HSE Auth." && <HSEAuthority />}
           {activeTab === "Authorizing Auth" && <AuthAuthority />}
-          {activeTab === "Perf. Auth. Supervisor" && <PerfAuthSupervisor />}
+          {activeTab === "Perf. Auth. Supervisor." && <PerfAuthSupervisor />}
           {activeTab === "Safety Officer" && <SafetyOfficer />}
           {activeTab === "Issuing. Auth. Supervisor" && <IssuAuthSupervisor />}
         </div>

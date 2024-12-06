@@ -7,15 +7,15 @@ import Checkbox from "../../../ui/form/checkbox";
 import Select from "../../../ui/form/select";
 
 export const documentOptions = [
-  "Job Safety Analysis (JSA) / Risk Safety Analysis (RSA)",
-  "Work Procedure",
+  "Job Safety Analysis Doc (JSA) / Risk Safety Analysis (RSA)",
+  "Work Procedure Doc",
   "Explosives Certificate",
   "Mechanical Isolation Cert.",
   "Gas Clearance",
   "Scaffolding Cert.",
   "MEWP Cert.",
   "Man Basket Cert.",
-  "Work Near Powerlines Cert.",
+  "Near Powerlines Cert.",
   "Radiography Cert.",
   "Excavation Cert.",
   "Lift Cert.",
@@ -54,7 +54,7 @@ export default function Documents() {
             <div key={index} className="">
               <label className={"app-register__attachment-form items-center"}>
                 <Checkbox
-                  checked={!!values.documents[document]} // Ensure the value is always a boolean
+                  checked={!!values.documents[document]}
                   onChange={() =>
                     updateDocuments(document, !values.documents[document])
                   }

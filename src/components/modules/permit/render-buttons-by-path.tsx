@@ -64,7 +64,10 @@ export default function RenderButtonsOnPath(path: string) {
     if (err) {
       return toast({ variant: "error", message: err.message });
     } else {
-      toast({ variant: "success", message: "Permit closed successfully" });
+      toast({
+        variant: "success",
+        message: "Permit closure initiated successfully",
+      });
     }
     setClosurePopup(false);
     route("/permit-management");
