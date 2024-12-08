@@ -20,6 +20,7 @@ import { usePermitDetails } from "../../../../../context/permit-details.context"
 import PopupModal from "../../../../ui/popup";
 import { toast } from "../../../../ui/toast";
 import PerformingAuthorities from "../workflows/performing-authorities";
+import { useUserContext } from "../../../../../context/user.context";
 
 interface PermitDetails {
   status: string;
@@ -31,10 +32,13 @@ export default function ProcessPermitsIndex({}: any) {
   const id = valueID;
 
   const { updatePermit } = usePermitDetails();
+  const { profile } = useUserContext();
 
   const [permitDetails, setPermitDetails] = useState<PermitDetails>({
     status: "",
   });
+
+  const [canRenderActions, setCanRenderActions] = useState(false); // State to control rendering.
 
   useEffect(() => {
     async function getPermitDetails() {
@@ -45,10 +49,16 @@ export default function ProcessPermitsIndex({}: any) {
       setPermitDetails(permitData);
       updatePermit(permitData);
       setID(permitData.id);
+      const userRole = permitData?.permitRoles?.[profile?.id];
+      if (userRole && userRole === permitData?.currentAuthority) {
+        setCanRenderActions(true);
+      } else {
+        setCanRenderActions(false);
+      }
     }
 
     getPermitDetails();
-  }, [id]);
+  }, [id, profile?.id]);
 
   const { tabs, activeTab } = useTabs([
     "Performing Auth.",
@@ -167,79 +177,114 @@ export default function ProcessPermitsIndex({}: any) {
       <Header title="Activities" />
       <br />
       <div className={"app-permit__sections"}>
-        <div className="actions">
-          {permitDetails?.status === "NOT_STARTED" ? (
-            <>
-              <div className="print">
-                <div>
-                  <h4>Process Permit</h4>
-                  <p>Click the button to process / approve this permit</p>{" "}
-                </div>
+        {canRenderActions ? (
+          <div className="actions">
+            {permitDetails?.status === "NOT_STARTED" ? (
+              <>
+                <div className="print">
+                  <div>
+                    <h4>Process Permit</h4>
+                    <p>
+                      Click the button to process / approve this permit
+                    </p>{" "}
+                  </div>
 
-                <button
-                  className={"flex-center"}
-                  onClick={() => handleNavigate(permitDetails)}
-                >
-                  <Icon name="process" />
-                  Process Permit
-                </button>
-              </div>
-            </>
-          ) : permitDetails?.status === "REVALIDATION_INITIATED" ? (
-            <>
-              <div className="print">
-                <div>
-                  <h4>Revalidate Permit</h4>
-                  <p>Click the button to revalidate this permit</p>{" "}
+                  <button
+                    className={"flex-center"}
+                    onClick={() => handleNavigate(permitDetails)}
+                  >
+                    <Icon name="process" />
+                    Process Permit
+                  </button>
                 </div>
+              </>
+            ) : permitDetails?.status === "REVALIDATION_INITIATED" ? (
+              <>
+                <div className="print">
+                  <div>
+                    <h4>Revalidate Permit</h4>
+                    <p>Click the button to revalidate this permit</p>{" "}
+                  </div>
 
-                <button
-                  className={"flex-center"}
-                  onClick={() => handleRevalidateNavigate(permitDetails)}
-                >
-                  <Icon name="process" />
-                  Revalidate Permit
-                </button>
-              </div>
-            </>
-          ) : permitDetails?.status === "SUSPENDED" ? (
-            <>
-              <div className="print">
-                <div>
-                  <h4>Permit Suspended</h4>
-                  <p>Click the button to reactive this permit</p>{" "}
+                  <button
+                    className={"flex-center"}
+                    onClick={() => handleRevalidateNavigate(permitDetails)}
+                  >
+                    <Icon name="process" />
+                    Revalidate Permit
+                  </button>
                 </div>
+              </>
+            ) : permitDetails?.status === "SUSPENDED" ? (
+              <>
+                <div className="print">
+                  <div>
+                    <h4>Permit Suspended</h4>
+                    <p>Click the button to reactive this permit</p>{" "}
+                  </div>
 
-                <button
-                  className={"flex-center"}
-                  onClick={() => handleReactivate()}
-                >
-                  <Icon name="export" />
-                  Reactivate Permit
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="closure">
-                <div>
-                  <h4>Process Closure</h4>
-                  <p>
-                    Click the button to request closure for this permit
-                  </p>{" "}
+                  <button
+                    className={"flex-center"}
+                    onClick={() => handleReactivate()}
+                  >
+                    <Icon name="export" />
+                    Reactivate Permit
+                  </button>
                 </div>
+              </>
+            ) : permitDetails?.sendBackAuthority !== null ? (
+              <>
+                <div className="closure">
+                  <div>
+                    <h4>
+                      Permit Sent back from {permitDetails?.sendBackAuthority}
+                    </h4>
+                    <p>{permitDetails?.sendBackReason}</p>{" "}
+                  </div>
 
-                <button
-                  className={"flex-center"}
-                  onClick={() => handleClosureNavigate(permitDetails)}
-                >
-                  <Icon name="export" />
-                  Process Closure
-                </button>
+                  <button
+                    className={"flex-center"}
+                    onClick={() => handleNavigate(permitDetails)}
+                  >
+                    <Icon name="process" />
+                    Process Permit
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="closure">
+                  <div>
+                    <h4>Process Closure</h4>
+                    <p>
+                      Click the button to request closure for this permit
+                    </p>{" "}
+                  </div>
+
+                  <button
+                    className={"flex-center"}
+                    onClick={() => handleClosureNavigate(permitDetails)}
+                  >
+                    <Icon name="export" />
+                    Process Closure
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="actions">
+            <div className="print">
+              <div>
+                <h4>Approval in Progress</h4>
+                <p>
+                  This permit is currently being processed by another authority.
+                  Please check the permit status for further details.
+                </p>
               </div>
-            </>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
       </div>
       <br />
       <div className={"app-authorities"}>
@@ -255,8 +300,8 @@ export default function ProcessPermitsIndex({}: any) {
             <IssuingAuthorities response={permitDetails} />
           )}
           {activeTab === "HSE Auth." && <HSEAuthority />}
-          {activeTab === "Authorizing Auth" && <AuthAuthority />}
-          {activeTab === "Perf. Auth. Supervisor." && <PerfAuthSupervisor />}
+          {activeTab === "Authorizing Auth." && <AuthAuthority />}
+          {activeTab === "Perf. Auth. Supervisor" && <PerfAuthSupervisor />}
           {activeTab === "Safety Officer" && <SafetyOfficer />}
           {activeTab === "Issuing. Auth. Supervisor" && <IssuAuthSupervisor />}
         </div>

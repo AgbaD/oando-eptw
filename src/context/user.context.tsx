@@ -26,7 +26,7 @@ function UserProvider({ children }: any) {
       localStorage.setItem("auth_profile", JSON.stringify(data.profile));
       setProfile(data.profile);
     }
-    route("/");
+    route("/select-permit-role");
   }
 
   function logout() {

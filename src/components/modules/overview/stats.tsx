@@ -6,7 +6,7 @@ export default function Stats({ metrics }) {
   return (
     <div className="app-overview__stats">
       <div className="app-overview__stats__header">
-        <div>
+        <div className="hide-display-mobile">
           <h3 className="app-overview__stats__title">Permit Metrics</h3>
           <DateFilter />
         </div>
@@ -14,6 +14,11 @@ export default function Stats({ metrics }) {
         <Button href="/permit/create" variant="primary">
           <Icon name="plus" /> Create Permit
         </Button>
+
+        <div className="hide-display-web permit">
+          <h3 className="app-overview__stats__title">Permit Metrics</h3>
+          <DateFilter />
+        </div>
       </div>
 
       <div className="app-overview__stats__wrapper">
@@ -43,13 +48,13 @@ export default function Stats({ metrics }) {
         <div className="app-overview__stats__stat">
           {/* prettier-ignore */}
           <svg
-    width="24"
-    height="24"
+    width="41"
+    height="40"
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <circle cx="24" cy="24" r="10" fill="#3710711A" />
+     <circle cx="20.3333" cy="20" r="20" fill="#3710711A" />
     <path
       d="M20.71 8.12001V17.53C20.71 19.99 18.7 22 16.24 22H7.76004C5.30004 22 3.29004 19.99 3.29004 17.53V8.12001C3.29004 6.41001 4.25004 4.92001 5.66004 4.17001C6.15004 3.91001 6.76004 4.26001 6.76004 4.82001C6.76004 6.41001 8.06004 7.71001 9.65004 7.71001H14.35C15.94 7.71001 17.24 6.41001 17.24 4.82001C17.24 4.26001 17.84 3.91001 18.34 4.17001C19.75 4.92001 20.71 6.41001 20.71 8.12001Z"
       fill="#371071"

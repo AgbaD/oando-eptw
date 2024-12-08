@@ -20,14 +20,14 @@ export default function CreateExternalUser({}: any) {
   const validationSchema = Yup.object({
     fullname: Yup.string().required("Full name is required"),
     email: Yup.string().email("Email is invalid").required("Email is required"),
-    roleIds: Yup.array().min(1, "At least one role must be selected"),
+    roleId: Yup.number().required("A role must be selected"),
   });
 
   async function onSubmit(data) {
     const [_, error] = await makeRequest({
       fullname: data.fullname,
       email: data.email,
-      roleIds: data.roleIds,
+      roleId: data.roleId,
       companyId: Number(valueID),
     });
     if (error) {
@@ -44,7 +44,7 @@ export default function CreateExternalUser({}: any) {
     initialValues: {
       fullname: "",
       email: "",
-      roleIds: [],
+      roleId: null,
     },
     onSubmit,
     validationSchema,
@@ -57,12 +57,8 @@ export default function CreateExternalUser({}: any) {
       }))
     : [];
 
-  function toggleRole(value) {
-    const roleIds = values.roleIds ?? [];
-    const updatedRolesId = roleIds.includes(value)
-      ? roleIds.filter((r) => r !== value)
-      : [...roleIds, value];
-    setFieldValue("roleIds", updatedRolesId);
+  function selectRole(value) {
+    setFieldValue("roleId", value);
   }
 
   return (
@@ -98,8 +94,8 @@ export default function CreateExternalUser({}: any) {
             {roleOptions?.map(({ label, value }, i) => (
               <label className="base-checkbox-label" key={i}>
                 <Checkbox
-                  checked={values.roleIds.includes(value)}
-                  onChange={() => toggleRole(value)}
+                  checked={values.roleId === value}
+                  onChange={() => selectRole(value)}
                 />
                 <span>{label}</span>
               </label>

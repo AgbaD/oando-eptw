@@ -192,10 +192,19 @@
 .app-analytics__line-graph {
   position: relative;
 
+  h2 {
+    color: #e86e18;
+  }
+
+  .details {
+    border-top: 1px solid #e5e6e7;
+    padding: 10px 0;
+  }
+
   .stats {
     margin-bottom: 16px;
 
-    h4 {
+    h2 {
       font-size: 36px;
     }
   }
@@ -235,5 +244,23 @@
       border-radius: 100vh;
       display: block;
     }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .app-analytics {
+    &__header {
+      flex-direction: column;
+      gap: 16px;
+    }
+  }
+
+  .app-analytics__grid {
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .app-analytics__card {
+    padding: 10px;
   }
 }

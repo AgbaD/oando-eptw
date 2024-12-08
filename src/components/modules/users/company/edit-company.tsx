@@ -98,7 +98,7 @@ export default function EditCompany({}: any) {
     if (error) {
       return toast({
         variant: "error",
-        message: error?.message ?? "Failed to create user, please try again.",
+        message: error?.message ?? "Failed to edit company, please try again.",
       });
     }
 

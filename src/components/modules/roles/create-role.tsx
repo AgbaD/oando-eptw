@@ -10,12 +10,12 @@ import useRequest from "../../../hooks/use-request";
 import { createNewRole } from "../../../assets/api/user";
 import { toast } from "../../ui/toast";
 
-import { PERMISSIONS } from "../../../assets/utils";
+import { PERMISSIONS, AUTHORITIES } from "../../../assets/utils";
 
 export default function CreateRole({}: any) {
   const { makeRequest, isLoading } = useRequest(createNewRole);
   const { getFieldProps, values, setFieldValue, handleSubmit } = useForm({
-    initialValues: { roleTitle: "", permissions: [] },
+    initialValues: { roleTitle: "", permissions: [], authorities: [] },
     validationSchema,
     onSubmit,
   });
@@ -29,11 +29,21 @@ export default function CreateRole({}: any) {
     setFieldValue("permissions", permissions);
   }
 
+  function toggleAuthorities(value) {
+    let authorities = [];
+    const isNotValue = (p) => p !== value;
+    if (values.authorities.every(isNotValue))
+      authorities = [...values.authorities, value];
+    else authorities = values.authorities.filter(isNotValue);
+    setFieldValue("authorities", authorities);
+  }
+
   async function onSubmit(data) {
     console.log(data);
     const [_, err] = await makeRequest({
       name: data.roleTitle,
       permissions: data.permissions,
+      authorities: data.authorities,
       // permissions: data.permissions.map((permission) => ({ name: permission })),
     });
 
@@ -83,6 +93,19 @@ export default function CreateRole({}: any) {
               ))}
             </div>
 
+            <p className="app-create__form__title">Authorities</p>
+            <div className="app-create__form__group">
+              {AUTHORITIES.map(({ label, value }, i) => (
+                <label className="base-checkbox-label" key={i}>
+                  <Checkbox
+                    checked={values.authorities.includes(value)}
+                    onChange={() => toggleAuthorities(value)}
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+
             <Button variant="primary" {...{ isLoading }}>
               Create Role
             </Button>
@@ -95,6 +118,8 @@ export default function CreateRole({}: any) {
 
 const validationSchema = Yup.object({
   roleTitle: Yup.string().required("Role title is required"),
+  permissions: Yup.array().required("At least one permission is required"),
+  authorities: Yup.array().required("At least one authority is required"),
 });
 
 //FULL_ACCESS

@@ -69,4 +69,18 @@ const PERMISSIONS = [
   { label: "Attach Documents", value: "ATTACH_DOCUMENTS" },
 ] as const;
 
-export { randomHash, capitalize, createParams, PERMISSIONS };
+const AUTHORITIES = [
+  { label: "Super Admin", value: "SUPER_ADMIN" },
+  { label: "Performing Authority", value: "PERFORMING" },
+  { label: "Issuing Authority", value: "ISSUING" },
+  { label: "HSE Authority", value: "HSE" },
+  { label: "Authorizing Authority", value: "AUTHORIZING" },
+  {
+    label: "Performing Authorizing Supervisor",
+    value: "PERFORMING_SUPERVISOR",
+  },
+  { label: "Safety Officer", value: "SAFETY_OFFICER" },
+  { label: "Issuing Authorizing Supervisor", value: "ISSUING_SUPERVISOR" },
+] as const;
+
+export { randomHash, capitalize, createParams, PERMISSIONS, AUTHORITIES };

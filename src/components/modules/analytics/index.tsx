@@ -1,20 +1,23 @@
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import Button from "../../ui/button";
-import DateFilter from "../../ui/date/date-filter";
 import Icon from "../../ui/icon";
 import Header from "../../ui/page/header";
 import "./index.scss";
 import useRequest from "../../../hooks/use-request";
 import { getAnalytics } from "../../../assets/api/overview";
 
-import { useEffect, useRef } from "preact/hooks";
+import useTabs from "../../../hooks/use-tabs";
+import Tabs from "../../ui/tabs";
+
+import { useEffect, useRef, useState } from "preact/hooks";
+import { Dropdown, DropdownContent, DropdownTrigger } from "../../ui/dropdown";
 
 Chart.register(...registerables);
 
 export default function Analytics({}: any) {
   const { response } = useRequest(getAnalytics, {}, true);
-  // const { activeTab, tabs } = useTabs(["Month", "Year"]);
+  const { tabs } = useTabs(["Month", "Year"]);
 
   const chartRef = useRef(null);
 
@@ -68,6 +71,22 @@ export default function Analytics({}: any) {
     });
   });
 
+  const [year, setYear] = useState("2024");
+  const yearOptions = [
+    {
+      value: "2024",
+      text: "2024",
+    },
+    {
+      value: "2023",
+      text: "2023",
+    },
+    {
+      value: "2022",
+      text: "2022",
+    },
+  ];
+
   return (
     <div>
       <Header title="Analytics & Report" />
@@ -80,8 +99,22 @@ export default function Analytics({}: any) {
           </Button>
 
           <div>
-            {/* <Tabs {...{ tabs }} /> */}
-            <DateFilter variant="secondary" />
+            <Tabs {...{ tabs }} />
+            <Dropdown>
+              <DropdownTrigger>{year}</DropdownTrigger>
+              <DropdownContent>
+                {yearOptions.map((year) => (
+                  <div
+                    className={"base-dropdown__option"}
+                    onClick={() => setYear(year.value)}
+                    key={year.value}
+                  >
+                    {year.text}
+                  </div>
+                ))}
+              </DropdownContent>
+            </Dropdown>
+            {/* <DateFilter variant="secondary" /> */}
           </div>
         </div>
 
@@ -90,7 +123,7 @@ export default function Analytics({}: any) {
             <p className="app-analytics__card__title">Total Permits</p>
 
             <div className="stats">
-              <h4>{response?.data?.permits?.totalPermitCount ?? 0}</h4>
+              <h4>{response?.data?.allPermitCount ?? 0}</h4>
               <p className="stat-increase">
                 + 16.5% <Icon name="increase" />
               </p>
@@ -98,12 +131,12 @@ export default function Analytics({}: any) {
 
             <div className="counts">
               <div>
-                <h4>{response?.data?.permits?.totalApprovedCount ?? 0}</h4>
+                <h4>{response?.data?.closedPermitCount ?? 0}</h4>
                 <p>Closed</p>
               </div>
 
               <div>
-                <h4>{response?.data?.permits?.totalRejectedCount ?? 0}</h4>
+                <h4>{response?.data?.issuedPermitCount ?? 0}</h4>
                 <p>Issued</p>
               </div>
             </div>
@@ -216,15 +249,22 @@ export default function Analytics({}: any) {
           <div className="app-analytics__card app-analytics__line-graph">
             <h2 className="">Top Identified Hazards</h2>
 
-            <p>-------------------------------</p>
-            <h2>Noise</h2>
-            <span>500 permits</span>
-            <p>-------------------------------</p>
-            <h2>Toxic Substance</h2>
-            <span>500 permits</span>
-            <p>-------------------------------</p>
-            <h2>Spill (CONTAINMENT IN PLACE)</h2>
-            <span>500 permits</span>
+            <div className="">
+              <div className="details">
+                <h4>Noise</h4>
+                <span>500 permits</span>
+              </div>
+
+              <div className="details">
+                <h4>Toxic Substance</h4>
+                <span>500 permits</span>
+              </div>
+
+              <div className="">
+                <h4>Spill (CONTAINMENT IN PLACE)</h4>
+                <span>500 permits</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

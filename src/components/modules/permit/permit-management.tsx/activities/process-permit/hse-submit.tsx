@@ -93,7 +93,7 @@ export default function HseProcessSubmit() {
       route("/process-permits");
       toast({
         variant: "success",
-        message: "Permit created successfully",
+        message: "Permit approved successfully",
       });
       setLoading(false);
     }

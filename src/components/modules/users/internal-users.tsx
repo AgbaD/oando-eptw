@@ -51,6 +51,12 @@ export default function InternalUsers() {
 
   const [isModalOpen, setModalOpen] = useState(false);
 
+  const editUsers = (item) => {
+    setID(item.id);
+
+    route("/interal-user/edit");
+  };
+
   const startDelete = (item) => {
     setID(item.id);
     setModalOpen(true);
@@ -225,7 +231,7 @@ export default function InternalUsers() {
             toggle={() => toggle("user_details")}
             show={modals.user_details}
           >
-            <ModalHeader>Location Details</ModalHeader>
+            <ModalHeader>User Details</ModalHeader>
             <ModalBody>
               <ModalDetail label="Date Created:">
                 {dayjs(selectedUser?.createdAt).format(
@@ -278,7 +284,7 @@ export default function InternalUsers() {
                 <button
                   className="app-modal__btn--yellow"
                   onClick={() => {
-                    route("/users/edit");
+                    editUsers(selectedUser);
                   }}
                 >
                   <Icon name="edit" />

@@ -93,8 +93,9 @@ export default function Locations({}: any) {
       });
     } else {
       return toast({
-        variant: "success",
-        message: response[0]?.message ?? "Location deleted succesfully.",
+        variant: "error",
+        message:
+          response[0]?.message ?? "Location deletion failed, please try again.",
       });
     }
   };

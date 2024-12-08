@@ -21,34 +21,56 @@ export default function Permits({ closedPermits }) {
       </div>
 
       {closedPermits?.length ? (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>PTW ID</TableCell>
-              <TableCell>Work Type</TableCell>
-              <TableCell>Work To Be Performed</TableCell>
-              <TableCell>Work Location</TableCell>
-              {/* <TableCell>Company</TableCell> */}
-              {/* <TableCell>Date Closed</TableCell> */}
+        <>
+          <div className="hide-display-mobile">
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>PTW ID</TableCell>
+                  <TableCell>Work Type</TableCell>
+                  <TableCell>Work To Be Performed</TableCell>
+                  <TableCell>Work Location</TableCell>
+                  {/* <TableCell>Company</TableCell> */}
+                  {/* <TableCell>Date Closed</TableCell> */}
 
-              <TableCell>Date Closed</TableCell>
-            </TableRow>
-          </TableHead>
+                  <TableCell>Date Closed</TableCell>
+                </TableRow>
+              </TableHead>
 
-          <TableBody>
+              <TableBody>
+                {closedPermits?.map((permit) => (
+                  <TableRow key={permit?.publicId}>
+                    <TableCell>{permit?.publicId}</TableCell>
+                    <TableCell>{permit?.type?.replace(/_/g, " ")}</TableCell>
+
+                    <TableCell>{permit?.workDescription}</TableCell>
+                    <TableCell>{permit?.workArea}</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <div className="hide-display-web">
             {closedPermits?.map((permit) => (
-              <TableRow key={permit?.publicId}>
-                <TableCell>{permit?.publicId}</TableCell>
-                <TableCell>{permit?.type}</TableCell>
+              <div className="app-overview__permits-sm-table">
+                <div className="flex">
+                  <span>{permit?.publicId}</span>
+                  <p>{permit?.type?.replace(/_/g, " ")}</p>
+                </div>
 
-                <TableCell>{permit?.workDescription}</TableCell>
-                <TableCell>{permit?.workArea}</TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-              </TableRow>
+                <h4>{`${permit?.workDescription
+                  .charAt(0)
+                  .toUpperCase()}${permit?.workDescription.slice(1)}`}</h4>
+                <p>Date Closed: {permit?.workArea}</p>
+              </div>
             ))}
-          </TableBody>
-        </Table>
+            <br />
+            <br />
+          </div>
+        </>
       ) : (
         <div className="base-empty" style={{ margin: "100px auto" }}>
           <img src="/svgs/document.svg" />

@@ -69,6 +69,8 @@ import ProcessIssuSupervisorPermit from "./components/modules/permit/permit-mana
 import { PermitDetailsProvider } from "./context/permit-details.context.tsx";
 import { MsalProvider } from "@azure/msal-react";
 import CompleteOnboarding from "./components/modules/auth/complete-onboarding.tsx";
+import EditInternalUser from "./components/modules/users/edit-internal-user.tsx";
+import SelectPermitRole from "./components/modules/permit/select-permit/index.tsx";
 
 function App() {
   return (
@@ -100,6 +102,8 @@ function App() {
           <ClosurePerfAuth path="/closure-perf-auth" />
           <ClosureSafetyOfficer path="/closure-safety-officer" />
           <ClosureIssuingSupervisor path="/closure-issuing-supervisor" />
+
+          <SelectPermitRole path="/select-permit-role" />
 
           <OnsiteCommentsView path="/add-onsite-comments" />
           <AppLayout default>
@@ -136,6 +140,7 @@ function App() {
 
               {/* Edit User Paths */}
               <EditUser path="/users/edit" />
+              <EditInternalUser path="/interal-user/edit" />
               <EditCompany path="/users/edit-company" />
 
               {/* Permit Management Paths */}

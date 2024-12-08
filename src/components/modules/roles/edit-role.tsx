@@ -13,6 +13,7 @@ import { useIDContext } from "../../../context/id.context";
 import { createRequest } from "../../../assets/api";
 
 import { editRole } from "../../../assets/api/user";
+import { AUTHORITIES, PERMISSIONS } from "../../../assets/utils";
 
 export default function EditRole({}: any) {
   const { valueID } = useIDContext();
@@ -33,7 +34,12 @@ export default function EditRole({}: any) {
 
   const { makeRequest, isLoading } = useRequest(editRole);
   const { getFieldProps, values, setFieldValue, handleSubmit } = useForm({
-    initialValues: { roleId: valueID, name: "", permissions: [] },
+    initialValues: {
+      roleId: valueID,
+      name: "",
+      permissions: [],
+      authorities: [],
+    },
     validationSchema,
     onSubmit,
   });
@@ -42,6 +48,7 @@ export default function EditRole({}: any) {
     if (roleResponseState) {
       setFieldValue("name", roleResponseState.name);
       setFieldValue("permissions", permissions);
+      // setFieldValue("authorities", roleResponseState.authorities);
     }
   }, [roleResponseState, permissions]);
 
@@ -52,11 +59,19 @@ export default function EditRole({}: any) {
     setFieldValue("permissions", updatedPermissions);
   }
 
+  // function toggleAuthorities(value, isChecked) {
+  //   const updatedAuthorities = isChecked
+  //     ? [...values.authorities, value]
+  //     : values.authorities.filter((p) => p !== value);
+  //   setFieldValue("authorities", updatedAuthorities);
+  // }
+
   async function onSubmit(data) {
     const [_, err] = await makeRequest({
       roleId: valueID,
       name: roleName,
       permissions: data.permissions,
+      // authorities: data.authorities,
     });
 
     if (err) {
@@ -101,6 +116,19 @@ export default function EditRole({}: any) {
               ))}
             </div>
 
+            <p className="app-create__form__title">Update Authorities</p>
+            <div className="app-create__form__group">
+              {AUTHORITIES.map(({ label, value }, i) => (
+                <label className="base-checkbox-label" key={i}>
+                  <Checkbox
+                    checked={values.permissions.includes(value)}
+                    onChange={(isChecked) => togglePermission(value, isChecked)}
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+
             <Button type="submit" variant="primary" isLoading={isLoading}>
               Edit Role
             </Button>
@@ -110,23 +138,6 @@ export default function EditRole({}: any) {
     </>
   );
 }
-
-const PERMISSIONS = [
-  { label: "Full Access", value: "FULL_ACCESS" },
-  { label: "Platform Access", value: "PLATFORM_ACCESS" },
-  { label: "Create Permit", value: "CREATE_PERMIT" },
-  { label: "Process Permit", value: "PROCESS_PERMIT" },
-  { label: "Create User", value: "CREATE_USER" },
-  { label: "Edit User", value: "EDIT_USER" },
-  { label: "Create Role", value: "CREATE_ROLE" },
-  { label: "Edit Role", value: "EDIT_ROLE" },
-  { label: "Delete user Role", value: "DELETE_USER_ROLE" },
-  { label: "PTW Access", value: "PTW_ACCESS" },
-  { label: "Process Existing Permit", value: "PROCESS_EXISTING_PERMIT" },
-  { label: "Internal Task Responsible", value: "INTERNAL_TASK_RESPONSIBLE" },
-  { label: "External Task Responsible", value: "EXTERNAL_TASK_RESPONSIBLE" },
-  { label: "Attach Documents", value: "ATTACH_DOCUMENTS" },
-];
 
 const validationSchema = Yup.object().shape({
   // name: Yup.string().required("Role name is required"),

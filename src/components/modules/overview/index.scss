@@ -146,7 +146,7 @@
     justify-content: space-between;
     padding: 17px 16px;
     border-bottom: 1px solid var(--grey-divider);
-    
+
     &:last-child {
       border-bottom: 0;
     }
@@ -159,6 +159,90 @@
     span {
       font-size: 14px;
       color: var(--grey-700);
+    }
+  }
+}
+
+.hide-display-mobile {
+  display: inline;
+}
+
+.hide-display-web {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .app-overview {
+    &__grid {
+      display: block;
+    }
+
+    &__stats {
+      padding: 3px;
+
+      &__header {
+        display: block;
+
+        > .base-button {
+          margin-left: auto;
+          margin-top: 0;
+          margin-bottom: 14px;
+          width: 100%;
+          font-size: 14px;
+          padding: 10px 30px;
+        }
+      }
+
+      &__stat {
+        min-width: 16%;
+
+        p {
+          color: var(--grey-600);
+          margin: 20px 0 12px 0;
+        }
+
+        h4 {
+          font-size: 32px;
+        }
+      }
+    }
+
+    &__drafts {
+      margin-top: 29px;
+    }
+
+    &__permits-sm-table {
+      margin: 7px 0px;
+
+      h4 {
+        margin: 2px 0px;
+      }
+      .flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        p {
+          color: #6b7280;
+          font-weight: 700;
+        }
+      }
+
+      p {
+      }
+    }
+  }
+
+  .hide-display-mobile {
+    display: none;
+  }
+
+  .hide-display-web {
+    display: block;
+    .permit {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
   }
 }

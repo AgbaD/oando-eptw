@@ -22,10 +22,15 @@ export default function Overview({}: any) {
       <div className="app-page app-overview__grid">
         <div>
           <Stats {...{ metrics }} />
+
+          <div className="hide-display-web">
+            <Drafts {...{ drafts }} />
+          </div>
+
           <Permits {...{ closedPermits }} />
         </div>
 
-        <div>
+        <div className="hide-display-mobile">
           <Drafts {...{ drafts }} />
         </div>
       </div>

@@ -233,6 +233,14 @@ function addOnsiteNote(data) {
   return createRequest("/permit/note", "POST", data);
 }
 
+function getProcessablePermits() {
+  return createRequest(`/permit/user/processable`, "GET");
+}
+
+function attachPermitRole(data) {
+  return createRequest(`/permit/profile/authority`, "POST", data);
+}
+
 export {
   createPermit,
   addOnsiteNote,
@@ -279,4 +287,6 @@ export {
   initiateContinuation,
   approveHseContinuation,
   approveIssuingAuthContinuation,
+  getProcessablePermits,
+  attachPermitRole,
 };

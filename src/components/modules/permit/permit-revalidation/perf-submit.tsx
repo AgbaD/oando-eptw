@@ -29,20 +29,40 @@ export default function PerfRevalidationSubmit() {
   useEffect(() => {
     async function submitForm() {
       setLoading(true);
+
+      const selectedDocuments = Array.isArray(state.context.formattedDocuments)
+        ? state.context.formattedDocuments
+        : Object.entries(state.context.formattedDocuments || {}).map(
+            ([name, value]) => ({
+              name,
+              type: (value as { type: string }).type || "MANUAL",
+              doc: (value as { doc: string }).doc || "",
+            })
+          );
+
+      const toCamelCase = (str) => {
+        return str
+          .replace(/\/.*|\(.*?\)/g, "") // Remove anything starting with `/` or inside brackets
+          .replace(/\./g, "") // Remove all periods
+          .trim() // Remove leading and trailing spaces
+          .replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) =>
+            index === 0 ? match.toLowerCase() : match.toUpperCase()
+          )
+          .replace(/\s+/g, ""); // Remove all spaces
+      };
+
+      const documents = selectedDocuments.reduce((acc, doc) => {
+        const camelCaseName = toCamelCase(doc.name);
+        acc[`${camelCaseName}Type`] = doc.type;
+        acc[`${camelCaseName}`] = doc.doc;
+        return acc;
+      }, {});
+
       const payload = {
         permitId: permit?.id,
         revalidateWorkAreaConfirmation:
           state.context.verification.revalidateWorkAreaConfirmation,
-        documents: {
-          toolBoxStockDocType: "MANUAL",
-          toolBoxStockDoc: "...",
-          radiographyCertType: "MANUAL",
-          radiographyCert: "...",
-          confinedSpaceCertType: "MANUAL",
-          confinedSpaceCert: "...",
-          gasTestingCertType: "MANUAL",
-          gasTestingCert: "...",
-        },
+        documents,
       };
 
       const [_, error] = await makeRequest(payload);

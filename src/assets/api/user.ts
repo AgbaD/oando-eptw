@@ -63,6 +63,10 @@ function createInternalUser(data) {
   return createRequest("/profile/internal", "POST", data);
 }
 
+function editInternalUser(data) {
+  return createRequest("/profile/internal", "PUT", data);
+}
+
 function createNewCompany(data) {
   return createRequest("/profile/company", "POST", data);
 }
@@ -116,6 +120,7 @@ export {
   createNewLocation,
   createNewWorkArea,
   editLocation,
+  editInternalUser,
   editExternalUser,
   getSites,
   getLocationsArea,
