@@ -86,7 +86,7 @@ export default function MechanicalIsolation() {
 export const LIST = [
   {
     text: "ISOLATION AND TAGGING OF VALVES (Ref. to P&IDs)",
-    value: "isolationAndTaggingOfValues",
+    value: "valveIsolationAmdTagging",
   },
   {
     text: "FLANGES (Ref. to P&IDs and/or other schematic drawings) INSTALLATION",
@@ -101,7 +101,7 @@ export const LIST = [
     value: "lineDisconnection",
   },
   { text: "LINE / EQUIPMENT DRAINAGE", value: "lineDrainage" },
-  { text: "OVERHEAD HAZARDS, CRANES, ETC", value: "overheadHaxazrdsCranes" },
+
   {
     text: "LINE / EQUIPMENT DEPRESSURIZATION",
     value: "lineDepressurization",

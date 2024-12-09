@@ -11,7 +11,7 @@ import { Link } from "preact-router";
 import Button from "../../../ui/button";
 import { useState } from "preact/hooks";
 
-import PopupModal from "../../../ui/popup";
+import ViewPermitDetails from "../permit-management.tsx/activities/process-permit/view-permit-details";
 import Verification from "../permit-management.tsx/activities/process-permit/verification";
 import SelectDocuments from "./modules/select-documents";
 import PerfUploadDocuments from "./modules/upload-documents";
@@ -85,12 +85,7 @@ function Module() {
 
       <div className="">
         {isModalOpen && (
-          <PopupModal
-            type="table"
-            title="Permit Details"
-            tableData={permitDetails}
-            onClose={() => setModalOpen(false)}
-          />
+          <ViewPermitDetails setModalOpen={() => setModalOpen(false)} />
         )}
       </div>
     </div>
@@ -102,35 +97,6 @@ const STEPS = [
   "selected_documents",
   "document_uploads",
   "submit",
-];
-
-const permitDetails = [
-  {
-    header: "Role",
-    description: "Supervisor",
-  },
-  {
-    header: "Performing Person / Person In Charge",
-    description: "External (Contractor)",
-  },
-  {
-    header: "Work Details",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vitae nunc neque. Mauris tincidunt ipsum sed lacus commodo.",
-  },
-  {
-    header: "Equipment / Tools / Materials",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vitae nunc neque. Mauris tincidunt ipsum sed lacus commodo.",
-  },
-  {
-    header: "Work Location / Work Area",
-    description: "Ebocha Oil Centre / Unit 232",
-  },
-  {
-    header: "Permit Valid From - To (Date & Time)",
-    description: "17 / 04 / 2022  08:00 AM  -  17 / 04 / 2022  08:00 AM ",
-  },
 ];
 
 export default function RevalidatePerfAuth({}: any) {

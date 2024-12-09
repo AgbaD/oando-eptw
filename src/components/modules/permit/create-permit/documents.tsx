@@ -9,7 +9,7 @@ import Select from "../../../ui/form/select";
 export const documentOptions = [
   "Job Safety Analysis Doc (JSA) / Risk Safety Analysis (RSA)",
   "Work Procedure Doc",
-  "Explosives Certificate",
+  "Explosives Cert.",
   "Mechanical Isolation Cert.",
   "Gas Clearance",
   "Scaffolding Cert.",
