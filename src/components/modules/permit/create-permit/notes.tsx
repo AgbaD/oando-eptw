@@ -182,8 +182,9 @@ export default function AdditionalNotes() {
 
     const documents = selectedDocuments.reduce((acc, doc) => {
       const camelCaseName = toCamelCase(doc.name);
-      acc[`${camelCaseName}Type`] = doc.type;
-      acc[`${camelCaseName}Doc`] = doc.doc;
+
+      acc[`${camelCaseName.replace(/Doc$/i, "")}Type`] = doc.type;
+      acc[`${camelCaseName}`] = doc.doc;
       return acc;
     }, {});
 
@@ -264,13 +265,15 @@ export default function AdditionalNotes() {
     >
       <div className="app-register__content__header app-create-permit__header">
         <h3>Permit Summary</h3>
-        <Button
-          variant="secondary"
-          type="button"
-          onClick={() => send("go_back")}
-        >
-          Back
-        </Button>
+        <div className="">
+          <Button
+            variant="secondary"
+            type="button"
+            onClick={() => send("go_back")}
+          >
+            Back
+          </Button>
+        </div>
       </div>
       <p>Review your permit to work before final submission.</p>
       <div></div>

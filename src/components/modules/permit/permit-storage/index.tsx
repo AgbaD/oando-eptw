@@ -27,8 +27,8 @@ import { usePermitDetails } from "../../../../context/permit-details.context";
 
 export default function Storage({}: any) {
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
-  const [selectedWorkType, setSelectedWorkType] = useState("All Status");
-  const work_types = ["All Work Types", "Cold Work", "Hot Work"];
+  const [selectedWorkType, setSelectedWorkType] = useState("All Work Types");
+  const work_types = ["All Work Types", "COLD_WORK", "HOT_WORK"];
 
   const { setID } = useIDContext();
   const { updatePermit } = usePermitDetails();
@@ -56,13 +56,17 @@ export default function Storage({}: any) {
     const workArea = permit.workArea?.toLowerCase() || "";
     const entrustedCompany = permit.entrustedCompany?.name.toLowerCase() || "";
 
-    return (
+    const matchesSearch =
       ptwID.includes(searchTerm.toLowerCase()) ||
       type.includes(searchTerm.toLowerCase()) ||
       workArea.includes(searchTerm.toLowerCase()) ||
       entrustedCompany.includes(searchTerm.toLowerCase()) ||
-      searchTerm === ""
-    );
+      searchTerm === "";
+
+    const matchesWorkType =
+      selectedWorkType === "All Work Types" || permit.type === selectedWorkType;
+
+    return matchesSearch && matchesWorkType;
   });
 
   return (

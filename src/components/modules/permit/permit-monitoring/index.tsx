@@ -5,7 +5,6 @@ import {
 } from "../../../ui/dropdown";
 
 import { useState } from "preact/hooks";
-
 import { route } from "preact-router";
 import {
   Table,
@@ -14,7 +13,6 @@ import {
   TableHead,
   TableRow,
 } from "../../../ui/table";
-import { siteOptions } from "../../locations/data";
 import Header from "../../../ui/page/header";
 import Search from "../../../ui/page/search";
 import Button from "../../../ui/button";
@@ -22,15 +20,21 @@ import useRequest from "../../../../hooks/use-request";
 import { getAllPermits } from "../../../../assets/api/user";
 import CountdownTimer from "./countdown-timer";
 import { usePermitDetails } from "../../../../context/permit-details.context";
-
 import { createRequest } from "../../../../assets/api";
+
 export default function Monitoring({}: any) {
-  const [selectedLocation, setSelectedLocation] = useState("All Locations");
-  const [selectedWorkType, setSelectedWorkType] = useState("All Status");
-  const work_types = ["All Work Types", "Cold Work", "Hot Work"];
+  const [selectedStatus, setSelectedStatus] = useState("All Status");
+  const statusOptions = [
+    "All Status",
+    "APPROVED",
+    "REVALIDATION_INITIATED",
+    "CLOSURE_INITIATED",
+  ];
+
+  const [selectedWorkType, setSelectedWorkType] = useState("All Work Types");
+  const work_types = ["All Work Types", "COLD_WORK", "HOT_WORK"];
 
   const { updatePermit } = usePermitDetails();
-
   const { response, isLoading } = useRequest(getAllPermits, {}, true);
 
   async function getPermitDetails(id: any) {
@@ -52,20 +56,27 @@ export default function Monitoring({}: any) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const monitoring = response?.data || [];
-
   const filteredMonitoring = monitoring.filter((permit) => {
     const ptwID = permit.publicId;
     const type = permit.type;
     const workArea = permit.workArea?.toLowerCase() || "";
     const entrustedCompany = permit.entrustedCompany?.name.toLowerCase() || "";
 
-    return (
+    // Filter based on search term and selected work type
+    const isSearchMatch =
       ptwID.includes(searchTerm.toLowerCase()) ||
       type.includes(searchTerm.toLowerCase()) ||
       workArea.includes(searchTerm.toLowerCase()) ||
       entrustedCompany.includes(searchTerm.toLowerCase()) ||
-      searchTerm === ""
-    );
+      searchTerm === "";
+
+    const isWorkTypeMatch =
+      selectedWorkType === "All Work Types" || type === selectedWorkType;
+
+    const isStatus =
+      selectedStatus === "All Status" || permit.status === selectedStatus;
+
+    return isSearchMatch && isWorkTypeMatch && isStatus;
   });
 
   return (
@@ -75,19 +86,19 @@ export default function Monitoring({}: any) {
       <div className="app-section__header">
         <Search placeholder="Search permits" onSearch={setSearchTerm} />
 
-        <div className="app-section__filters ">
+        <div className="app-section__filters">
           <span className="base-date-filter--secondary">Filter by:</span>
           <div className="sm-grid-cols-2 app-section__filters">
             <Dropdown className="base-dropdown__dropdown-wrapper">
-              <DropdownTrigger>{selectedLocation}</DropdownTrigger>
+              <DropdownTrigger>{selectedStatus}</DropdownTrigger>
               <DropdownContent>
-                {siteOptions.map((location) => (
+                {statusOptions.map((option) => (
                   <div
-                    key={location.value}
+                    key={option}
                     className={"base-dropdown__option"}
-                    onClick={() => setSelectedLocation(location.value)}
+                    onClick={() => setSelectedStatus(option)}
                   >
-                    {location.text}
+                    {option}
                   </div>
                 ))}
               </DropdownContent>
@@ -112,6 +123,7 @@ export default function Monitoring({}: any) {
       </div>
 
       <div className="app-section">
+        {/* Large Table */}
         <div className="app-section__lg-table">
           <Table>
             <TableHead>
@@ -135,42 +147,36 @@ export default function Monitoring({}: any) {
                     data.status !== "CLOSED"
                 )
                 .map((data) => (
-                  <>
-                    {" "}
-                    <TableRow key={data.id}>
-                      {" "}
-                      <TableCell>{data.publicId}</TableCell>
-                      <TableCell>{data.type}</TableCell>
-                      <TableCell>
-                        {truncateText(data.workDescription, 45)}
-                      </TableCell>
-                      <TableCell>
-                        {data.location?.locationArea} / {data.workArea}
-                      </TableCell>
-                      <TableCell>{data?.entrustedCompany?.name}</TableCell>
-                      <TableCell>
-                        <>
-                          <CountdownTimer
-                            fromDate={data.fromDate}
-                            fromTime={data.fromTime}
-                            toDate={data.toDate}
-                            toTime={data.toTime}
-                          />
-                        </>
-                      </TableCell>
-                      <TableCell>
-                        <Button onClick={() => handleItemClick(data)}>
-                          View
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                    <br />
-                  </>
+                  <TableRow key={data.id}>
+                    <TableCell>{data.publicId}</TableCell>
+                    <TableCell>{data.type}</TableCell>
+                    <TableCell>
+                      {truncateText(data.workDescription, 45)}
+                    </TableCell>
+                    <TableCell>
+                      {data.location?.locationArea} / {data.workArea}
+                    </TableCell>
+                    <TableCell>{data?.entrustedCompany?.name}</TableCell>
+                    <TableCell>
+                      <CountdownTimer
+                        fromDate={data.fromDate}
+                        fromTime={data.fromTime}
+                        toDate={data.toDate}
+                        toTime={data.toTime}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Button onClick={() => handleItemClick(data)}>
+                        View
+                      </Button>
+                    </TableCell>
+                  </TableRow>
                 ))}
             </TableBody>
           </Table>
         </div>
 
+        {/* Small Table */}
         <div className="app-section__sm-table">
           <Table>
             <TableBody>
@@ -186,20 +192,17 @@ export default function Monitoring({}: any) {
                         <p>{dataItem.publicId}</p>
                         <h6 className={"gray"}>{dataItem.type}</h6>
                       </div>
-                      <p> {truncateText(dataItem.workDescription, 45)}</p>
+                      <p>{truncateText(dataItem.workDescription, 45)}</p>
                       <div className="location-flex">
                         <div className="items-center">
                           <p className={"gray"}>Time Remaining:</p>
                           <h6 className="countdown-timer">
-                            {" "}
-                            <>
-                              <CountdownTimer
-                                fromDate={dataItem.fromDate}
-                                fromTime={dataItem.fromTime}
-                                toDate={dataItem.toDate}
-                                toTime={dataItem.toTime}
-                              />
-                            </>
+                            <CountdownTimer
+                              fromDate={dataItem.fromDate}
+                              fromTime={dataItem.fromTime}
+                              toDate={dataItem.toDate}
+                              toTime={dataItem.toTime}
+                            />
                           </h6>
                         </div>
                       </div>
@@ -209,9 +212,11 @@ export default function Monitoring({}: any) {
             </TableBody>
           </Table>
         </div>
+
+        {/* Empty State */}
         {!filteredMonitoring.length && (
           <div className="base-empty">
-            <img src="/svgs/document.svg" />
+            <img src="/svgs/document.svg" alt="No Permits" />
             <p>
               {isLoading
                 ? "Fetching permits, please wait..."

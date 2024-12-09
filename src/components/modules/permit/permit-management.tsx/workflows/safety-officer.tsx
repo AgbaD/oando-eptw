@@ -17,67 +17,117 @@ export default function SafetyOfficer({ response }: any) {
 
   const documentObject = documentsArray?.document || {};
 
-  const renderDocuments = () => {
-    const documentEntries = Object.entries(documentObject);
+  const filteredDocuments = details?.permitDocuments.filter(
+    (doc) =>
+      doc.workflowType === "REVALIDATION" && doc.authority === "SAFETY_OFFICER"
+  );
 
-    // Filter out invalid entries
-    const filteredEntries = documentEntries.filter(([key, value]) => {
-      // Exclude technical fields and entries where Type or Doc is null
-      if (
-        ["id", "createdAt", "updatedAt", "draftId"].includes(key) ||
-        ((key.includes("Type") || key.includes("Doc")) && !value)
-      ) {
-        return false;
-      }
-      return true;
-    });
+  const revalidationDocuments =
+    details?.permitDocuments && details.permitDocuments.length > 0
+      ? filteredDocuments
+      : [];
 
-    // If no valid entries exist, return a fallback message
-    if (filteredEntries.length === 0) {
-      return <p>--- No items uploaded ---</p>;
+  function extractFileName(data) {
+    const url = data;
+
+    if (!url) {
+      throw new Error("URL is required.");
     }
 
-    // Map through valid entries and render them
-    return filteredEntries.map(([key, value]) => {
-      // If it's a type field, format the text
-      if (key.includes("Type")) {
-        return (
-          <div key={key} className="document-item">
-            <div className="section__content__document_section">
-              <p className="section__header">
-                {key.replace(/([A-Z])/g, " $1").toUpperCase()}
-              </p>
-            </div>
-            <div className="section__content">
-              <p className="document">
-                <span>Upload Option</span>
-              </p>
-              <p>{String(value) || "No document provided"}</p>
-            </div>
-          </div>
-        );
-      }
+    const segments = url.split("/");
+    const fileName = segments[segments.length - 1];
 
-      // If it's a document field, render it
-      if (key.includes("Doc")) {
-        return (
-          <div key={key} className="document-item">
-            <div className="section__content">
-              <p className="document">
-                <span>Document</span>
-              </p>
-              <p className="document_item">
-                {value}
-                <span>
-                  <img src="/svgs/document_download.svg" alt="" />
-                </span>
-              </p>
-            </div>
-          </div>
-        );
-      }
+    const name = fileName.split("-").slice(1).join("-");
 
-      return null;
+    return name;
+  }
+
+  const renderDocuments = (type: string) => {
+    const documentsToRender =
+      type === "REVALIDATION" ? revalidationDocuments : [documentObject];
+
+    console.log(documentsToRender);
+
+    if (!documentsToRender || documentsToRender.length === 0) {
+      return <p>No documents uploaded.</p>;
+    }
+
+    return documentsToRender.map((doc, docIndex) => {
+      const entries = Object.entries(doc.document || {});
+
+      return (
+        <div key={`doc-${docIndex}`} className="document-container">
+          {/* Add this block to render the SHIFT label once per document */}
+          {type === "REVALIDATION" && (
+            <div className="">
+              <br />
+              <h3>
+                {type === "REVALIDATION"
+                  ? `SHIFT ${doc.revalidationShift || ""}`
+                  : ""}
+              </h3>
+              <br />
+            </div>
+          )}
+
+          {entries
+            .filter(([key, value]) => {
+              if (["id", "createdAt", "updatedAt", "draftId"].includes(key)) {
+                return false;
+              }
+
+              if ((key.includes("Type") || key.includes("Doc")) && !value) {
+                return false;
+              }
+
+              if (value === null) {
+                return false;
+              }
+
+              return true; // Keep all other valid entries
+            })
+            .map(([key, value], index) => {
+              // If it's a type field, format the text
+              if (key.includes("Type")) {
+                return (
+                  <div key={`${key}-${index}`} className="document-item">
+                    <div className="section__content__document_section">
+                      <p className="section__header">
+                        {key.replace(/([A-Z])/g, " $1").toUpperCase()}
+                      </p>
+                    </div>
+                    <div className="section__content">
+                      <p className="document">
+                        <span>Upload Option</span>
+                      </p>
+                      <p>{value?.toString() || "No document provided"}</p>
+                    </div>
+                  </div>
+                );
+              }
+
+              // If it's a document field, render it
+              return (
+                <div key={`${key}-${index}`} className="document-item">
+                  <div className="section__content">
+                    <p className="document">
+                      <span>Document</span>
+                    </p>
+                    <p className="document_item">
+                      {extractFileName(value)}
+                      <span>
+                        <img
+                          src="/svgs/document_download.svg"
+                          alt="Download document"
+                        />
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      );
     });
   };
 
@@ -95,13 +145,35 @@ export default function SafetyOfficer({ response }: any) {
         <div className="">
           <p className="info">
             {Object.keys(documentObject).length > 0 ? (
-              renderDocuments()
+              renderDocuments("APPROVAL")
             ) : (
               <p>No documents uploaded.</p>
             )}
           </p>
         </div>
       </div>
+      <br />
+
+      {details?.revalidations?.length > 0 && (
+        <>
+          <Section
+            type="Permits"
+            header={``}
+            children={documents[0]}
+            section={documents[0].section}
+          />
+
+          <div className="section">
+            <div className="info">
+              {revalidationDocuments.length > 0 ? (
+                renderDocuments("REVALIDATION")
+              ) : (
+                <p>No documents uploaded.</p>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

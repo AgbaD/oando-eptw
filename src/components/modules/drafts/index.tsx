@@ -1,5 +1,5 @@
-import { useState } from "react";
-import useModal from "../../../hooks/use-modal";
+import { useEffect, useState } from "react";
+// import useModal from "../../../hooks/use-modal";
 import PopupModal from "../../ui/popup";
 import Header from "../../ui/page/header";
 import Search from "../../ui/page/search";
@@ -21,21 +21,35 @@ import dayjs from "dayjs";
 import { useIDContext } from "../../../context/id.context";
 import { createRequest } from "../../../assets/api";
 import { toast } from "../../ui/toast";
+import { route } from "preact-router";
+import { useDraftDetails } from "../../../context/draft-details.context";
 
 export default function Drafts({}: any) {
-  const [viewDraft] = useState<any>();
-  const { toggle } = useModal({ draft_details: false });
   const { response, isLoading } = useRequest(getAllDrafts, {}, true);
 
   const { setID, valueID } = useIDContext();
+  const { updateDraft, updateIsDraft } = useDraftDetails();
 
-  // const handleItemClick = (item) => {
-  //   viewDraft(item);
-  //   toggle("draft_details");
-  // };
+  useEffect(() => {
+    updateIsDraft(false);
+  }, []);
+
+  const [dateRange, setDateRange] = useState({ start: null, end: null });
+
+  const getDraftInfo = async (id: number) => {
+    const response: any = await createRequest(`/permit/draft/${id}`, "GET");
+    const draft = response[0]?.data;
+    updateDraft(draft);
+    updateIsDraft(true);
+  };
+
+  const handleItemClick = (item) => {
+    getDraftInfo(item.id);
+    route("/permit/create");
+  };
 
   const [selectedType, setSelectedType] = useState("All Types");
-  const types = ["All Types", "Hot Permit", "Cold Permit"];
+  const types = ["All Types", "HOT_WORK", "COLD_WORK"];
   const [isModalOpen, setModalOpen] = useState(false);
 
   const startDelete = (item) => {
@@ -72,16 +86,33 @@ export default function Drafts({}: any) {
     const workType = draft.type;
     const dateCreated = draft.createdAt;
     const locationArea = draft?.location?.locationArea?.toLowerCase() || "";
+    const activityDate = dayjs(draft?.createdAt);
 
-    return (
+    // Filter by both search term and selected work type
+    const matchesSearchTerm =
       workType.includes(searchTerm.toLowerCase()) ||
       dateCreated.includes(
         dayjs(searchTerm).format("MMM DD, YYYY • HH:mm A").toLowerCase()
       ) ||
       locationArea.includes(searchTerm.toLowerCase()) ||
-      searchTerm === ""
-    );
+      searchTerm === "";
+
+    // Apply date range filter
+    const matchesDateRange =
+      (!dateRange.start ||
+        activityDate.isAfter(dayjs(dateRange.start).startOf("day"))) &&
+      (!dateRange.end ||
+        activityDate.isBefore(dayjs(dateRange.end).endOf("day")));
+
+    const matchesType =
+      selectedType === "All Types" || workType === selectedType;
+
+    return matchesSearchTerm && matchesType && matchesDateRange;
   });
+
+  const setDateRangeWrapper = (range: { startDate: Date; endDate: Date }) => {
+    setDateRange({ start: range.startDate, end: range.endDate });
+  };
 
   return (
     <>
@@ -90,7 +121,7 @@ export default function Drafts({}: any) {
       <div className="app-section__header">
         <Search placeholder="Search drafts" onSearch={setSearchTerm} />
         <div className="app-section__filters">
-          <DateFilter variant="secondary" />
+          <DateFilter variant="secondary" setDateRange={setDateRangeWrapper} />
 
           <Dropdown className="base-dropdown__dropdown-wrapper">
             <DropdownTrigger>{selectedType}</DropdownTrigger>
@@ -130,24 +161,19 @@ export default function Drafts({}: any) {
                     {dayjs(data.createdAt).format("MMM DD, YYYY • HH:mm A")}
                   </TableCell>
                   <TableCell>{data.type}</TableCell>
-                  {/* <TableCell>Lagos, Nigeria</TableCell> */}
-                  <TableCell>
-                    <>{data.workArea}</>
-                  </TableCell>
+                  <TableCell>{data.workArea}</TableCell>
                   <TableCell>Alize Cornet</TableCell>
                   <TableCell>
                     <Button
                       variant="outline"
                       onClick={() => {
-                        viewDraft(data);
-                        toggle("draft_details");
+                        handleItemClick(data);
                       }}
                     >
                       Open
                     </Button>
                   </TableCell>
                   <TableCell>
-                    {" "}
                     <Button
                       onClick={() => {
                         startDelete(data);
@@ -174,8 +200,8 @@ export default function Drafts({}: any) {
         <div className="">
           {isModalOpen && (
             <PopupModal
-              icon={<img src="/svgs/delete_img.png" />} // Pass your custom icon here
-              title="Delete Role"
+              icon={<img src="/svgs/delete_img.png" />}
+              title="Delete Draft?"
               message="Are you sure you want to delete this role? This action cannot be undone."
               onClose={() => setModalOpen(false)}
               primaryButton={{

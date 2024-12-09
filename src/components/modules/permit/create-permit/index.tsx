@@ -22,6 +22,7 @@ import PopupModal from "../../../ui/popup";
 import { toast } from "../../../ui/toast";
 import { formatDateForBackend } from "../permit-closure/modules/perf-closure-submit";
 import Button from "../../../ui/button";
+import { useDraftDetails } from "../../../../context/draft-details.context";
 
 function Module() {
   const { state } = usePermitContext();
@@ -29,11 +30,18 @@ function Module() {
   const currentIdx = STEPS.indexOf(stateAsString) + 1;
   const stateMeta: any = Object.values(state.meta)?.[0];
 
+  const { updateIsDraft } = useDraftDetails();
+
   const [draftPopup, setDraftPopup] = useState(false);
   const { makeRequest } = useRequest(createDraft);
 
   function handlePopup(value: boolean) {
     setDraftPopup(value);
+  }
+
+  function handleGoBack() {
+    updateIsDraft(false);
+    route("/");
   }
 
   async function handleCreateDraft() {
@@ -85,6 +93,7 @@ function Module() {
         message: error.message ?? "Failed to create draft, please try again",
       });
     }
+    updateIsDraft(false);
     route("/");
     toast({
       variant: "success",
@@ -111,18 +120,22 @@ function Module() {
               : ""}
           </h5>
 
-          {state.matches("permit_type") ||
-          state.matches("work_description") ||
-          state.matches("company_details") ? (
-            <Link href="/" className="app-link">
-              Click here to go back
-            </Link>
-          ) : (
-            <Button className="app-link" onClick={() => handlePopup(true)}>
-              {" "}
-              Click here to go back
-            </Button>
-          )}
+          <div className="">
+            {state.matches("permit_type") ||
+            state.matches("work_description") ||
+            state.matches("company_details") ? (
+              <>
+                <Button className="app-link" onClick={() => handleGoBack()}>
+                  Go back to home page
+                </Button>
+              </>
+            ) : (
+              <Button className="app-link" onClick={() => handlePopup(true)}>
+                {" "}
+                Go back to home page
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 

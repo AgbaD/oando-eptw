@@ -7,7 +7,6 @@ import Header from "../../../ui/page/header";
 import Search from "../../../ui/page/search";
 import Button from "../../../ui/button";
 
-import { siteOptions } from "../../locations/data";
 import { useState } from "preact/hooks";
 
 import {
@@ -25,9 +24,16 @@ import { route } from "preact-router";
 import { getAllPermits } from "../../../../assets/api/user";
 
 export default function ActivitiesFlow({}: any) {
-  const [selectedLocation, setSelectedLocation] = useState("All Locations");
-  const [selectedWorkType, setSelectedWorkType] = useState("All Status");
-  const work_types = ["All Work Types", "Cold Work", "Hot Work"];
+  const [selectedWorkType, setSelectedWorkType] = useState("All Work Types");
+  const work_types = ["All Work Types", "COLD_WORK", "HOT_WORK"];
+
+  const [selectedStatus, setSelectedStatus] = useState("All Status");
+  const statusOptions = [
+    "All Status",
+    "NOT_STARTED",
+    "REVALIDATION_INITIATED",
+    "CLOSURE_INITIATED",
+  ];
 
   const { setID } = useIDContext();
 
@@ -54,13 +60,21 @@ export default function ActivitiesFlow({}: any) {
     const workArea = permit.workArea?.toLowerCase() || "";
     const entrustedCompany = permit.entrustedCompany?.name.toLowerCase() || "";
 
-    return (
+    // Apply filters for searchTerm, selectedLocation, and selectedWorkType
+    const matchesSearchTerm =
       ptwID.includes(searchTerm.toLowerCase()) ||
       type.includes(searchTerm.toLowerCase()) ||
       workArea.includes(searchTerm.toLowerCase()) ||
       entrustedCompany.includes(searchTerm.toLowerCase()) ||
-      searchTerm === ""
-    );
+      searchTerm === "";
+
+    const matchesWorkType =
+      selectedWorkType === "All Work Types" || permit.type === selectedWorkType;
+
+    const matchesStatus =
+      selectedStatus === "All Status" || permit.status === selectedStatus;
+
+    return matchesSearchTerm && matchesWorkType && matchesStatus;
   });
 
   return (
@@ -74,15 +88,15 @@ export default function ActivitiesFlow({}: any) {
           <span className="base-date-filter--secondary">Filter by:</span>
           <div className="sm-grid-cols-2 app-section__filters">
             <Dropdown className="base-dropdown__dropdown-wrapper">
-              <DropdownTrigger>{selectedLocation}</DropdownTrigger>
+              <DropdownTrigger>{selectedStatus}</DropdownTrigger>
               <DropdownContent>
-                {siteOptions.map((location) => (
+                {statusOptions.map((status) => (
                   <div
-                    key={location.value}
+                    key={status}
                     className={"base-dropdown__option"}
-                    onClick={() => setSelectedLocation(location.value)}
+                    onClick={() => setSelectedStatus(status)}
                   >
-                    {location.text}
+                    {status}
                   </div>
                 ))}
               </DropdownContent>

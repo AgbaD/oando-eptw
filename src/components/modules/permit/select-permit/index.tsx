@@ -40,11 +40,12 @@ export default function SelectPermitRole({}: any) {
   }, [profile]);
 
   const handleRoleChange = (permitId, role) => {
-    console.log(permitId);
-    setSelectedRoles((prevRoles) => ({
-      ...prevRoles,
-      [permitId]: role,
-    }));
+    console.log(`Selected Role: ${role} for Permit ID: ${permitId}`); // Debug log
+    setSelectedRoles((prevRoles) => {
+      const updatedRoles = { ...prevRoles, [permitId]: role };
+      console.log("Updated Roles State:", updatedRoles); // Debug log
+      return updatedRoles;
+    });
   };
 
   async function onSubmit() {
@@ -63,38 +64,18 @@ export default function SelectPermitRole({}: any) {
           authorities,
         }
       );
+      console.log(response);
 
-      if (response?.statusCode === 200) {
+      if (response?.[0]?.success === true) {
         toast({
           variant: "success",
-          message: "Permit roles selected successfully!",
+          message: "Permit roles updated successfully.",
         });
         route("/");
-      } else if (response?.statusCode === 400) {
+      } else if (response?.[1]?.success === false) {
         toast({
           variant: "error",
-          message: "Bad Request: Please check your inputs and try again.",
-        });
-      } else if (response?.statusCode === 403) {
-        toast({
-          variant: "error",
-          message: "You do not have permission to perform this action.",
-        });
-      } else if (response?.statusCode === 404) {
-        toast({
-          variant: "error",
-          message: "Unable to find the requested resource.",
-        });
-      } else if (response?.statusCode === 500) {
-        toast({
-          variant: "error",
-          message:
-            "Failed to perform the requested action, Please try again later.",
-        });
-      } else {
-        toast({
-          variant: "error",
-          message: "Failed to update permit roles, please try again.",
+          message: "Something went wrong.",
         });
       }
     } catch (error) {
@@ -148,38 +129,43 @@ export default function SelectPermitRole({}: any) {
 
             <TableBody>
               {response?.data?.map((data) => (
-                <TableRow key={data.publicId}>
-                  <TableCell>{data.publicId}</TableCell>
-                  <TableCell>{data?.type?.replace(/_/g, " ")}</TableCell>
-                  <TableCell>
-                    {`${data?.workDescription
-                      .charAt(0)
-                      .toUpperCase()}${data?.workDescription.slice(1)}`}
-                  </TableCell>
-                  <TableCell>
-                    {data?.workArea} / {data?.location?.locationArea}
-                  </TableCell>
-                  <TableCell>{data?.entrustedCompany?.name}</TableCell>
-                  <TableCell>
-                    <Dropdown>
-                      <DropdownTrigger>
-                        {selectedRoles[data.publicId] ||
-                          "-- select an option --"}
-                      </DropdownTrigger>
-                      <DropdownContent>
-                        {userRoles?.map((role) => (
-                          <div
-                            className={"base-dropdown__option"}
-                            onClick={() => handleRoleChange(data.id, role)}
-                            key={role}
-                          >
-                            {role}
-                          </div>
-                        ))}
-                      </DropdownContent>
-                    </Dropdown>
-                  </TableCell>
-                </TableRow>
+                <>
+                  <TableRow key={data.publicId}>
+                    <TableCell>{data.publicId}</TableCell>
+                    <TableCell>{data?.type?.replace(/_/g, " ")}</TableCell>
+                    <TableCell>
+                      {`${data?.workDescription
+                        .charAt(0)
+                        .toUpperCase()}${data?.workDescription.slice(1)}`}
+                    </TableCell>
+                    <TableCell>
+                      {data?.workArea} / {data?.location?.locationArea}
+                    </TableCell>
+                    <TableCell>{data?.entrustedCompany?.name}</TableCell>
+                    <TableCell>
+                      <Dropdown>
+                        <DropdownTrigger>
+                          {/* Display the selected role or default text */}
+                          {selectedRoles[data.publicId] ||
+                            "-- select an option --"}
+                        </DropdownTrigger>
+                        <DropdownContent>
+                          {userRoles?.map((role) => (
+                            <div
+                              className={"base-dropdown__option"}
+                              onClick={() => handleRoleChange(data.id, role)}
+                              key={role}
+                            >
+                              {role}
+                            </div>
+                          ))}
+                        </DropdownContent>
+                      </Dropdown>
+                    </TableCell>
+                  </TableRow>
+                  <br />
+                  <br />
+                </>
               ))}
             </TableBody>
           </Table>

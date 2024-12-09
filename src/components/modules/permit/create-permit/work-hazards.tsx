@@ -4,9 +4,13 @@ import Textarea from "../../../ui/form/text-area";
 import Button from "../../../ui/button";
 import Radio from "../../../ui/form/radio";
 import { usePermitContext } from "../../../../context/permit.context";
+import { useDraftDetails } from "../../../../context/draft-details.context";
 
 export default function WorkHazards() {
   const { send, state } = usePermitContext();
+
+  const { draft, isDraft } = useDraftDetails();
+  console.log("draft details are", draft);
 
   // Initialize hazards state with all possible hazard keys
   const initialHazards = HAZARDS.reduce((acc, hazard) => {
@@ -14,6 +18,8 @@ export default function WorkHazards() {
       state.context.work_hazards?.hazards?.[hazard.value] ?? undefined;
     return acc;
   }, {});
+
+  const validationSchema = getValidationSchema(isDraft);
 
   const { getFieldProps, handleSubmit, setFieldValue, values } = useForm({
     validationSchema,
@@ -42,7 +48,7 @@ export default function WorkHazards() {
         <div className="app-register__form-grid">
           <Textarea
             label="Describe the potential hazards *"
-            placeholder="Write here..."
+            placeholder={`${"Write here..."}`}
             {...getFieldProps("potentialHazardDescription")}
           />
         </div>
@@ -103,8 +109,19 @@ export const HAZARDS = [
   { text: "OTHER", value: "other" },
 ];
 
-const validationSchema = Yup.object({
-  potentialHazardDescription: Yup.string().required(
-    "Describe the potential hazards."
-  ),
-});
+function getValidationSchema(isDraft) {
+  if (isDraft) {
+    return Yup.object({
+      potentialHazardDescription: Yup.string().required(
+        "Describe the potential hazards."
+      ),
+    });
+  }
+
+  // Otherwise, apply the standard required validation
+  return Yup.object({
+    potentialHazardDescription: Yup.string().required(
+      "Describe the potential hazards."
+    ),
+  });
+}

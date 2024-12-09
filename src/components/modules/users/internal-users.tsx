@@ -33,6 +33,8 @@ export default function InternalUsers() {
   const { toggle, modals } = useModal({ user_details: false });
   const { response, isLoading } = useRequest(getAllInternalUsers, {}, true);
 
+  const users = response?.data || [];
+
   const handleItemClick = (item) => {
     viewUser(item);
     toggle("user_details");
@@ -83,11 +85,33 @@ export default function InternalUsers() {
     setModalOpen(false);
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredUsers = users.filter((user) => {
+    const fullname = user.fullname.toLowerCase();
+    const email = user.email.toLowerCase();
+    const locationArea = user.location?.locationArea.toLowerCase() || "";
+
+    const matchesSearch =
+      fullname.includes(searchTerm.toLowerCase()) ||
+      email.includes(searchTerm.toLowerCase()) ||
+      locationArea.includes(searchTerm.toLowerCase()) ||
+      searchTerm === "";
+
+    const locationMatch =
+      selectedLocation === "All Locations" ||
+      user?.location?.site === selectedLocation;
+    const statusMatch =
+      selectedStatus === "All Status" || user.isActive === selectedStatus;
+
+    return locationMatch && statusMatch && matchesSearch;
+  });
+
   return (
     <>
       <div className="">
         <div className="app-section__header">
-          <Search placeholder="Search by user name" onSearch={""} />
+          <Search placeholder="Search by user name" onSearch={setSearchTerm} />
 
           <div className="app-section__filters ">
             <span className="base-date-filter--secondary">Filter by:</span>
@@ -140,14 +164,13 @@ export default function InternalUsers() {
                   </TableHead>
 
                   <TableBody>
-                    {response?.data?.map((data) => (
+                    {filteredUsers.map((data) => (
                       <TableRow key={data.id}>
                         <TableCell>{data.fullname}</TableCell>
                         <TableCell>{data.email}</TableCell>
 
                         <TableCell>
-                          {data?.location?.locationArea} /{" "}
-                          {data?.location?.workAreas}
+                          {data?.location?.locationArea}/ {data?.location?.site}
                         </TableCell>
                         <TableCell>
                           <span
@@ -175,7 +198,7 @@ export default function InternalUsers() {
               </div>
 
               <ReusableMobileTable
-                data={response?.data}
+                data={filteredUsers}
                 onItemClick={handleItemClick}
                 getName={getName}
                 formatCreatedAt={(item) =>

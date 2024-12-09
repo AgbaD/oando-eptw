@@ -1,3 +1,4 @@
+import { useEffect } from "preact/hooks";
 import { getOverview } from "../../../assets/api/overview";
 import useRequest from "../../../hooks/use-request";
 import Header from "../../ui/page/header";
@@ -6,6 +7,8 @@ import "./index.scss";
 import Permits from "./permits";
 import Stats from "./stats";
 
+import { useDraftDetails } from "../../../context/draft-details.context";
+
 export default function Overview({}: any) {
   const { response } = useRequest(getOverview, {}, true);
 
@@ -13,7 +16,11 @@ export default function Overview({}: any) {
   const closedPermits = response?.data?.closedPermits;
   const drafts = response?.data?.drafts;
 
-  console.log(metrics);
+  const { updateIsDraft } = useDraftDetails();
+
+  useEffect(() => {
+    updateIsDraft(false);
+  }, []);
 
   return (
     <>

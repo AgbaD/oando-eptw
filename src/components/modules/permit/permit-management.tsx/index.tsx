@@ -8,7 +8,6 @@ import Header from "../../../ui/page/header";
 import Search from "../../../ui/page/search";
 import Button from "../../../ui/button";
 
-import { siteOptions } from "../../locations/data";
 import { useState } from "preact/hooks";
 
 import {
@@ -26,9 +25,20 @@ import { route } from "preact-router";
 import { getAllPermits } from "../../../../assets/api/user";
 
 export default function Workflows({}: any) {
-  const [selectedLocation, setSelectedLocation] = useState("All Locations");
-  const [selectedWorkType, setSelectedWorkType] = useState("All Status");
-  const work_types = ["All Work Types", "Cold Work", "Hot Work"];
+  const [selectedWorkType, setSelectedWorkType] = useState("All Work Types");
+  const work_types = ["All Work Types", "COLD_WORK", "HOT_WORK"];
+
+  const [selectedStatus, setSelectedStatus] = useState("All Status");
+  const statusOptions = [
+    "All Status",
+    "NOT_STARTED",
+    "APPROVED",
+    "REVALIDATION_INITIATED",
+    "CANCELED",
+    "CLOSED",
+    "SUSPENDED",
+    "CLOSURE_INITIATED",
+  ];
 
   const { setID } = useIDContext();
 
@@ -53,13 +63,17 @@ export default function Workflows({}: any) {
     const type = permit.type;
     const workArea = permit.workArea?.toLowerCase() || "";
     const entrustedCompany = permit.entrustedCompany?.name.toLowerCase() || "";
+    const status = permit.status;
 
+    // Check for the search term, selected work type, and selected status
     return (
-      ptwID.includes(searchTerm.toLowerCase()) ||
-      type.includes(searchTerm.toLowerCase()) ||
-      workArea.includes(searchTerm.toLowerCase()) ||
-      entrustedCompany.includes(searchTerm.toLowerCase()) ||
-      searchTerm === ""
+      (ptwID.includes(searchTerm.toLowerCase()) ||
+        type.includes(searchTerm.toLowerCase()) ||
+        workArea.includes(searchTerm.toLowerCase()) ||
+        entrustedCompany.includes(searchTerm.toLowerCase()) ||
+        searchTerm === "") &&
+      (selectedWorkType === "All Work Types" || type === selectedWorkType) &&
+      (selectedStatus === "All Status" || status === selectedStatus)
     );
   });
 
@@ -68,21 +82,24 @@ export default function Workflows({}: any) {
       <Header title="Workflow" />
 
       <div className="app-section__header">
-        <Search placeholder="Search permits" onSearch={setSearchTerm} />
+        <Search
+          placeholder="Search permits by company, work area, permit type, or permit ID"
+          onSearch={setSearchTerm}
+        />
 
         <div className="app-section__filters ">
           <span className="base-date-filter--secondary">Filter by:</span>
           <div className="sm-grid-cols-2 app-section__filters">
             <Dropdown className="base-dropdown__dropdown-wrapper">
-              <DropdownTrigger>{selectedLocation}</DropdownTrigger>
+              <DropdownTrigger>{selectedStatus}</DropdownTrigger>
               <DropdownContent>
-                {siteOptions.map((location) => (
+                {statusOptions.map((option) => (
                   <div
-                    key={location.value}
+                    key={option}
                     className={"base-dropdown__option"}
-                    onClick={() => setSelectedLocation(location.value)}
+                    onClick={() => setSelectedStatus(option)}
                   >
-                    {location.text}
+                    {option}
                   </div>
                 ))}
               </DropdownContent>
@@ -129,12 +146,9 @@ export default function Workflows({}: any) {
             <TableBody>
               {filteredWorkflows.map((data) => (
                 <>
-                  {" "}
                   <TableRow key={data.id}>
-                    {" "}
                     <TableCell>{data.publicId}</TableCell>
                     <TableCell>{data.type}</TableCell>
-                    {/* <TableCell>{data.type?.toLowerCase()}</TableCell> */}
                     <TableCell>
                       {truncateText(data.workDescription, 45)}
                     </TableCell>
@@ -177,10 +191,7 @@ export default function Workflows({}: any) {
                   className="container"
                   onClick={() => handleItemClick(dataItem)}
                 >
-                  <div
-                    className="location-flex"
-                    onClick={() => handleItemClick(dataItem)}
-                  >
+                  <div className="location-flex">
                     <p>{dataItem.publicId}</p>
                     <h6 className={"gray"}>{dataItem.type}</h6>
                   </div>
@@ -189,7 +200,7 @@ export default function Workflows({}: any) {
                     <div className="items-center">
                       <p className={"gray"}>Status / Authority:</p>
                       <h6
-                        className={` ${
+                        className={`${
                           dataItem.status === "Draft"
                             ? "draft-status"
                             : "others-status"

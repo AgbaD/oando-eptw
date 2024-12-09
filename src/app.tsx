@@ -71,6 +71,7 @@ import { MsalProvider } from "@azure/msal-react";
 import CompleteOnboarding from "./components/modules/auth/complete-onboarding.tsx";
 import EditInternalUser from "./components/modules/users/edit-internal-user.tsx";
 import SelectPermitRole from "./components/modules/permit/select-permit/index.tsx";
+import { DraftDetailsProvider } from "./context/draft-details.context.tsx";
 
 function App() {
   return (
@@ -187,7 +188,9 @@ export default function Module({}: any) {
       <UserProvider>
         <IDProvider>
           <PermitDetailsProvider>
-            <App />
+            <DraftDetailsProvider>
+              <App />
+            </DraftDetailsProvider>
             <ToastBar />
           </PermitDetailsProvider>
         </IDProvider>

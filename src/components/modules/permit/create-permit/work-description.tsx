@@ -11,8 +11,11 @@ import useRequest from "../../../../hooks/use-request";
 import { getSites } from "../../../../assets/api/user";
 import { useState, useEffect } from "preact/hooks";
 import { createRequest } from "../../../../assets/api";
+import { useDraftDetails } from "../../../../context/draft-details.context";
 
 export default function WorkDescription() {
+  const { draft, isDraft } = useDraftDetails();
+
   const siteApi = useRequest(getSites, {}, true);
 
   const [siteName, setSiteName] = useState("--select work site--");
@@ -23,6 +26,8 @@ export default function WorkDescription() {
   const [workAreaOptions, setWorkAreaOptions] = useState([]);
 
   const { state, send } = usePermitContext();
+
+  const validationSchema = getValidationSchema(isDraft);
 
   const { getFieldProps, handleSubmit, setFieldValue } = useForm({
     validationSchema,
@@ -67,7 +72,23 @@ export default function WorkDescription() {
     setWorkAreaOptions(options);
   }
 
-  function onSubmit(work_description) {
+  function onSubmit(values) {
+    const work_description = {
+      role: values.role || draft?.performerRole,
+      performer: values.performer || draft?.performingPersonInCharge,
+      work_description: values.work_description || draft?.workDescription,
+      equipment_to_be_worked:
+        values.equipment_to_be_worked || draft?.equipmentToolsMaterials,
+      locationId: values.locationId || draft?.locationId,
+      work_area: values.work_area || draft?.location?.workAreas?.[0],
+      environmental_issues:
+        values.environmental_issues || draft?.environmentalConsideration,
+      from_date: values.from_date,
+      from_time: values.from_time,
+      to_date: values.to_date,
+      to_time: values.to_time,
+    };
+
     send("submit", { data: { work_description } });
   }
 
@@ -75,12 +96,21 @@ export default function WorkDescription() {
     <form onSubmit={handleSubmit} className="app-register__form">
       <div className="app-register__form-grid">
         <Input
-          label="Role *"
-          placeholder="Enter role (e.g., electrician, supervisor)"
+          label={`Role *`}
+          placeholder={`${
+            isDraft
+              ? draft?.performerRole
+              : "Enter role (e.g., electrician, supervisor)"
+          }`}
           {...getFieldProps("role")}
         />
         <Select
           label="Performing Person / Person-In-Charge *"
+          placeholder={`${
+            isDraft
+              ? draft?.performingPersonInCharge
+              : "Select performing person / person-in-charge"
+          }`}
           {...getFieldProps("performer")}
           options={[
             { text: "Internal (Oando)", value: "INTERNAL" },
@@ -89,17 +119,25 @@ export default function WorkDescription() {
         />
         <Textarea
           label="Work Description / Details *"
-          placeholder="Describe the type of process or work to be performed."
+          placeholder={`${
+            isDraft
+              ? draft?.workDescription
+              : "Describe the type of process or work to be performed."
+          }`}
           {...getFieldProps("work_description")}
         />
         <Textarea
           label="Equipment / Tools / Materials *"
-          placeholder="Write here..."
+          placeholder={`${
+            isDraft ? draft?.equipmentToolsMaterials : "Write here..."
+          }`}
           {...getFieldProps("equipment_to_be_worked")}
         />
         <Select
           label="Site *"
-          placeholder={siteName}
+          placeholder={`${
+            isDraft ? `previous: ${draft?.location?.site}` : siteName
+          }`}
           {...getFieldProps("site")}
           options={siteOptions}
           onChange={(e) => {
@@ -110,7 +148,11 @@ export default function WorkDescription() {
         />
         <Select
           label="Work Location *"
-          placeholder={locationName}
+          placeholder={`${
+            isDraft
+              ? `previous: ${draft?.location?.locationArea}`
+              : locationName
+          }`}
           {...getFieldProps("locationId")}
           options={locationOptions}
           onChange={(e) => {
@@ -121,7 +163,11 @@ export default function WorkDescription() {
         />
         <Select
           label="Work Area (Unit / Installation) *"
-          placeholder="--select work area / unit--"
+          placeholder={`${
+            isDraft
+              ? `previous: ${draft?.location?.workAreas[0]}`
+              : "--select work area / unit--"
+          }`}
           {...getFieldProps("work_area")}
           options={workAreaOptions}
           onChange={(e) => {
@@ -132,7 +178,11 @@ export default function WorkDescription() {
         />
         <Textarea
           label="Environmental Considerations *"
-          placeholder="Identify environmental issues related to the task."
+          placeholder={`${
+            isDraft
+              ? draft?.environmentalConsideration
+              : "Identify environmental issues related to the task."
+          }`}
           {...getFieldProps("environmental_issues")}
         />
       </div>
@@ -142,7 +192,7 @@ export default function WorkDescription() {
         <div className="app-register__form-grid">
           <Input
             label="From Date *"
-            placeholder="dd / mm / yyyy"
+            placeholder={`${isDraft ? draft?.fromDate : "dd / mm / yyyy"}`}
             type="date"
             {...getFieldProps("from_date")}
           />
@@ -178,16 +228,33 @@ export default function WorkDescription() {
   );
 }
 
-const validationSchema = Yup.object({
-  role: Yup.string().required("Role is required"),
-  performer: Yup.string().required("Performer is required"),
-  work_description: Yup.string().required("Work description is required"),
-  locationId: Yup.number()
-    .typeError("Location is required")
-    .required("Location is required"),
-  work_area: Yup.string().required("Work area is required"),
-  from_date: Yup.string().required("From date is required"),
-  to_date: Yup.string().required("To date is required"),
-  from_time: Yup.string().required("From time is required"),
-  to_time: Yup.string().required("To time is required"),
-});
+function getValidationSchema(isDraft) {
+  if (isDraft) {
+    return Yup.object({
+      role: Yup.string(),
+      performer: Yup.string(),
+      work_description: Yup.string(),
+      locationId: Yup.number(),
+      work_area: Yup.string(),
+      from_date: Yup.string().required("From date is required"),
+      to_date: Yup.string().required("To date is required"),
+      from_time: Yup.string().required("From time is required"),
+      to_time: Yup.string().required("To time is required"),
+    });
+  }
+
+  // Otherwise, apply the standard required validation
+  return Yup.object({
+    role: Yup.string().required("Role is required"),
+    performer: Yup.string().required("Performer is required"),
+    work_description: Yup.string().required("Work description is required"),
+    locationId: Yup.number()
+      .typeError("Location is required")
+      .required("Location is required"),
+    work_area: Yup.string().required("Work area is required"),
+    from_date: Yup.string().required("From date is required"),
+    to_date: Yup.string().required("To date is required"),
+    from_time: Yup.string().required("From time is required"),
+    to_time: Yup.string().required("To time is required"),
+  });
+}

@@ -8,12 +8,15 @@ import { getAllCompanies } from "../../../../assets/api/user";
 import { useEffect, useState } from "preact/hooks";
 
 import Select from "../../../ui/form/select";
+import { useDraftDetails } from "../../../../context/draft-details.context";
 
 export default function CompanyDetails() {
   const companyApi = useRequest(getAllCompanies, {}, true);
   const [companyName, setCompanyName] = useState(
     "--select entrusted company--"
   );
+
+  const { draft, isDraft } = useDraftDetails();
 
   const [options, setOptions] = useState([]);
 
@@ -33,6 +36,8 @@ export default function CompanyDetails() {
     }
   }, [companyName, companyApi.response]);
 
+  const validationSchema = getValidationSchema(isDraft);
+
   const { send, state } = usePermitContext();
   const { getFieldProps, handleSubmit } = useForm({
     validationSchema,
@@ -43,7 +48,15 @@ export default function CompanyDetails() {
     onSubmit,
   });
 
-  function onSubmit(company_details) {
+  function onSubmit(values) {
+    const company_details = {
+      entrusted_company: values.entrusted_company || draft?.entrustedCompanyId,
+      executing_company: values.executing_company || draft?.executingCompanyId,
+      performing_department:
+        values.performing_department || draft?.performingDepartment,
+      company_contact_phone:
+        values.company_contact_phone || draft?.contractorPhoneNumber,
+    };
     send("submit", { data: { company_details } });
   }
 
@@ -53,7 +66,9 @@ export default function CompanyDetails() {
         <div className="app-register__form-grid">
           <Select
             label="Entrusted Company (Optional)"
-            placeholder={companyName}
+            placeholder={`${
+              isDraft ? `${draft?.entrustedCompany?.name}` : companyName
+            }`}
             {...getFieldProps("entrusted_company")}
             options={options}
             onChange={(e) => {
@@ -67,7 +82,7 @@ export default function CompanyDetails() {
 
           <Select
             label="Executing Company (Optional)"
-            placeholder="Write here..."
+            placeholder={`${isDraft ? `${draft?.executingCompany?.name}` : ""}`}
             {...getFieldProps("executing_company")}
             options={options}
             onChange={(e) => {
@@ -78,13 +93,21 @@ export default function CompanyDetails() {
           />
           <Input
             label="Performing Department *"
-            placeholder="Enter performing Dept."
+            placeholder={`${
+              isDraft
+                ? `${draft?.performingDepartment}`
+                : "Enter performing Dept."
+            }`}
             {...getFieldProps("performing_department")}
             // required
           />
           <Input
             label="Contact Phone Number (Optional)"
-            placeholder="Enter contact number"
+            placeholder={`${
+              isDraft
+                ? `${draft?.contractorPhoneNumber}`
+                : "Enter contact phone number"
+            }`}
             type="text"
             {...getFieldProps("company_contact_phone")}
             onInput={(e) => {
@@ -109,8 +132,17 @@ export default function CompanyDetails() {
   );
 }
 
-const validationSchema = Yup.object({
-  performing_department: Yup.string().required(
-    "Performing Department is required"
-  ),
-});
+function getValidationSchema(isDraft) {
+  if (isDraft) {
+    return Yup.object({
+      performing_department: Yup.string(),
+    });
+  }
+
+  // Otherwise, apply the standard required validation
+  return Yup.object({
+    performing_department: Yup.string().required(
+      "Performing Department is required"
+    ),
+  });
+}

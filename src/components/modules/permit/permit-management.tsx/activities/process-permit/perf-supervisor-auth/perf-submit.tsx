@@ -48,7 +48,8 @@ export default function PerfProcessSubmit() {
 
       const documents = selectedDocuments.reduce((acc, doc) => {
         const camelCaseName = toCamelCase(doc.name);
-        acc[`${camelCaseName}Type`] = doc.type;
+
+        acc[`${camelCaseName.replace(/Doc$/i, "")}Type`] = doc.type;
         acc[`${camelCaseName}`] = doc.doc;
         return acc;
       }, {});

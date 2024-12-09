@@ -68,11 +68,32 @@ export default function Company() {
   //   setModalOpen(false);
   // };
 
+  const users = response?.data || [];
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredCompanies = users.filter((user) => {
+    const contractId = user.contractId.toLowerCase();
+    const name = user.name.toLowerCase();
+
+    const matchesSearch =
+      contractId.includes(searchTerm.toLowerCase()) ||
+      name.includes(searchTerm.toLowerCase()) ||
+      searchTerm === "";
+
+    const statusMatch =
+      selectedStatus === "All Status" || user.isActive === selectedStatus;
+
+    return statusMatch && matchesSearch;
+  });
+
   return (
     <>
       <div className="">
         <div className="app-section__header">
-          <Search placeholder="Search by name or Contract ID" onSearch={""} />
+          <Search
+            placeholder="Search by name or Contract ID"
+            onSearch={setSearchTerm}
+          />
 
           <div className="app-section__filters ">
             <span className="base-date-filter--secondary">Filter by:</span>
@@ -110,7 +131,7 @@ export default function Company() {
                   </TableHead>
 
                   <TableBody>
-                    {response?.data?.map((data) => (
+                    {filteredCompanies.map((data) => (
                       <TableRow key={data.id}>
                         <TableCell>{data.contractId.toUpperCase()}</TableCell>
                         <TableCell>{data.name}</TableCell>
@@ -146,7 +167,7 @@ export default function Company() {
               </div>
 
               <ReusableMobileTable
-                data={response?.data}
+                data={filteredCompanies}
                 onItemClick={handleItemClick}
                 getName={getName}
                 type={"Company"}

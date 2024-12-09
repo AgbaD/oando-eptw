@@ -27,8 +27,8 @@ export default function Activities({}: any) {
   const activities = response?.data || [];
 
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
-
   const [searchTerm, setSearchTerm] = useState("");
+  const [dateRange, setDateRange] = useState({ start: null, end: null });
 
   const handleItemClick = (item) => {
     stageActivity(item);
@@ -53,14 +53,33 @@ export default function Activities({}: any) {
     const activityPerformed = activity.activityPerformed.toLowerCase();
     const locationArea = activity?.location?.locationArea?.toLowerCase() || "";
     const site = activity?.location?.site?.toLowerCase() || "";
+    const activityDate = dayjs(activity.createdAt);
 
-    return (
+    // Apply search filter
+    const matchesSearchTerm =
       userName.includes(searchTerm.toLowerCase()) ||
       activityPerformed.includes(searchTerm.toLowerCase()) ||
       locationArea.includes(searchTerm.toLowerCase()) ||
-      site.includes(searchTerm.toLowerCase())
-    );
+      site.includes(searchTerm.toLowerCase());
+
+    // Apply location filter
+    const matchesLocation =
+      selectedLocation === "All Locations" ||
+      site.toLowerCase() === selectedLocation.toLowerCase();
+
+    // Apply date range filter
+    const matchesDateRange =
+      (!dateRange.start ||
+        activityDate.isAfter(dayjs(dateRange.start).startOf("day"))) &&
+      (!dateRange.end ||
+        activityDate.isBefore(dayjs(dateRange.end).endOf("day")));
+
+    return matchesSearchTerm && matchesLocation && matchesDateRange;
   });
+
+  const setDateRangeWrapper = (range: { startDate: Date; endDate: Date }) => {
+    setDateRange({ start: range.startDate, end: range.endDate });
+  };
 
   return (
     <>
@@ -72,7 +91,7 @@ export default function Activities({}: any) {
           onSearch={setSearchTerm}
         />
         <div className="app-section__filters">
-          <DateFilter variant="secondary" />
+          <DateFilter variant="secondary" setDateRange={setDateRangeWrapper} />
 
           <Dropdown className="base-dropdown__dropdown-wrapper">
             <DropdownTrigger>{selectedLocation}</DropdownTrigger>
@@ -83,7 +102,7 @@ export default function Activities({}: any) {
                   className={"base-dropdown__option"}
                   onClick={() => setSelectedLocation(location.value)}
                 >
-                  {location}
+                  {location.text}
                 </div>
               ))}
             </DropdownContent>

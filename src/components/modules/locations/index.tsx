@@ -6,7 +6,6 @@ import Button from "../../ui/button";
 import Icon from "../../ui/icon";
 import { Modal, ModalBody, ModalDetail, ModalHeader } from "../../ui/modal";
 import Header from "../../ui/page/header";
-import Search from "../../ui/page/search";
 import {
   Table,
   TableBody,
@@ -105,15 +104,10 @@ export default function Locations({}: any) {
     setModalOpen(true);
   };
 
-  const [searchTerm, setSearchTerm] = useState("");
-  console.log(searchTerm);
-
   return (
     <>
       <Header title="Locations" />
       <div className="app-section__header">
-        <Search placeholder="Search by user name" onSearch={setSearchTerm} />
-
         <div className="grid-cols-2">
           <Button
             href="/locations/create/location-area"
