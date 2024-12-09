@@ -15,11 +15,24 @@ export default function ClosureUploadDocuments({}: any) {
     onSubmit,
   });
 
+  const selectedPreviously: any = state.context.selected_documents;
+
   const [uploadedURLs, setUploadedURLs] = useState({});
 
   function onUploadComplete(key, url) {
     setUploadedURLs((prev) => ({ ...prev, [key]: url }));
   }
+
+  // Filter out online documents
+  const onlineDocuments = Object.keys(selectedPreviously)
+    .filter(
+      (key) =>
+        key.startsWith("document_") && selectedPreviously[key] === "manual"
+    )
+    .map((key) => ({
+      key,
+      label: key.replace("document_", "").replace(/_/g, " "), // Format label
+    }));
 
   function onSubmit(document_uploads) {
     const formattedDocuments = Object.entries(uploadedURLs).reduce(
@@ -45,13 +58,15 @@ export default function ClosureUploadDocuments({}: any) {
         </p>
 
         <div className="app-register__form-grid app-create-permit__docs">
-          <UploadDocument
-            label="Tool Box Stock Doc"
-            key="toolbox"
-            {...getFieldProps("toolbox")}
-            onChange={(v) => setFieldValue("toolbox", v)}
-            onUploadComplete={(url) => onUploadComplete("toolbox", url)}
-          />
+          {onlineDocuments.map(({ key, label }) => (
+            <UploadDocument
+              label={label}
+              key={key}
+              {...getFieldProps(key)}
+              onChange={(v) => setFieldValue(key, v)}
+              onUploadComplete={(url) => onUploadComplete(key, url)}
+            />
+          ))}
         </div>
 
         <div className="app-register__form-footer">

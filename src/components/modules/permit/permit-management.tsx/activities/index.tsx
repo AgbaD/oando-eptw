@@ -60,6 +60,9 @@ export default function ProcessPermitsIndex({}: any) {
     getPermitDetails();
   }, [id, profile?.id]);
 
+  console.log(permitDetails, "permit details");
+  console.log(permitDetails?.isSentBack, "boolean");
+
   const { tabs, activeTab } = useTabs([
     "Performing Auth.",
     "Issuing Auth.",
@@ -179,7 +182,27 @@ export default function ProcessPermitsIndex({}: any) {
       <div className={"app-permit__sections"}>
         {canRenderActions ? (
           <div className="actions">
-            {permitDetails?.status === "NOT_STARTED" ? (
+            {permitDetails?.isSentBack === true ? (
+              <>
+                <div className="print">
+                  <div>
+                    <h4>
+                      Permit Sent back from {permitDetails?.sendBackAuthority}
+                    </h4>
+                    <p>{permitDetails?.sendBackReason}</p>{" "}
+                  </div>
+
+                  <button
+                    className={"flex-center"}
+                    onClick={() => handleNavigate(permitDetails)}
+                  >
+                    <Icon name="process" />
+                    Process Permit
+                  </button>
+                </div>
+              </>
+            ) : permitDetails?.status === "NOT_STARTED" &&
+              permitDetails?.isSentBack === false ? (
               <>
                 <div className="print">
                   <div>
@@ -220,7 +243,7 @@ export default function ProcessPermitsIndex({}: any) {
                 <div className="print">
                   <div>
                     <h4>Permit Suspended</h4>
-                    <p>Click the button to reactive this permit</p>{" "}
+                    <p>Click the button to reactivate this permit</p>{" "}
                   </div>
 
                   <button
@@ -229,25 +252,6 @@ export default function ProcessPermitsIndex({}: any) {
                   >
                     <Icon name="export" />
                     Reactivate Permit
-                  </button>
-                </div>
-              </>
-            ) : permitDetails?.sendBackAuthority !== null ? (
-              <>
-                <div className="closure">
-                  <div>
-                    <h4>
-                      Permit Sent back from {permitDetails?.sendBackAuthority}
-                    </h4>
-                    <p>{permitDetails?.sendBackReason}</p>{" "}
-                  </div>
-
-                  <button
-                    className={"flex-center"}
-                    onClick={() => handleNavigate(permitDetails)}
-                  >
-                    <Icon name="process" />
-                    Process Permit
                   </button>
                 </div>
               </>
