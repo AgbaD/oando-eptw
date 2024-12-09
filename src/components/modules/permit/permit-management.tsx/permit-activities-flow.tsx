@@ -22,6 +22,7 @@ import { useIDContext } from "../../../../context/id.context";
 import useRequest from "../../../../hooks/use-request";
 import { route } from "preact-router";
 import { getAllPermits } from "../../../../assets/api/user";
+import { useUserContext } from "../../../../context/user.context";
 
 export default function ActivitiesFlow({}: any) {
   const [selectedWorkType, setSelectedWorkType] = useState("All Work Types");
@@ -36,6 +37,7 @@ export default function ActivitiesFlow({}: any) {
   ];
 
   const { setID } = useIDContext();
+  const { profile } = useUserContext();
 
   const { response, isLoading } = useRequest(getAllPermits, {}, true);
 
@@ -74,7 +76,17 @@ export default function ActivitiesFlow({}: any) {
     const matchesStatus =
       selectedStatus === "All Status" || permit.status === selectedStatus;
 
-    return matchesSearchTerm && matchesWorkType && matchesStatus;
+    const matchesProfileAndAuthority =
+      profile?.id &&
+      permit.permitRoles?.[profile.id] &&
+      permit.permitRoles[profile.id] === permit.currentAuthority;
+
+    return (
+      matchesSearchTerm &&
+      matchesWorkType &&
+      matchesStatus &&
+      matchesProfileAndAuthority
+    );
   });
 
   return (

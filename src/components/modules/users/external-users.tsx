@@ -29,8 +29,14 @@ const ExternalUsers = ({ company = [] }) => {
 
   const { setID, valueID } = useIDContext();
 
+  async function getUserById(id: number) {
+    const response: any = await createRequest(`/profile/${id}`, "GET");
+    viewUser(response[0]?.data);
+    console.log(response[0]?.data);
+  }
+
   const handleItemClick = (item) => {
-    viewUser(item);
+    getUserById(item.id);
     toggle("user_details");
   };
 
@@ -146,8 +152,7 @@ const ExternalUsers = ({ company = [] }) => {
           </ModalDetail>
           <ModalDetail label="Created By:">
             <a href="#" className="app-link">
-              {selectedUser?.creator?.firstname}{" "}
-              {selectedUser?.creator?.lastname}
+              {selectedUser?.creator?.fullname}{" "}
             </a>
           </ModalDetail>
           <ModalDetail label="Full name:">{selectedUser?.fullname}</ModalDetail>
@@ -171,8 +176,8 @@ const ExternalUsers = ({ company = [] }) => {
             </ModalDetail>
           </div>
           <ModalDetail label="Role:">
-            {selectedUser?.roles?.map((role) => (
-              <span key={role.id}>{role.name}, </span>
+            {selectedUser?.role?.authorities?.map((role) => (
+              <p key={role}>{role}</p>
             ))}
           </ModalDetail>
           <div className="app-modal__footer">

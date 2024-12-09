@@ -140,6 +140,11 @@ const ROUTES = [
         label: "Users",
         iconName: "sidebar.users",
       },
+      {
+        path: "/profile",
+        label: "Profile",
+        iconName: "sidebar.profile",
+      },
     ],
   },
   {

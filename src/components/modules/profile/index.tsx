@@ -16,12 +16,11 @@ export default function Profile({}: any) {
         <Accordion title="Personal Details" show>
           <AccordionItem
             title="Profile Photo"
-            value={<div className="app-profile__avatar ">{profile.firstname[0]}</div>}
+            value={
+              <div className="app-profile__avatar ">{profile.fullname}</div>
+            }
           />
-          <AccordionItem
-            title="Full Name"
-            value={`${profile.firstname} ${profile.lastname}`}
-          />
+          <AccordionItem title="Full Name" value={`${profile.fullname}`} />
           <AccordionItem title="Email Address" value={profile.email} />
         </Accordion>
 
@@ -33,9 +32,7 @@ export default function Profile({}: any) {
           />
           <AccordionItem
             title="Date Joined"
-            value={dayjs(profile.createdAt).format(
-              "MMM DD, YYYY  HH:mm A"
-            )}
+            value={dayjs(profile.createdAt).format("MMM DD, YYYY  HH:mm A")}
           />
         </Accordion>
       </div>

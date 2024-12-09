@@ -73,6 +73,8 @@ import EditInternalUser from "./components/modules/users/edit-internal-user.tsx"
 import SelectPermitRole from "./components/modules/permit/select-permit/index.tsx";
 import { DraftDetailsProvider } from "./context/draft-details.context.tsx";
 
+import Profile from "./components/modules/profile/index.tsx";
+
 function App() {
   return (
     <Router>
@@ -173,7 +175,7 @@ function App() {
 
               <Drafts path="/permit-drafts" />
 
-              {/* <Profile path="/profile" /> */}
+              <Profile path="/profile" />
             </Router>
           </AppLayout>
         </Router>

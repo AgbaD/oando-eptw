@@ -49,6 +49,7 @@ function createParams(payload: any) {
 }
 
 const PERMISSIONS = [
+  { label: "Full Access", value: "FULL_ACCESS" },
   { label: "Create Permit", value: "CREATE_PERMIT" },
   { label: "Process Permit", value: "PROCESS_PERMIT" },
   { label: "Create User", value: "CREATE_USER" },
@@ -62,7 +63,6 @@ const PERMISSIONS = [
 ] as const;
 
 const AUTHORITIES = [
-  { label: "Super Admin", value: "SUPER_ADMIN" },
   { label: "Performing Authority", value: "PERFORMING" },
   { label: "Issuing Authority", value: "ISSUING" },
   { label: "HSE Authority", value: "HSE" },

@@ -56,10 +56,12 @@ export default function Workflows({}: any) {
         `/profile/${profile?.id}`,
         "GET"
       );
-      console.log(userResponse);
+      console.log(userResponse[0]);
       setUserRoles(userResponse[0].data.role.authorities);
 
-      if (userResponse.includes("PERFORMING")) setCanCreatePermit(true);
+      if (userResponse[0].includes("PERFORMING")) {
+        setCanCreatePermit(true);
+      }
     }
 
     getUserProfile();

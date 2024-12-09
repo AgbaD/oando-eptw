@@ -35,8 +35,14 @@ export default function InternalUsers() {
 
   const users = response?.data || [];
 
+  async function getUserById(id: number) {
+    const response: any = await createRequest(`/profile/${id}`, "GET");
+    viewUser(response[0]?.data);
+    console.log(response[0]?.data);
+  }
+
   const handleItemClick = (item) => {
-    viewUser(item);
+    getUserById(item.id);
     toggle("user_details");
   };
 
@@ -263,7 +269,7 @@ export default function InternalUsers() {
               </ModalDetail>
               <ModalDetail label="Created By:">
                 <a href="" className="app-link">
-                  {selectedUser?.creator}
+                  {selectedUser?.creator?.fullname}
                 </a>
               </ModalDetail>
               <ModalDetail label="Full name:">
@@ -290,11 +296,11 @@ export default function InternalUsers() {
                 </ModalDetail>
               </div>
               <ModalDetail label="Role:">
-                {selectedUser?.roles?.map((role) => {
+                {selectedUser?.role?.authorities?.map((role) => {
                   return (
-                    <span className="app-modal__detail__value" key={role.id}>
-                      {role.name}
-                    </span>
+                    <p className="app-modal__detail__value" key={role}>
+                      {role}
+                    </p>
                   );
                 })}
               </ModalDetail>
