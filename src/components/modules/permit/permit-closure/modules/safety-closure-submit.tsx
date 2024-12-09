@@ -54,7 +54,6 @@ export default function SafetyClosureSubmit() {
           )
           .replace(/\s+/g, ""); // Remove all spaces
       };
-
       const documents = selectedDocuments.reduce((acc, doc) => {
         const camelCaseName = toCamelCase(doc.name);
 
@@ -63,7 +62,8 @@ export default function SafetyClosureSubmit() {
           acc[`${camelCaseName}Name`] = "..."; // Add the Name field
         }
 
-        acc[`${camelCaseName.replace(/Doc$/i, "")}Type`] = doc.type;
+        // Keep "Doc" in the key names
+        acc[`${camelCaseName}Type`] = doc.type;
         acc[`${camelCaseName}`] = doc.doc;
 
         return acc;

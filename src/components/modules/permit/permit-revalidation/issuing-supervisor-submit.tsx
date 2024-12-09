@@ -50,7 +50,8 @@ export default function IssuingRevalidationSubmit() {
           acc[`${camelCaseName}Name`] = "..."; // Add the Name field
         }
 
-        acc[`${camelCaseName.replace(/Doc$/i, "")}Type`] = doc.type;
+        // Keep "Doc" in the key names
+        acc[`${camelCaseName}Type`] = doc.type;
         acc[`${camelCaseName}`] = doc.doc;
 
         return acc;
