@@ -49,24 +49,16 @@ function createParams(payload: any) {
 }
 
 const PERMISSIONS = [
-  { label: "Full Access", value: "FULL_ACCESS" },
-  { label: "Platform Access", value: "PLATFORM_ACCESS" },
   { label: "Create Permit", value: "CREATE_PERMIT" },
   { label: "Process Permit", value: "PROCESS_PERMIT" },
   { label: "Create User", value: "CREATE_USER" },
   { label: "Edit User", value: "EDIT_USER" },
-  // { label: "Delete User", value: "DELETE_USER" },
   { label: "Create Role", value: "CREATE_ROLE" },
   { label: "Edit Role", value: "EDIT_ROLE" },
-  { label: "Delete user Role", value: "DELETE_USER_ROLE" },
   { label: "Create Location", value: "CREATE_LOCATION" },
   { label: "Edit Location", value: "EDIT_LOCATION" },
-  { label: "Delete Location", value: "DELETE_LOCATION" },
-  { label: "PTW Access", value: "PTW_ACCESS" },
-  { label: "Process Existing Permit", value: "PROCESS_EXISTING_PERMIT" },
-  { label: "Internal Task Responsible", value: "INTERNAL_TASK_RESPONSIBLE" },
-  { label: "External Task Responsible", value: "EXTERNAL_TASK_RESPONSIBLE" },
-  { label: "Attach Documents", value: "ATTACH_DOCUMENTS" },
+  { label: "Internal Task Responsible", value: "INTERNAL" },
+  { label: "External Task Responsible", value: "EXTERNAL" },
 ] as const;
 
 const AUTHORITIES = [

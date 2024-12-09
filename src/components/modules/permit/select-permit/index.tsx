@@ -56,6 +56,14 @@ export default function SelectPermitRole({}: any) {
       })
     );
 
+    if (authorities.length === 0) {
+      toast({
+        variant: "error",
+        message: "Please select a role for your permits.",
+      });
+      return;
+    }
+
     try {
       const response: any = await createRequest(
         "/permit/profile/authority",
@@ -115,45 +123,100 @@ export default function SelectPermitRole({}: any) {
           <br />
           <br />
 
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>PTW ID</TableCell>
-                <TableCell>Work Type</TableCell>
-                <TableCell>Work To Be Performed</TableCell>
-                <TableCell>Work Area</TableCell>
-                <TableCell>Company</TableCell>
-                <TableCell>Option</TableCell>
-              </TableRow>
-            </TableHead>
+          <div className="app-section__lg-table">
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>PTW ID</TableCell>
+                  <TableCell>Work Type</TableCell>
+                  <TableCell>Work To Be Performed</TableCell>
+                  <TableCell>Work Area</TableCell>
+                  <TableCell>Company</TableCell>
+                  <TableCell>Option</TableCell>
+                </TableRow>
+              </TableHead>
 
-            <TableBody>
-              {response?.data?.map((data) => (
-                <>
-                  <TableRow key={data.publicId}>
-                    <TableCell>{data.publicId}</TableCell>
-                    <TableCell>{data?.type?.replace(/_/g, " ")}</TableCell>
-                    <TableCell>
-                      {`${data?.workDescription
-                        .charAt(0)
-                        .toUpperCase()}${data?.workDescription.slice(1)}`}
-                    </TableCell>
-                    <TableCell>
-                      {data?.workArea} / {data?.location?.locationArea}
-                    </TableCell>
-                    <TableCell>{data?.entrustedCompany?.name}</TableCell>
-                    <TableCell>
+              <TableBody>
+                {response?.data?.map((data) => (
+                  <>
+                    <TableRow key={data.publicId}>
+                      <TableCell>{data.publicId}</TableCell>
+                      <TableCell>{data?.type?.replace(/_/g, " ")}</TableCell>
+                      <TableCell>
+                        {`${data?.workDescription
+                          .charAt(0)
+                          .toUpperCase()}${data?.workDescription.slice(1)}`}
+                      </TableCell>
+                      <TableCell>
+                        {data?.workArea} / {data?.location?.locationArea}
+                      </TableCell>
+                      <TableCell>{data?.entrustedCompany?.name}</TableCell>
+                      <TableCell>
+                        <Dropdown>
+                          <DropdownTrigger>
+                            {/* Display the selected role or default text */}
+                            {selectedRoles[data.id] || "-- select an option --"}
+                          </DropdownTrigger>
+                          <DropdownContent>
+                            {userRoles?.map((role) => (
+                              <div
+                                className={"base-dropdown__option"}
+                                onClick={() => handleRoleChange(data.id, role)}
+                                key={role}
+                              >
+                                {role}
+                              </div>
+                            ))}
+                          </DropdownContent>
+                        </Dropdown>
+                      </TableCell>
+                    </TableRow>
+                    <br />
+                    <br />
+                  </>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <div className="app-section__sm-table">
+            <Table>
+              <TableBody>
+                {response?.data?.map((dataItem) => (
+                  <div key={dataItem.id} className="container">
+                    <div className="location-flex">
+                      <p>{dataItem.publicId}</p>
+                      <h6 className={"gray"}>{dataItem.type}</h6>
+                    </div>
+                    <p>{dataItem.workDescription}</p>
+                    <div className="location-flex">
+                      <div className="">
+                        <p className={"gray"}>Work Area :</p>
+                        <h5>
+                          {dataItem?.workArea} /{" "}
+                          {dataItem?.location?.locationArea}
+                        </h5>
+                      </div>
+                      <div className="">
+                        <p className={"gray"}>Entrusted Company :</p>
+                        <h5>{dataItem?.entrustedCompany?.name} </h5>
+                      </div>
+                    </div>
+                    <br />
+
+                    <div className="">
                       <Dropdown>
                         <DropdownTrigger>
-                          {/* Display the selected role or default text */}
-                          {selectedRoles[data.publicId] ||
+                          {selectedRoles[dataItem.publicId] ||
                             "-- select an option --"}
                         </DropdownTrigger>
                         <DropdownContent>
                           {userRoles?.map((role) => (
                             <div
                               className={"base-dropdown__option"}
-                              onClick={() => handleRoleChange(data.id, role)}
+                              onClick={() =>
+                                handleRoleChange(dataItem.id, role)
+                              }
                               key={role}
                             >
                               {role}
@@ -161,14 +224,12 @@ export default function SelectPermitRole({}: any) {
                           ))}
                         </DropdownContent>
                       </Dropdown>
-                    </TableCell>
-                  </TableRow>
-                  <br />
-                  <br />
-                </>
-              ))}
-            </TableBody>
-          </Table>
+                    </div>
+                  </div>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
           {!response?.data?.length && (
             <div className="base-empty">

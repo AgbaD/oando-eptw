@@ -8,7 +8,7 @@ import Header from "../../../ui/page/header";
 import Search from "../../../ui/page/search";
 import Button from "../../../ui/button";
 
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 
 import {
   Table,
@@ -23,10 +23,17 @@ import { useIDContext } from "../../../../context/id.context";
 import useRequest from "../../../../hooks/use-request";
 import { route } from "preact-router";
 import { getAllPermits } from "../../../../assets/api/user";
+import { useUserContext } from "../../../../context/user.context";
+
+import { createRequest } from "../../../../assets/api";
 
 export default function Workflows({}: any) {
   const [selectedWorkType, setSelectedWorkType] = useState("All Work Types");
   const work_types = ["All Work Types", "COLD_WORK", "HOT_WORK"];
+
+  const [userRoles, setUserRoles] = useState([]);
+  console.log(userRoles);
+  const [canCreatePermit, setCanCreatePermit] = useState(false);
 
   const [selectedStatus, setSelectedStatus] = useState("All Status");
   const statusOptions = [
@@ -41,6 +48,22 @@ export default function Workflows({}: any) {
   ];
 
   const { setID } = useIDContext();
+  const { profile } = useUserContext();
+
+  useEffect(() => {
+    async function getUserProfile() {
+      const userResponse = await createRequest(
+        `/profile/${profile?.id}`,
+        "GET"
+      );
+      console.log(userResponse);
+      setUserRoles(userResponse[0].data.role.authorities);
+
+      if (userResponse.includes("PERFORMING")) setCanCreatePermit(true);
+    }
+
+    getUserProfile();
+  }, [profile]);
 
   const { response, isLoading } = useRequest(getAllPermits, {}, true);
 
@@ -122,10 +145,12 @@ export default function Workflows({}: any) {
           </div>
         </div>
 
-        <Button href="/permit/create" variant="primary" dimension="md">
-          <Icon name="plus" />
-          Create New Permit
-        </Button>
+        {canCreatePermit && (
+          <Button href="/permit/create" variant="primary" dimension="md">
+            <Icon name="plus" />
+            Create New Permit
+          </Button>
+        )}
       </div>
 
       <div className="app-section">

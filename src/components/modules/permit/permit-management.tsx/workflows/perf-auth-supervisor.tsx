@@ -207,6 +207,8 @@ export default function PerfAuthSupervisor({ response }: any) {
             </>
           )}
 
+          {/* {details?.performingAuthoritySupervisorClosureStatus === "APPROVED"} */}
+
           <div className="actions">
             <div className="print">
               <div>
