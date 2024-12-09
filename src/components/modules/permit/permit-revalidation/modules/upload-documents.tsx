@@ -16,10 +16,21 @@ export default function PerfUploadDocuments({}: any) {
   });
 
   const [uploadedURLs, setUploadedURLs] = useState({});
+  const selectedPreviously: any = state.context.selected_documents;
 
   function onUploadComplete(key, url) {
     setUploadedURLs((prev) => ({ ...prev, [key]: url }));
   }
+
+  const onlineDocuments = Object.keys(selectedPreviously)
+    .filter(
+      (key) =>
+        key.startsWith("document_") && selectedPreviously[key] === "manual"
+    )
+    .map((key) => ({
+      key,
+      label: key.replace("document_", "").replace(/_/g, " "), // Format label
+    }));
 
   function onSubmit(document_uploads) {
     const formattedDocuments = Object.entries(uploadedURLs).reduce(
@@ -45,36 +56,15 @@ export default function PerfUploadDocuments({}: any) {
         </p>
 
         <div className="app-register__form-grid app-create-permit__docs">
-          <UploadDocument
-            label="Tool Box Stock Doc"
-            key="toolbox"
-            {...getFieldProps("toolbox")}
-            onChange={(v) => setFieldValue("toolbox", v)}
-            onUploadComplete={(url) => onUploadComplete("toolbox", url)}
-          />
-          <UploadDocument
-            label="Radiography Cert."
-            key="radiography"
-            {...getFieldProps("radiography")}
-            onChange={(v) => setFieldValue("radiography", v)}
-            onUploadComplete={(url) => onUploadComplete("radiography", url)}
-          />
-
-          <UploadDocument
-            label="Confined Space Cert."
-            key="confinedSpace"
-            {...getFieldProps("confinedSpace")}
-            onChange={(v) => setFieldValue("confinedSpace", v)}
-            onUploadComplete={(url) => onUploadComplete("confinedSpace", url)}
-          />
-
-          <UploadDocument
-            label="Gas Safety Cert."
-            key="gasClearance"
-            {...getFieldProps("gasClearance")}
-            onChange={(v) => setFieldValue("gasClearance", v)}
-            onUploadComplete={(url) => onUploadComplete("gasClearance", url)}
-          />
+          {onlineDocuments.map(({ key, label }) => (
+            <UploadDocument
+              label={label}
+              key={key}
+              {...getFieldProps(key)}
+              onChange={(v) => setFieldValue(key, v)}
+              onUploadComplete={(url) => onUploadComplete(key, url)}
+            />
+          ))}
         </div>
 
         <div className="app-register__form-footer">
