@@ -7,7 +7,7 @@ import PermitActionHistory from "../permit-management.tsx/permit-action-history"
 import WorkAuthoriesFlow from "../permit-management.tsx/work-authories-flow";
 
 import "./monitoring.scss";
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 
 import Icon from "../../../ui/icon";
 import { route } from "preact-router";
@@ -25,16 +25,30 @@ import PopupModal from "../../../ui/popup";
 import { usePermitDetails } from "../../../../context/permit-details.context";
 
 import { createRequest } from "../../../../assets/api";
-
-// interface PermitDetails {
-//   from_date: string;
-//   from_time: string;
-//   to_date: string;
-//   to_time: string;
-//   [key: string]: any;
-// }
+import { useUserContext } from "../../../../context/user.context";
+import { useIDContext } from "../../../../context/id.context";
 
 export default function MonitoringDetailsIndex({}: any) {
+  const [userRole, setUserRole] = useState<string>();
+
+  const { valueID } = useIDContext();
+  const id = valueID;
+
+  const { profile } = useUserContext();
+
+  useEffect(() => {
+    async function getPermitDetails() {
+      const permitResponse = await createRequest(`/permit/${id}`, "GET");
+      const permitData = permitResponse[0].data;
+
+      const userRole = permitData?.permitRoles?.[profile?.id];
+      console.log(userRole);
+      setUserRole(userRole);
+    }
+
+    getPermitDetails();
+  }, [id, profile?.id]);
+
   const { tabs, activeTab } = useTabs([
     "PTW Details",
     "Action History",
@@ -141,22 +155,25 @@ export default function MonitoringDetailsIndex({}: any) {
         <div className="actions">
           {permit?.type === "HOT_WORK" ? (
             <>
-              <div className="closure">
-                <div>
-                  <h4>Request For Closure</h4>
-                  <p>
-                    Click the button to request closure for this permit
-                  </p>{" "}
-                </div>
+              {userRole === "PERFORMING_SUPERVISOR" ||
+                (userRole === "SUPERADMIN" && (
+                  <div className="closure">
+                    <div>
+                      <h4>Request For Closure</h4>
+                      <p>
+                        Click the button to request closure for this permit
+                      </p>{" "}
+                    </div>
 
-                <button
-                  className={"flex-center"}
-                  onClick={() => handleClosurePopup(true)}
-                >
-                  <Icon name="export" />
-                  Request Closure
-                </button>
-              </div>
+                    <button
+                      className={"flex-center"}
+                      onClick={() => handleClosurePopup(true)}
+                    >
+                      <Icon name="export" />
+                      Request Closure
+                    </button>
+                  </div>
+                ))}
             </>
           ) : permit?.status === "SUSPENDED" ? (
             <>
@@ -177,22 +194,25 @@ export default function MonitoringDetailsIndex({}: any) {
             </>
           ) : (
             <>
-              <div className="print">
-                <div>
-                  <h4>Request For Revalidation</h4>
-                  <p>
-                    Click the button to request validation for this permit
-                  </p>{" "}
-                </div>
+              {userRole === "PERFORMING_SUPERVISOR" ||
+                (userRole === "SUPERADMIN" && (
+                  <div className="print">
+                    <div>
+                      <h4>Request For Revalidation</h4>
+                      <p>
+                        Click the button to request validation for this permit
+                      </p>{" "}
+                    </div>
 
-                <button
-                  className={"flex-center"}
-                  onClick={() => handleRevalidatePopup(true)}
-                >
-                  <Icon name="export" />
-                  Revalidate Permit
-                </button>
-              </div>
+                    <button
+                      className={"flex-center"}
+                      onClick={() => handleRevalidatePopup(true)}
+                    >
+                      <Icon name="export" />
+                      Revalidate Permit
+                    </button>
+                  </div>
+                ))}
             </>
           )}
         </div>

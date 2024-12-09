@@ -1,9 +1,5 @@
 import * as Yup from "yup";
 
-import { useState } from "preact/hooks";
-import SendToAuthority from "../send-back-to-authority";
-import { documentOptions } from "../../../../create-permit/documents";
-
 import Select from "../../../../../../ui/form/select";
 import Button from "../../../../../../ui/button";
 import useForm from "../../../../../../../hooks/use-form";
@@ -29,7 +25,12 @@ export default function PerfSupervisorDocuments() {
     send("submit", { data: { selected_documents } });
   }
 
-  const [isModalOpen, setModalOpen] = useState(false);
+  const documentOptions = [
+    "Tool Box Stock Doc",
+    "Radiography Cert",
+    "Confined Space Cert",
+    "Gas Testing Cert",
+  ];
 
   return (
     <>
@@ -65,13 +66,6 @@ export default function PerfSupervisorDocuments() {
         </div>
         <div className="app-register__form-footer">
           <Button
-            variant="danger"
-            type="button"
-            onClick={() => setModalOpen(true)}
-          >
-            Send Back To Authority
-          </Button>
-          <Button
             variant="secondary"
             type="button"
             onClick={() => send("go_back")}
@@ -83,9 +77,6 @@ export default function PerfSupervisorDocuments() {
           </Button>
         </div>
       </form>
-      {isModalOpen && (
-        <SendToAuthority setModalOpen={() => setModalOpen(false)} />
-      )}
     </>
   );
 }

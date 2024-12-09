@@ -36,10 +36,10 @@ export default function SelectDocuments({}: any) {
     currentPath === "/closure-issuing-supervisor"
       ? ["Tool Box Stock"]
       : [
-          "Tool Box Stock",
-          "Radiography cert.",
-          "Confined Space Cert.",
-          "Gas Testing Cert.",
+          "Tool Box Stock Doc",
+          "Radiography Cert",
+          "Confined Space Cert",
+          "Gas Testing Cert",
         ];
 
   return (

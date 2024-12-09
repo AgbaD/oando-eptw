@@ -49,8 +49,14 @@ export default function PerfProcessSubmit() {
       const documents = selectedDocuments.reduce((acc, doc) => {
         const camelCaseName = toCamelCase(doc.name);
 
+        if (camelCaseName === "otherCert") {
+          // Special case for "Other Cert" to include `otherCertName`
+          acc[`${camelCaseName}Name`] = "..."; // Add the Name field
+        }
+
         acc[`${camelCaseName.replace(/Doc$/i, "")}Type`] = doc.type;
         acc[`${camelCaseName}`] = doc.doc;
+
         return acc;
       }, {});
 

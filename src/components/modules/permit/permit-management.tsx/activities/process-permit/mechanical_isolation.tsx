@@ -101,7 +101,6 @@ export const LIST = [
     value: "lineDisconnection",
   },
   { text: "LINE / EQUIPMENT DRAINAGE", value: "lineDrainage" },
-
   {
     text: "LINE / EQUIPMENT DEPRESSURIZATION",
     value: "lineDepressurization",

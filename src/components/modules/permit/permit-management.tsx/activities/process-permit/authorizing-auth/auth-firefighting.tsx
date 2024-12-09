@@ -20,8 +20,9 @@ export const FIREFIGHTING_EQUIPMENT = [
   },
   { text: "FLAME PROOF BLANKET", value: "flameProofBlanket" },
   { text: "GROUNDING OF EQUIPMENT", value: "groundingOfEquipment" },
-  { text: "CONTINOUS GAS MONITORING", value: "continuousGasMonitoring" },
-  { text: "FIREWATCHER / STANDBY MAN", value: "fireWatcher" },
+  { text: "CONTINUOUS GAS MONITORING", value: "continuousGasMonitoring" },
+  { text: "FIREWATCHER / STANDBY MAN", value: "firewatcher" },
+  { text: "OTHERS", value: "otherPrecaution" },
 ];
 
 export default function AuthFireFightingEquipment() {

@@ -5,7 +5,6 @@ import Button from "../../../../../../ui/button";
 import UploadDocument from "../../../../../../ui/form/upload";
 
 import { useState } from "preact/hooks";
-import SendToAuthority from "../send-back-to-authority";
 import { useIssuingSupervisorActivityContext } from "../../../../../../../context/issuing-supervisor-context";
 export default function IssuSupervisorFinalUpload() {
   const { state, send } = useIssuingSupervisorActivityContext();
@@ -50,8 +49,6 @@ export default function IssuSupervisorFinalUpload() {
     send("submit", { data: { document_uploads, formattedDocuments } });
   }
 
-  const [isModalOpen, setModalOpen] = useState(false);
-
   return (
     <>
       <form onSubmit={handleSubmit} className="app-register__attachment-form">
@@ -73,13 +70,6 @@ export default function IssuSupervisorFinalUpload() {
 
         <div className="app-register__form-footer">
           <Button
-            variant="danger"
-            type="button"
-            onClick={() => setModalOpen(true)}
-          >
-            Send Back To Authority
-          </Button>
-          <Button
             variant="secondary"
             type="button"
             onClick={() => send("go_back")}
@@ -89,10 +79,6 @@ export default function IssuSupervisorFinalUpload() {
           <Button variant="primary">Next</Button>
         </div>
       </form>
-
-      {isModalOpen && (
-        <SendToAuthority setModalOpen={() => setModalOpen(false)} />
-      )}
     </>
   );
 }

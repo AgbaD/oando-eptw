@@ -106,7 +106,7 @@ export const HAZARDS = [
   { text: "FALLING OBJECTS", value: "falling" },
   { text: "RADIATION", value: "radiation" },
   { text: "TYPE OF WASTE IS KNOWN", value: "knownWaste" },
-  { text: "OTHER", value: "other" },
+  { text: "OTHER", value: "otherHazard" },
 ];
 
 function getValidationSchema(isDraft) {

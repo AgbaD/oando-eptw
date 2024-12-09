@@ -59,6 +59,8 @@ export default function Workflows({}: any) {
       console.log(userResponse[0]);
       setUserRoles(userResponse[0].data.role.authorities);
 
+      console.log(userRoles);
+
       if (userResponse[0].includes("PERFORMING")) {
         setCanCreatePermit(true);
       }
@@ -147,11 +149,13 @@ export default function Workflows({}: any) {
           </div>
         </div>
 
-        {canCreatePermit && (
+        {canCreatePermit ? (
           <Button href="/permit/create" variant="primary" dimension="md">
             <Icon name="plus" />
             Create New Permit
           </Button>
+        ) : (
+          <></>
         )}
       </div>
 

@@ -104,12 +104,11 @@ export const LIST = [
     text: "DISCONNECT CABLE FROM EQUIPMENT",
     value: "cableDisconnection",
   },
-  // { text: "OVERHEAD HAZARDS, CRANES, ETC", value: "overheadHazardsCranes" },
   {
     text: "INSTALLATION OF GROUND FAULT CIRCUIT INTERUPTOR (GCFI OR RESIDUAL CURRENT CICUIT BREAKER (RCCB)",
     value: "gfciInstallation",
   },
-  { text: "OTHERS", value: "others" },
+  { text: "OTHERS", value: "other" },
 ];
 
 const validationSchema = Yup.object({

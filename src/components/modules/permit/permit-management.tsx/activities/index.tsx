@@ -299,11 +299,21 @@ export default function ProcessPermitsIndex({}: any) {
           {activeTab === "Issuing Auth." && (
             <IssuingAuthorities response={permitDetails} />
           )}
-          {activeTab === "HSE Auth." && <HSEAuthority />}
-          {activeTab === "Authorizing Auth." && <AuthAuthority />}
-          {activeTab === "Perf. Auth. Supervisor" && <PerfAuthSupervisor />}
-          {activeTab === "Safety Officer" && <SafetyOfficer />}
-          {activeTab === "Issuing. Auth. Supervisor" && <IssuAuthSupervisor />}
+          {activeTab === "HSE Auth." && (
+            <HSEAuthority response={permitDetails} />
+          )}
+          {activeTab === "Authorizing Auth." && (
+            <AuthAuthority response={permitDetails} />
+          )}
+          {activeTab === "Perf. Auth. Supervisor" && (
+            <PerfAuthSupervisor response={permitDetails} />
+          )}
+          {activeTab === "Safety Officer" && (
+            <SafetyOfficer response={permitDetails} />
+          )}
+          {activeTab === "Issuing. Auth. Supervisor" && (
+            <IssuAuthSupervisor response={permitDetails} />
+          )}
         </div>
 
         <div className="">

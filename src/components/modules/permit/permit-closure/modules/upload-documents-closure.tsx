@@ -46,7 +46,7 @@ export default function ClosureUploadDocuments({}: any) {
 
         <div className="app-register__form-grid app-create-permit__docs">
           <UploadDocument
-            label="Tool Box Stock"
+            label="Tool Box Stock Doc"
             key="toolbox"
             {...getFieldProps("toolbox")}
             onChange={(v) => setFieldValue("toolbox", v)}

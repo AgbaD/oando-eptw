@@ -5,7 +5,6 @@ import Button from "../../../../../../ui/button";
 import UploadDocument from "../../../../../../ui/form/upload";
 
 import { useState } from "preact/hooks";
-import SendToAuthority from "../send-back-to-authority";
 
 import { usePerfSupervisorActivityContext } from "../../../../../../../context/perf-supervisor-activity.context";
 export default function PerfSupervisorFinalUpload() {
@@ -15,8 +14,6 @@ export default function PerfSupervisorFinalUpload() {
     onSubmit,
     validationSchema,
   });
-
-  const [isModalOpen, setModalOpen] = useState(false);
 
   const selectedPreviously: any = state.context.selected_documents;
 
@@ -74,13 +71,6 @@ export default function PerfSupervisorFinalUpload() {
 
         <div className="app-register__form-footer">
           <Button
-            variant="danger"
-            type="button"
-            onClick={() => setModalOpen(true)}
-          >
-            Send Back To Authority
-          </Button>
-          <Button
             variant="secondary"
             type="button"
             onClick={() => send("go_back")}
@@ -90,10 +80,6 @@ export default function PerfSupervisorFinalUpload() {
           <Button variant="primary">SUBMIT</Button>
         </div>
       </form>
-
-      {isModalOpen && (
-        <SendToAuthority setModalOpen={() => setModalOpen(false)} />
-      )}
     </>
   );
 }

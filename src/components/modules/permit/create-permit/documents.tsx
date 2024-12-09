@@ -7,22 +7,22 @@ import Checkbox from "../../../ui/form/checkbox";
 import Select from "../../../ui/form/select";
 
 export const documentOptions = [
-  "Job Safety Analysis Doc (JSA) / Risk Safety Analysis (RSA)",
+  "Job Safety Analysis Doc",
   "Work Procedure Doc",
-  "Explosives Cert.",
-  "Mechanical Isolation Cert.",
-  "Gas Clearance",
-  "Scaffolding Cert.",
-  "MEWP Cert.",
-  "Man Basket Cert.",
-  "Near Powerlines Cert.",
-  "Radiography Cert.",
-  "Excavation Cert.",
-  "Lift Cert.",
-  "Hot Tapping Cert.",
-  "Diving / ROV Cert.",
-  "Man Riding Cert.",
-  "Others",
+  "Explosives Cert",
+  "Mechanical Isolation Cert",
+  "Gas Clearance Cert",
+  "Scaffolding Cert",
+  "MEWP Cert",
+  "Man Basket Cert",
+  "Near Powerlines Cert",
+  "Radiography Cert",
+  "Excavation Cert",
+  "Lift Cert",
+  "Hot Tapping Cert",
+  "Diving or ROV Cert",
+  "Man Riding Cert",
+  "Other Cert",
 ];
 
 export default function Documents() {

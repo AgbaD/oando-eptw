@@ -109,7 +109,7 @@ export const EQUIPMENT = [
   },
   {
     text: "BREATHING APPARATUS (Dust, Fumes, Chemical, SCBA)",
-    value: "breathingAparatus",
+    value: "breathingApparatus", // Correct value as expected by the backend
   },
   {
     text: "SAFETY GLASSES / FACE SHIELD / ELECTRIC ARC SHIELD / GRINDING SHIELD",

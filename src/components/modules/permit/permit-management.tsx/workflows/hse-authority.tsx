@@ -15,6 +15,8 @@ export default function HSEAuthority({ response }: any) {
       : setApproved(false);
   }, [details]);
 
+  console.log(details);
+
   const equipment = [
     {
       header: "PERSONNEL PROTECTIVE EQUIPMENT",
