@@ -54,6 +54,12 @@ export default function IssuSupervisorDocuments() {
                   { text: "Online", value: "online" },
                 ]}
               />
+              {values.documents[document] &&
+                !values[`document_${document}`] && (
+                  <p className="error" style={{ color: "red" }}>
+                    Please select an option for the selected document.
+                  </p>
+                )}
             </div>
           ))}
         </div>
@@ -87,4 +93,17 @@ export default function IssuSupervisorDocuments() {
   );
 }
 
-const validationSchema = Yup.object({});
+const validationSchema = Yup.object().shape({
+  documents: Yup.object().test(
+    "document-selection-validation",
+    "Please select a corresponding dropdown option for all selected documents.",
+    (documents, context) => {
+      const selectedDocuments = Object.entries(documents || {}).filter(
+        ([_, checked]) => checked
+      );
+      return selectedDocuments.every(
+        ([document]) => !!context.parent[`document_${document}`]
+      );
+    }
+  ),
+});

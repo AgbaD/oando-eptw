@@ -7,39 +7,13 @@ import {
   TableRow,
 } from "../../../ui/table";
 
-import { useIDContext } from "../../../../context/id.context";
-import { useEffect, useState } from "preact/hooks";
-
-import { createRequest } from "../../../../assets/api";
-
-interface PermitDetails {
-  status: string;
-  [key: string]: any;
-}
+import dayjs from "dayjs";
 
 export default function PermitActionHistory() {
-  const { valueID, setID } = useIDContext();
-  const id = valueID;
+  const { permit } = usePermitDetails();
 
-  const { updatePermit } = usePermitDetails();
-
-  const [permitDetails, setPermitDetails] = useState<PermitDetails>({
-    status: "",
-  });
-
-  useEffect(() => {
-    async function getPermitDetails() {
-      const permitResponse = await createRequest(`/permit/${id}`, "GET");
-      const permitData = permitResponse[0].data;
-      setPermitDetails(permitData);
-      updatePermit(permitData);
-      setID(permitData.id);
-    }
-
-    getPermitDetails();
-  }, [id]);
-
-  const actions = permitDetails?.actions || [];
+  console.log(permit?.actions);
+  const actions = permit?.actions || [];
 
   return (
     <div>
@@ -49,9 +23,8 @@ export default function PermitActionHistory() {
             <TableHead>
               <TableRow>
                 <TableCell>Date & Time</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Authority</TableCell>
                 <TableCell>Action</TableCell>
+                <TableCell>Authority</TableCell>
               </TableRow>
             </TableHead>
 
@@ -59,11 +32,10 @@ export default function PermitActionHistory() {
               {actions.map((data) => (
                 <TableRow key={data.id}>
                   <TableCell>
-                    {data.name.replace(/\b\w/g, (char) => char.toUpperCase())}
+                    {dayjs(data.createdAt).format("DD/MM/YYYY hh:mm A")}
                   </TableCell>
-                  <TableCell>{data.date}</TableCell>
-                  <TableCell>{data.authority}</TableCell>
                   <TableCell>{data.action}</TableCell>
+                  <TableCell>{data.authority}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -74,8 +46,9 @@ export default function PermitActionHistory() {
           {actions.map((data) => (
             <>
               <div className="container-item">
-                <h2>{data.name}</h2>
-                <span>{data.date}</span>
+                <span>
+                  {dayjs(data.createdAt).format("DD/MM/YYYY hh:mm A")}
+                </span>
               </div>
               <p>{data.action}</p>
               <p>
