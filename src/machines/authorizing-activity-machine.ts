@@ -14,6 +14,7 @@ const ActivityAuthorizingMachine = () =>
         },
         firefighting_equipment: {
           firefightingEquipment: {},
+          otherPrecaution: "",
         },
         selected_documents: {
           documents: [],

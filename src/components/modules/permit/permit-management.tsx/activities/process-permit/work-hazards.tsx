@@ -18,13 +18,29 @@ export default function WorkHazards() {
   const { permit } = usePermitDetails();
   const details = permit;
 
-  const hazardsArray =
-    details?.permitHazards && details.permitHazards.length > 0
-      ? details.permitHazards[0].hazard
-      : null;
+  const currentPath = window.location.pathname;
+
+  const hazardsArray = details?.permitHazards?.[0]?.hazard ?? null;
+
+  const issuingHazards = details?.permitHazards?.[1]?.hazard ?? null;
+
+  const combinedHazards = useMemo(() => {
+    if (!hazardsArray || !issuingHazards) {
+      return {};
+    }
+
+    const hazards = {};
+    Object.keys(hazardsArray).forEach((key) => {
+      if (hazardsArray[key] === null && issuingHazards[key] === null) {
+        hazards[key] = null;
+      }
+    });
+
+    return hazards;
+  }, [hazardsArray, issuingHazards]);
 
   const displayHazards = useMemo(() => {
-    const items = Object.entries(hazardsArray || {})
+    const items = Object.entries(combinedHazards || {})
       .filter(
         ([key, value]) =>
           value === null &&
@@ -75,11 +91,16 @@ export default function WorkHazards() {
     ));
   };
 
-  const initialHazards = HAZARDS.reduce((acc, hazard) => {
-    acc[hazard.value] =
-      state.context.work_hazards?.hazards?.[hazard.value] ?? undefined;
-    return acc;
-  }, {});
+  let initialHazards = {};
+
+  currentPath === "/activities-process" ||
+  currentPath === "/activities-process/hse"
+    ? (initialHazards = HAZARDS.reduce((acc, hazard) => {
+        acc[hazard.value] =
+          state.context.work_hazards?.hazards?.[hazard.value] ?? undefined;
+        return acc;
+      }, {}))
+    : {};
 
   const { handleSubmit, setFieldValue, values } = useForm({
     validationSchema,
@@ -116,12 +137,22 @@ export default function WorkHazards() {
             children={hazards[0]}
             section={hazards[0].section}
           />
-
-          <div className="section">
-            <div className="section__content">
-              <p className="title">Selected hazards</p>
-              <p className="info">{renderDisplayItems(hazardsArray)}</p>
+          <div className="grid-cols-2">
+            <div className="section">
+              <div className="section__content">
+                <p className="title">Performing Authority</p>
+                <p className="info">{renderDisplayItems(hazardsArray)}</p>
+              </div>
             </div>
+
+            {currentPath === "/activities-process/hse" && (
+              <div className="section">
+                <div className="section__content">
+                  <p className="title">Issuing Authority</p>
+                  <p className="info">{renderDisplayItems(issuingHazards)}</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

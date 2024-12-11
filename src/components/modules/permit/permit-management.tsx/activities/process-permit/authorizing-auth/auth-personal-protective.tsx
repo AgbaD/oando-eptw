@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import { useState } from "preact/hooks";
+import { useState, useMemo } from "preact/hooks";
 import SendToAuthority from "../send-back-to-authority";
 
 import useForm from "../../../../../../../hooks/use-form";
@@ -8,13 +8,108 @@ import Button from "../../../../../../ui/button";
 import Radio from "../../../../../../ui/form/radio";
 
 import { useAuthorizingActivityContext } from "../../../../../../../context/authorizing-activity-context";
+import { usePermitDetails } from "../../../../../../../context/permit-details.context";
+
+import Section from "../../../../../../ui/sections";
 
 export default function AuthPersonalProtectiveEquipment() {
   const { send, state } = useAuthorizingActivityContext();
+
+  const { permit } = usePermitDetails();
+  const details = permit;
+
+  const currentPath = window.location.pathname;
+
+  const personalProtectiveArray =
+    details?.protectiveEquipments && details?.protectiveEquipments?.length > 0
+      ? details.protectiveEquipments[0]?.protectiveEquipment
+      : null;
+
+  const hseProtectiveArray =
+    details?.hseEquipprotectiveEquipmentsments &&
+    details?.protectiveEquipments?.length > 0
+      ? details.protectiveEquipments[1]?.protectiveEquipment
+      : null;
+
+  const combinedEquipments = useMemo(() => {
+    if (!personalProtectiveArray || !hseProtectiveArray) {
+      return {};
+    }
+
+    const equipments = {};
+    Object.keys(personalProtectiveArray).forEach((key) => {
+      if (
+        personalProtectiveArray[key] === null &&
+        hseProtectiveArray[key] === null
+      ) {
+        equipments[key] = null;
+      }
+    });
+
+    return equipments;
+  }, [personalProtectiveArray, hseProtectiveArray]);
+
+  const displayEquipments = useMemo(() => {
+    const items = Object.entries(combinedEquipments || {})
+      .filter(
+        ([key, value]) =>
+          value === null && !["id", "createdAt", "updatedAt"].includes(key)
+      )
+      .map(([key, value]) => ({
+        key,
+        value: value ?? false,
+      }));
+
+    const NEWITEMS = EQUIPMENT.filter((equipment) =>
+      items.some((item) => item.key === equipment.value)
+    );
+
+    return NEWITEMS;
+  }, [personalProtectiveArray]);
+
+  const renderDisplayItems = (itemArray) => {
+    const displayItems = itemArray || {};
+
+    const itemEntries = Object.entries(displayItems)
+      .filter(
+        ([key, value]) =>
+          value !== null &&
+          ![
+            "id",
+            "createdAt",
+            "updatedAt",
+            "potentialHazardDescription",
+          ].includes(key)
+      )
+      .map(([key, value]) => {
+        return { key, value: value ?? false };
+      });
+
+    return itemEntries.map(({ key, value }) => (
+      <div key={key} className="firefighting-item">
+        <p>
+          <span className="firefighting-value">{value ? "YES" : "NO"}</span> -{" "}
+          {key.replace(/([A-Z])/g, " $1").toUpperCase()}{" "}
+        </p>
+      </div>
+    ));
+  };
+
+  let initialItems = {};
+  currentPath === "/activities-process/auth"
+    ? (initialItems = EQUIPMENT.reduce((acc, item) => {
+        acc[item.value] =
+          state.context.personal_protective_equipment
+            ?.personal_protective_equipment?.[item.value] ?? undefined;
+        return acc;
+      }, {}))
+    : (initialItems = {});
+
   const { handleSubmit, setFieldValue, values } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.personal_protective_equipment,
+      protectiveEquipment: initialItems,
     },
     onSubmit,
   });
@@ -31,17 +126,56 @@ export default function AuthPersonalProtectiveEquipment() {
   }
 
   const [isModalOpen, setModalOpen] = useState(false);
+  const equipment = [
+    {
+      section: "D",
+      header: "Selected Equipment",
+      second_title: "",
+      content: [],
+    },
+  ];
 
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <div className="app-register__form"></div>
+        <div className="app-register__form">
+          {currentPath === "/activities-process/hse" && (
+            <>
+              <Section
+                type="Selected Equipment"
+                header="Hazards"
+                children={equipment[0]}
+                section={equipment[0].section}
+              />
+
+              <div className="grid-cols-2">
+                <div className="section">
+                  <div className="section__content">
+                    <p className="title">Issuing Authority</p>
+                    <p className="info">
+                      {renderDisplayItems(personalProtectiveArray)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="section">
+                  <div className="section__content">
+                    <p className="title">HSE Authority</p>
+                    <p className="info">
+                      {renderDisplayItems(hseProtectiveArray)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
 
         <div className="app-create-permit__group-header">
           Select applicable option(s) below
         </div>
         <div className="app-register__form">
-          {EQUIPMENT.map((equipment) => (
+          {displayEquipments.map((equipment) => (
             <div className="app-create-permit__radio-container">
               <p>{equipment.text}</p>
               <div>

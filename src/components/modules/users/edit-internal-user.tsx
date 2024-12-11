@@ -9,7 +9,8 @@ import useRequest from "../../../hooks/use-request";
 import { editInternalUser, getRoles } from "../../../assets/api/user";
 import { toast } from "../../ui/toast";
 
-import Checkbox from "../../ui/form/checkbox";
+import Select from "../../ui/form/select";
+
 import { useIDContext } from "../../../context/id.context";
 
 import { useState, useEffect } from "preact/hooks";
@@ -22,7 +23,7 @@ export default function EditInternalUser({}: any) {
   const { valueID } = useIDContext();
   const [user, setUser] = useState({
     email: "",
-    roleIds: [],
+    roleId: 0,
     fullname: "",
   });
 
@@ -37,10 +38,10 @@ export default function EditInternalUser({}: any) {
   }, [valueID]);
 
   const rolesApi = useRequest(getRoles, {}, true);
-  const { getFieldProps, values, handleSubmit, setFieldValue } = useForm({
+  const { getFieldProps, handleSubmit, setFieldValue } = useForm({
     initialValues: {
       email: "",
-      roleIds: 0,
+      roleId: null,
       fullname: "",
     },
     onSubmit,
@@ -50,31 +51,23 @@ export default function EditInternalUser({}: any) {
   useEffect(() => {
     if (user) {
       setFieldValue("email", user.email);
-      setFieldValue("roleIds", user.roleIds);
+      setFieldValue("roleId", user.roleId);
       setFieldValue("fullname", user.fullname);
     }
   }, [user]);
 
   const roleOptions = rolesApi.response?.data
     ? rolesApi.response.data.map((role) => ({
-        label: role.name,
+        text: role.name,
         value: role.id,
       }))
     : [];
-
-  function toggleRole(value) {
-    const roleIds = values.roleIds ?? [];
-    const updatedRolesId = roleIds.includes(value)
-      ? roleIds.filter((r) => r !== value)
-      : [...roleIds, value];
-    setFieldValue("roleIds", updatedRolesId);
-  }
 
   async function onSubmit(data) {
     const [_, error] = await makeRequest({
       fullname: data.fullname,
       email: data.email,
-      roleIds: Number(data.role),
+      roleId: Number(data.roleId),
       locationId: Number(data.location),
       internalUserId: Number(valueID),
     });
@@ -118,15 +111,11 @@ export default function EditInternalUser({}: any) {
             />
 
             <p className="app-create__form__title">Role</p>
-            {roleOptions?.map(({ label, value }, i) => (
-              <label className="base-checkbox-label" key={i}>
-                <Checkbox
-                  checked={values.roleIds.includes(value)}
-                  onChange={() => toggleRole(value)}
-                />
-                <span>{label}</span>
-              </label>
-            ))}
+            <Select
+              {...getFieldProps("roleId")}
+              placeholder="--select role--"
+              options={roleOptions}
+            />
 
             <Button type="submit" variant="primary" isLoading={isLoading}>
               Edit User

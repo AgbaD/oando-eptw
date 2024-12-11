@@ -81,8 +81,11 @@ export default function AuthProcessSubmit() {
         protectiveEquipment:
           state.context.personal_protective_equipment?.protectiveEquipment,
 
-        firefightingPrecaution:
-          state.context.firefighting_equipment?.firefightingEquipment,
+        firefightingPrecaution: {
+          otherPrecaution:
+            state.context.firefighting_precaution?.otherPrecaution || "",
+          ...state.context.firefighting_precaution?.firefightingPrecaution,
+        },
 
         documents,
         mechanicalIsolationPrecaution:

@@ -79,9 +79,9 @@ export default function IssuingAuthorities({ response }: any) {
       : null;
 
   const eletricalIsolationPrecaution =
-    details?.eletricalIsolationPrecaution &&
-    details.eletricalIsolationPrecaution.length > 0
-      ? details.eletricalIsolationPrecaution[0].eletricalIsolationPrecaution
+    details?.electricalIsolationPrecaution &&
+    details.electricalIsolationPrecaution.length > 0
+      ? details.electricalIsolationPrecaution[0].electricalIsolationPrecaution
       : null;
 
   const documentsArray =

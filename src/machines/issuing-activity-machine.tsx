@@ -14,6 +14,7 @@ const ActivityIssuingMachine = () =>
         },
         firefighting_equipment: {
           firefightingEquipment: {},
+          otherPrecaution: "",
         },
         selected_documents: {
           documents: [],

@@ -92,6 +92,7 @@ export default function AuthDocuments() {
 
           <div className="section">
             <div className="">
+              <h3>Uploaded Documents</h3>
               <p className="info">
                 {Object.keys(selected).length > 0 ? (
                   renderDocuments()

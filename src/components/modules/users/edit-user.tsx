@@ -9,15 +9,14 @@ import useRequest from "../../../hooks/use-request";
 import { editExternalUser, getRoles } from "../../../assets/api/user";
 import { toast } from "../../ui/toast";
 
-import Checkbox from "../../ui/form/checkbox";
-
+import Select from "../../ui/form/select";
 export default function EditUser({}: any) {
   const { makeRequest, isLoading } = useRequest(editExternalUser);
   const rolesApi = useRequest(getRoles, {}, true);
-  const { getFieldProps, values, handleSubmit, setFieldValue } = useForm({
+  const { getFieldProps, handleSubmit } = useForm({
     initialValues: {
       email: "",
-      roleIds: [],
+      roleId: null,
       fullname: "",
     },
     onSubmit,
@@ -26,26 +25,16 @@ export default function EditUser({}: any) {
 
   const roleOptions = rolesApi.response?.data
     ? rolesApi.response.data.map((role) => ({
-        label: role.name,
+        text: role.name,
         value: role.id,
       }))
     : [];
 
-  function toggleRole(value) {
-    const roleIds = values.roleIds ?? [];
-    const updatedRolesId = roleIds.includes(value)
-      ? roleIds.filter((r) => r !== value)
-      : [...roleIds, value];
-    setFieldValue("roleIds", updatedRolesId);
-  }
-
   async function onSubmit(data) {
     if (data.userType === "external_type") {
       const [_, error] = await makeRequest({
-        // firstname: data.firstName,
-        // lastname: data.lastName,
         email: data.email,
-        roleId: Number(data.role),
+        roleId: Number(data.roleId),
         locationId: Number(data.location),
       });
       if (error) {
@@ -89,15 +78,11 @@ export default function EditUser({}: any) {
             />
 
             <p className="app-create__form__title">Role</p>
-            {roleOptions?.map(({ label, value }, i) => (
-              <label className="base-checkbox-label" key={i}>
-                <Checkbox
-                  checked={values.roleIds.includes(value)}
-                  onChange={() => toggleRole(value)}
-                />
-                <span>{label}</span>
-              </label>
-            ))}
+            <Select
+              {...getFieldProps("roleId")}
+              placeholder="--select role--"
+              options={roleOptions}
+            />
 
             <Button type="submit" variant="primary" isLoading={isLoading}>
               Edit User

@@ -13,7 +13,6 @@ import {
 } from "../../../assets/api/user";
 import { toast } from "../../ui/toast";
 
-import Checkbox from "../../ui/form/checkbox";
 import Select from "../../ui/form/select";
 
 import { siteOptions } from "../locations/data";
@@ -27,7 +26,7 @@ export default function CreateInternalUser({}: any) {
 
   const validationSchema = Yup.object({
     email: Yup.string().email("Email is invalid").required("Email is required"),
-    roleIds: Yup.array().min(1, "At least one role must be selected"),
+    roleId: Yup.number().required("A role must be selected"),
     locationId: Yup.number().min(1, "Select a location"),
   });
 
@@ -53,7 +52,7 @@ export default function CreateInternalUser({}: any) {
   async function onSubmit(data) {
     const [_, error] = await makeRequest({
       email: data.email,
-      roleIds: data.roleIds,
+      roleId: Number(data.roleId),
       locationId: Number(data.locationId),
     });
     if (error) {
@@ -71,10 +70,10 @@ export default function CreateInternalUser({}: any) {
     route("/users");
   }
 
-  const { getFieldProps, values, handleSubmit, setFieldValue } = useForm({
+  const { getFieldProps, handleSubmit } = useForm({
     initialValues: {
       email: "",
-      roleIds: [],
+      roleId: null,
       locationId: 0,
     },
     onSubmit,
@@ -83,18 +82,10 @@ export default function CreateInternalUser({}: any) {
 
   const roleOptions = rolesApi.response?.data
     ? rolesApi.response.data.map((role) => ({
-        label: role.name,
+        text: role.name,
         value: role.id,
       }))
     : [];
-
-  function toggleRole(value) {
-    const roleIds = values.roleIds ?? [];
-    const updatedRolesId = roleIds.includes(value)
-      ? roleIds.filter((r) => r !== value)
-      : [...roleIds, value];
-    setFieldValue("roleIds", updatedRolesId);
-  }
 
   return (
     <>
@@ -120,15 +111,11 @@ export default function CreateInternalUser({}: any) {
             />
 
             <p className="app-create__form__title">Role</p>
-            {roleOptions?.map(({ label, value }, i) => (
-              <label className="base-checkbox-label" key={i}>
-                <Checkbox
-                  checked={values.roleIds.includes(value)}
-                  onChange={() => toggleRole(value)}
-                />
-                <span>{label}</span>
-              </label>
-            ))}
+            <Select
+              {...getFieldProps("roleId")}
+              placeholder="--select role--"
+              options={roleOptions}
+            />
 
             <p className="app-create__form__title">Site Title</p>
             <Select

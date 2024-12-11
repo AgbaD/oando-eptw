@@ -5,12 +5,88 @@ import Button from "../../../../../../ui/button";
 import Radio from "../../../../../../ui/form/radio";
 import { useAuthorizingActivityContext } from "../../../../../../../context/authorizing-activity-context";
 import Section from "../../../../../../ui/sections";
-import { useState } from "preact/hooks";
+import { useState, useMemo } from "preact/hooks";
 
 import SendToAuthority from "../send-back-to-authority";
+import { usePermitDetails } from "../../../../../../../context/permit-details.context";
 
 export default function AuthWorkHazards() {
   const { send, state } = useAuthorizingActivityContext();
+  const { permit } = usePermitDetails();
+  const details = permit;
+
+  const hazardsArray = details?.permitHazards?.[0]?.hazard ?? null;
+
+  const issuingHazards = details?.permitHazards?.[1]?.hazard ?? null;
+
+  const hseHazards = details?.permitHazards?.[2]?.hazard ?? null;
+
+  const combinedHazards = useMemo(() => {
+    if (!hazardsArray || !issuingHazards || hseHazards) {
+      return {};
+    }
+
+    const hazards = {};
+    Object.keys(hazardsArray).forEach((key) => {
+      if (hazardsArray[key] === null && issuingHazards[key] === null) {
+        hazards[key] = null;
+      }
+    });
+
+    return hazards;
+  }, [hazardsArray, issuingHazards, hseHazards]);
+
+  const displayHazards = useMemo(() => {
+    const items = Object.entries(combinedHazards || {})
+      .filter(
+        ([key, value]) =>
+          value === null &&
+          ![
+            "id",
+            "createdAt",
+            "updatedAt",
+            "potentialHazardDescription",
+          ].includes(key)
+      )
+      .map(([key, value]) => ({
+        key,
+        value: value ?? false,
+      }));
+
+    const NEWHAZARDS = HAZARDS.filter((hazard) =>
+      items.some((item) => item.key === hazard.value)
+    );
+
+    return NEWHAZARDS;
+  }, [hazardsArray]);
+
+  const renderDisplayItems = (itemArray) => {
+    const displayItems = itemArray || {};
+
+    const itemEntries = Object.entries(displayItems)
+      .filter(
+        ([key, value]) =>
+          value !== null &&
+          ![
+            "id",
+            "createdAt",
+            "updatedAt",
+            "potentialHazardDescription",
+          ].includes(key)
+      )
+      .map(([key, value]) => {
+        return { key, value: value ?? false };
+      });
+
+    return itemEntries.map(({ key, value }) => (
+      <div key={key} className="firefighting-item">
+        <p>
+          <span className="firefighting-value">{value ? "YES" : "NO"}</span> -{" "}
+          {key.replace(/([A-Z])/g, " $1").toUpperCase()}{" "}
+        </p>
+      </div>
+    ));
+  };
 
   // Initialize hazards state with all possible hazard keys
   const initialHazards = HAZARDS.reduce((acc, hazard) => {
@@ -40,23 +116,7 @@ export default function AuthWorkHazards() {
       section: "D",
       header: "Hazard Identification",
       second_title: "Selected potential hazards",
-      content: [
-        {
-          id: 1,
-          hazard: "NOISE",
-          value: "YES",
-        },
-        {
-          id: 2,
-          hazard: "TOXIC SUBSTANCE",
-          value: "YES",
-        },
-        {
-          id: 3,
-          hazard: "CHEMICALS",
-          value: "NO",
-        },
-      ],
+      content: [],
     },
   ];
 
@@ -72,13 +132,35 @@ export default function AuthWorkHazards() {
             children={hazards[0]}
             section={hazards[0].section}
           />
+          <div className="grid-cols-2">
+            <div className="section">
+              <div className="section__content">
+                <p className="title">Performing Authority</p>
+                <p className="info">{renderDisplayItems(hazardsArray)}</p>
+              </div>
+            </div>
+
+            <div className="section">
+              <div className="section__content">
+                <p className="title">Issuing Authority</p>
+                <p className="info">{renderDisplayItems(issuingHazards)}</p>
+              </div>
+            </div>
+
+            <div className="section">
+              <div className="section__content">
+                <p className="title">HSE Authority</p>
+                <p className="info">{renderDisplayItems(hseHazards)}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="app-create-permit__group-header">
           Identification of Hazards
         </div>
         <div className="app-register__form">
-          {HAZARDS.map((hazard) => (
+          {displayHazards.map((hazard) => (
             <div className="app-create-permit__radio-container">
               <p>{hazard.text}</p>
               <div>

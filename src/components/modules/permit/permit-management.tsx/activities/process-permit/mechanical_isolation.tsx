@@ -6,14 +6,85 @@ import Radio from "../../../../../ui/form/radio";
 import { useIssuingActivityContext } from "../../../../../../context/issuing-activity-context";
 
 import SendToAuthority from "./send-back-to-authority";
-import { useState } from "preact/hooks";
+import { useState, useMemo } from "preact/hooks";
+import { usePermitDetails } from "../../../../../../context/permit-details.context";
+
+import Section from "../../../../../ui/sections";
 
 export default function MechanicalIsolation() {
   const { send, state } = useIssuingActivityContext();
+  const { permit } = usePermitDetails();
+  const details = permit;
+
+  const currentPath = window.location.pathname;
+
+  const mechanicalPrecautionEquipment =
+    details?.mechanicalIsolationPrecaution &&
+    details.mechanicalIsolationPrecaution.length > 0
+      ? details.mechanicalIsolationPrecaution[0].mechanicalIsolationPrecaution
+      : null;
+
+  const displayEquipments = useMemo(() => {
+    const items = Object.entries(mechanicalPrecautionEquipment || {})
+      .filter(
+        ([key, value]) =>
+          value === null && !["id", "createdAt", "updatedAt"].includes(key)
+      )
+      .map(([key, value]) => ({
+        key,
+        value: value ?? false,
+      }));
+
+    const NEWITEMS = LIST.filter((equipment) =>
+      items.some((item) => item.key === equipment.value)
+    );
+
+    return NEWITEMS;
+  }, [mechanicalPrecautionEquipment]);
+
+  const renderDisplayItems = (itemArray) => {
+    const displayItems = itemArray || {};
+
+    const itemEntries = Object.entries(displayItems)
+      .filter(
+        ([key, value]) =>
+          value !== null &&
+          ![
+            "id",
+            "createdAt",
+            "updatedAt",
+            "potentialHazardDescription",
+          ].includes(key)
+      )
+      .map(([key, value]) => {
+        return { key, value: value ?? false };
+      });
+
+    return itemEntries.map(({ key, value }) => (
+      <div key={key} className="firefighting-item">
+        <p>
+          <span className="firefighting-value">{value ? "YES" : "NO"}</span> -{" "}
+          {key.replace(/([A-Z])/g, " $1").toUpperCase()}{" "}
+        </p>
+      </div>
+    ));
+  };
+  let initialItems = {};
+  currentPath === "/activities-process/hse"
+    ? (initialItems = LIST.reduce((acc, item) => {
+        acc[item.value] =
+          state.context.mechanical_precaution?.mechanical_precaution?.[
+            item.value
+          ] ?? undefined;
+        return acc;
+      }, {}))
+    : (initialItems = {});
+
   const { handleSubmit, setFieldValue, values } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.mechanical_precaution,
+      mechanicalPrecaution: initialItems,
     },
     onSubmit,
   });
@@ -31,30 +102,97 @@ export default function MechanicalIsolation() {
 
   const [isModalOpen, setModalOpen] = useState(false);
 
+  const equipment = [
+    {
+      section: "",
+      header: "Selected Isolation Precaution",
+      second_title: "",
+      content: [],
+    },
+  ];
+
   return (
     <>
       <form onSubmit={handleSubmit}>
+        <div className="app-register__form">
+          {currentPath === "/activities-process/hse" && (
+            <>
+              <Section
+                type="Selected Equipment"
+                header="Selected Isolation Precaution"
+                children={equipment[0]}
+                section={equipment[0].section}
+              />
+
+              <div className="section">
+                <div className="section__content">
+                  <p className="title">Issuing Authority</p>
+                  <p className="info">
+                    {renderDisplayItems(mechanicalPrecautionEquipment)}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
         <div className="app-create-permit__group-header">
           Select applicable option(s)
         </div>
         <div className="app-register__form">
-          {LIST.map((item) => (
-            <div className="app-create-permit__radio-container">
-              <p>{item.text}</p>
-              <div>
-                <Radio
-                  checked={values.mechanicalPrecaution[item.value] === true}
-                  onChange={() => updateMechanicalIsolation(item.value, true)}
-                  label="YES"
-                />
-                <Radio
-                  checked={values.mechanicalPrecaution[item.value] === false}
-                  onChange={() => updateMechanicalIsolation(item.value, false)}
-                  label="NO"
-                />
-              </div>
-            </div>
-          ))}
+          {currentPath == "/activities-process" ? (
+            <>
+              {LIST.map((item) => (
+                <div className="app-create-permit__radio-container">
+                  <p>{item.text}</p>
+                  <div>
+                    <Radio
+                      checked={values.mechanicalPrecaution[item.value] === true}
+                      onChange={() =>
+                        updateMechanicalIsolation(item.value, true)
+                      }
+                      label="YES"
+                    />
+                    <Radio
+                      checked={
+                        values.mechanicalPrecaution[item.value] === false
+                      }
+                      onChange={() =>
+                        updateMechanicalIsolation(item.value, false)
+                      }
+                      label="NO"
+                    />
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : (
+            <>
+              {displayEquipments.map((item) => (
+                <div className="app-create-permit__radio-container">
+                  <p>{item.text}</p>
+                  <div>
+                    <Radio
+                      checked={values.mechanicalPrecaution[item.value] === true}
+                      onChange={() =>
+                        updateMechanicalIsolation(item.value, true)
+                      }
+                      label="YES"
+                    />
+                    <Radio
+                      checked={
+                        values.mechanicalPrecaution[item.value] === false
+                      }
+                      onChange={() =>
+                        updateMechanicalIsolation(item.value, false)
+                      }
+                      label="NO"
+                    />
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
         </div>
 
         <div className="app-register__form-footer">

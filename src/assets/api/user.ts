@@ -112,6 +112,10 @@ function getAllDrafts() {
   return createRequest("/permit/draft", "GET");
 }
 
+function getUserProfile(id) {
+  return createRequest(`/profile/${id}`, "GET");
+}
+
 export {
   createNewRole,
   getRoles,
@@ -138,4 +142,5 @@ export {
   getAllPermits,
   uploadFile,
   getAllDrafts,
+  getUserProfile,
 };

@@ -9,7 +9,7 @@ import useRequest from "../../../hooks/use-request";
 import { createExternalUser, getRoles } from "../../../assets/api/user";
 import { toast } from "../../ui/toast";
 
-import Checkbox from "../../ui/form/checkbox";
+import Select from "../../ui/form/select";
 import { useIDContext } from "../../../context/id.context";
 
 export default function CreateExternalUser({}: any) {
@@ -27,7 +27,7 @@ export default function CreateExternalUser({}: any) {
     const [_, error] = await makeRequest({
       fullname: data.fullname,
       email: data.email,
-      roleId: data.roleId,
+      roleId: Number(data.roleId),
       companyId: Number(valueID),
     });
     if (error) {
@@ -40,7 +40,7 @@ export default function CreateExternalUser({}: any) {
     route("/users/company/details");
   }
 
-  const { getFieldProps, values, handleSubmit, setFieldValue } = useForm({
+  const { getFieldProps, handleSubmit } = useForm({
     initialValues: {
       fullname: "",
       email: "",
@@ -52,14 +52,10 @@ export default function CreateExternalUser({}: any) {
 
   const roleOptions = rolesApi.response?.data
     ? rolesApi.response.data.map((role) => ({
-        label: role.name,
+        text: role.name,
         value: role.id,
       }))
     : [];
-
-  function selectRole(value) {
-    setFieldValue("roleId", value);
-  }
 
   return (
     <>
@@ -91,15 +87,11 @@ export default function CreateExternalUser({}: any) {
             />
 
             <p className="app-create__form__title">Role</p>
-            {roleOptions?.map(({ label, value }, i) => (
-              <label className="base-checkbox-label" key={i}>
-                <Checkbox
-                  checked={values.roleId === value}
-                  onChange={() => selectRole(value)}
-                />
-                <span>{label}</span>
-              </label>
-            ))}
+            <Select
+              {...getFieldProps("roleId")}
+              placeholder="Select a role"
+              options={roleOptions}
+            />
 
             <Button type="submit" variant="primary" isLoading={isLoading}>
               Create User
