@@ -22,14 +22,20 @@ export default function AuthWorkHazards() {
   const hseHazards = details?.permitHazards?.[2]?.hazard ?? null;
 
   const combinedHazards = useMemo(() => {
-    if (!hazardsArray || !issuingHazards || hseHazards) {
+    if (!hazardsArray || !issuingHazards || !hseHazards) {
       return {};
     }
 
     const hazards = {};
     Object.keys(hazardsArray).forEach((key) => {
-      if (hazardsArray[key] === null && issuingHazards[key] === null) {
+      if (
+        hazardsArray[key] === null &&
+        issuingHazards[key] === null &&
+        hseHazards[key] === null
+      ) {
         hazards[key] = null;
+      } else {
+        hazards[key] = true;
       }
     });
 
@@ -37,6 +43,7 @@ export default function AuthWorkHazards() {
   }, [hazardsArray, issuingHazards, hseHazards]);
 
   const displayHazards = useMemo(() => {
+    console.log(combinedHazards);
     const items = Object.entries(combinedHazards || {})
       .filter(
         ([key, value]) =>

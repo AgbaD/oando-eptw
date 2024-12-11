@@ -39,6 +39,32 @@ export default function WorkHazards() {
     return hazards;
   }, [hazardsArray, issuingHazards]);
 
+  const issuingDisplayHazards = useMemo(() => {
+    const items = Object.entries(hazardsArray || {})
+      .filter(
+        ([key, value]) =>
+          value === null &&
+          ![
+            "id",
+            "createdAt",
+            "updatedAt",
+            "potentialHazardDescription",
+          ].includes(key)
+      )
+      .map(([key, value]) => ({
+        key,
+        value: value ?? false,
+      }));
+
+    const NEWHAZARDS = HAZARDS.filter((hazard) =>
+      items.some((item) => item.key === hazard.value)
+    );
+
+    console.log(NEWHAZARDS);
+
+    return NEWHAZARDS;
+  }, [issuingHazards]);
+
   const displayHazards = useMemo(() => {
     const items = Object.entries(combinedHazards || {})
       .filter(
@@ -160,23 +186,49 @@ export default function WorkHazards() {
           Identification of Hazards
         </div>
         <div className="app-register__form">
-          {displayHazards.map((hazard) => (
-            <div className="app-create-permit__radio-container">
-              <p>{hazard.text}</p>
-              <div>
-                <Radio
-                  checked={values.hazards?.[hazard.value] === true}
-                  onChange={() => updateHazards(hazard.value, true)}
-                  label="YES"
-                />
-                <Radio
-                  checked={values.hazards?.[hazard.value] === false}
-                  onChange={() => updateHazards(hazard.value, false)}
-                  label="NO"
-                />
-              </div>
-            </div>
-          ))}
+          {currentPath === "/activities-process" ? (
+            <>
+              {" "}
+              {issuingDisplayHazards.map((hazard) => (
+                <div className="app-create-permit__radio-container">
+                  <p>{hazard.text}</p>
+                  <div>
+                    <Radio
+                      checked={values.hazards?.[hazard.value] === true}
+                      onChange={() => updateHazards(hazard.value, true)}
+                      label="YES"
+                    />
+                    <Radio
+                      checked={values.hazards?.[hazard.value] === false}
+                      onChange={() => updateHazards(hazard.value, false)}
+                      label="NO"
+                    />
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : (
+            <>
+              {" "}
+              {displayHazards.map((hazard) => (
+                <div className="app-create-permit__radio-container">
+                  <p>{hazard.text}</p>
+                  <div>
+                    <Radio
+                      checked={values.hazards?.[hazard.value] === true}
+                      onChange={() => updateHazards(hazard.value, true)}
+                      label="YES"
+                    />
+                    <Radio
+                      checked={values.hazards?.[hazard.value] === false}
+                      onChange={() => updateHazards(hazard.value, false)}
+                      label="NO"
+                    />
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
         </div>
 
         <div className="app-register__form-footer">

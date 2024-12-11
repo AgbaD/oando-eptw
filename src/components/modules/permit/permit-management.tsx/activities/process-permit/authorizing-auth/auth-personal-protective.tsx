@@ -33,7 +33,7 @@ export default function AuthPersonalProtectiveEquipment() {
 
   const combinedEquipments = useMemo(() => {
     if (!personalProtectiveArray || !hseProtectiveArray) {
-      return {};
+      return personalProtectiveArray || hseProtectiveArray || {};
     }
 
     const equipments = {};
@@ -43,12 +43,15 @@ export default function AuthPersonalProtectiveEquipment() {
         hseProtectiveArray[key] === null
       ) {
         equipments[key] = null;
+      } else {
+        equipments[key] = true;
       }
     });
 
     return equipments;
   }, [personalProtectiveArray, hseProtectiveArray]);
 
+  console.log(combinedEquipments);
   const displayEquipments = useMemo(() => {
     const items = Object.entries(combinedEquipments || {})
       .filter(

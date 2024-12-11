@@ -31,7 +31,7 @@ export default function IssuAuthSupervisor({ response }: any) {
       ? details.permitDocuments[6]
       : null;
 
-  const documentObject = documentsArray?.document || {};
+  const documentObject = documentsArray || {};
 
   const filteredDocuments = details?.permitDocuments.filter(
     (doc) =>
@@ -89,102 +89,119 @@ export default function IssuAuthSupervisor({ response }: any) {
         ? closureDocuments
         : type === "CANCELLATION"
         ? cancelationDocuments
-        : [documentObject];
+        : Object.entries(documentObject);
 
-    console.log(documentsToRender);
+    // if (!documentsToRender || documentsToRender?.length === 0) {
+    //   return <p>No documents uploaded.</p>;
+    // }
 
-    if (!documentsToRender || documentsToRender.length === 0) {
-      return <p>No documents uploaded.</p>;
-    }
+    return documentsToRender
+      .filter(([key, value]) => {
+        if (["id", "createdAt", "updatedAt", "draftId"].includes(key)) {
+          return false;
+        }
 
-    return documentsToRender.map((doc, docIndex) => {
-      const entries = Object.entries(doc.document || {});
+        // Skip entries where the value is null or undefined
+        if ((key.includes("Type") || key.includes("Doc")) && !value) {
+          return false;
+        }
 
-      return (
-        <div key={`doc-${docIndex}`} className="document-container">
-          {type === "REVALIDATION" ? (
-            <div className="">
-              <br />
-              <h3>
-                {type === "REVALIDATION"
-                  ? `PERMIT REVALIDATION -SHIFT ${doc.revalidationShift || ""}`
-                  : ""}
-              </h3>
-              <br />
-            </div>
-          ) : type === "CLOSURE" ? (
-            <div className="">
-              <br />
-              <h3>{type === "CLOSURE" ? `PERMIT CLOSURE` : ""}</h3>
-              <br />
-            </div>
-          ) : type === "CANCELLATION" ? (
-            <div className="">
-              <br />
-              <h3>{type === "CANCELLATION" ? `PERMIT CANCELLATION` : ""}</h3>
-              <br />
-            </div>
-          ) : null}
+        if (value === null) {
+          return false;
+        }
 
-          {entries
-            .filter(([key, value]) => {
-              if (["id", "createdAt", "updatedAt", "draftId"].includes(key)) {
-                return false;
-              }
+        return true; // Keep all other valid entries
+      })
+      .map(([doc, docIndex]) => {
+        const entries = Object.entries(doc.document || {});
 
-              if ((key.includes("Type") || key.includes("Doc")) && !value) {
-                return false;
-              }
+        return (
+          <div key={`doc-${docIndex}`} className="document-container">
+            {type === "REVALIDATION" ? (
+              <div className="">
+                <br />
+                <h3>
+                  {type === "REVALIDATION"
+                    ? `PERMIT REVALIDATION -SHIFT ${
+                        doc.revalidationShift || ""
+                      }`
+                    : ""}
+                </h3>
+                <br />
+              </div>
+            ) : type === "CLOSURE" ? (
+              <div className="">
+                <br />
+                <h3>{type === "CLOSURE" ? `PERMIT CLOSURE` : ""}</h3>
+                <br />
+              </div>
+            ) : type === "CANCELLATION" ? (
+              <div className="">
+                <br />
+                <h3>{type === "CANCELLATION" ? `PERMIT CANCELLATION` : ""}</h3>
+                <br />
+              </div>
+            ) : null}
 
-              if (value === null) {
-                return false;
-              }
+            {entries
+              .filter(([key, value]) => {
+                if (["id", "createdAt", "updatedAt", "draftId"].includes(key)) {
+                  return false;
+                }
 
-              return true; // Keep all other valid entries
-            })
-            .map(([key, value], index) => {
-              // If it's a type field, format the text
-              if (key.includes("Type")) {
+                if ((key.includes("Type") || key.includes("Doc")) && !value) {
+                  return false;
+                }
+
+                if (value === null) {
+                  return false;
+                }
+
+                return true; // Keep all other valid entries
+              })
+              .map(([key, value], index) => {
+                // If it's a type field, format the text
+                if (key.includes("Type")) {
+                  return (
+                    <div key={`${key}-${index}`} className="document-item">
+                      <div className="section__content__document_section">
+                        <p className="section__header">
+                          {key.replace(/([A-Z])/g, " $1").toUpperCase()}
+                        </p>
+                      </div>
+                      <div className="section__content">
+                        <p className="document">
+                          <span>Upload Option</span>
+                        </p>
+                        <p>{value?.toString() || "No document provided"}</p>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // If it's a document field, render it
                 return (
                   <div key={`${key}-${index}`} className="document-item">
-                    <div className="section__content__document_section">
-                      <p className="section__header">
-                        {key.replace(/([A-Z])/g, " $1").toUpperCase()}
-                      </p>
-                    </div>
                     <div className="section__content">
                       <p className="document">
-                        <span>Upload Option</span>
+                        <span>Document</span>
                       </p>
-                      <p>{value?.toString() || "No document provided"}</p>
+                      <p className="document_item">
+                        {extractFileName(value)}
+                        <span>
+                          <img
+                            src="/svgs/document_download.svg"
+                            alt="Download document"
+                          />
+                        </span>
+                      </p>
                     </div>
                   </div>
                 );
-              }
-
-              // If it's a document field, render it
-              return (
-                <div key={`${key}-${index}`} className="document-item">
-                  <div className="section__content">
-                    <p className="document">
-                      <span>Document</span>
-                    </p>
-                    <p className="document_item">
-                      {extractFileName(value)}
-                      <span>
-                        <img
-                          src="/svgs/document_download.svg"
-                          alt="Download document"
-                        />
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-        </div>
-      );
-    });
+              })}
+          </div>
+        );
+      });
   };
 
   return (

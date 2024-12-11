@@ -88,4 +88,7 @@ const validationSchema = Yup.object({
   // from_time: Yup.string().required("From time is required"),
   // to_time: Yup.string().required("To time is required"),
   // // cold work fields
+
+  toolBoxLeaderIdentity: Yup.string().required("Identity leader is required"),
+  toolBoxPosition: Yup.string().required("Position is required"),
 });
