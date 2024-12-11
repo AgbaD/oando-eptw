@@ -19,13 +19,23 @@ export default function Documents() {
   const [uploadedURLs, setUploadedURLs] = useState({});
 
   function onUploadComplete(key, url) {
-    setUploadedURLs((prev) => ({ ...prev, [key]: url }));
+    setUploadedURLs((prev) => ({
+      ...prev,
+      [key]: url,
+    }));
   }
+
+  const excludedKeys = [
+    "document_JobSafetyAnalysisDocRiskSafetyAnalysisDoc",
+    "document_WorkProcedureDocMethodStatementDoc",
+  ];
 
   const onlineDocuments = Object.keys(selectedPreviously)
     .filter(
       (key) =>
-        key.startsWith("document_") && selectedPreviously[key] === "manual"
+        key.startsWith("document_") &&
+        selectedPreviously[key] === "manual" &&
+        !excludedKeys.includes(key)
     )
     .map((key) => ({
       key,
@@ -45,7 +55,12 @@ export default function Documents() {
       {}
     );
 
-    send("submit", { data: { document_uploads, formattedDocuments } });
+    send("submit", {
+      data: {
+        document_uploads,
+        formattedDocuments,
+      },
+    });
   }
 
   return (

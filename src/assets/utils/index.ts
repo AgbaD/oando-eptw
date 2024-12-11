@@ -48,18 +48,75 @@ function createParams(payload: any) {
   return params;
 }
 
+const toOriginalFormat = (documents) => {
+  const toOriginalName = (str) => {
+    return str
+      .replace(/([A-Z])/g, " $1") // Add spaces before capital letters
+      .replace(/([a-z])([A-Z])/g, "$1 $2") // Handle edge cases for camelCase
+      .replace(/^./, (match) => match.toUpperCase()) // Capitalize the first letter
+      .replace(/Cert$/, " Cert") // Add a space for "Cert"
+      .replace(/Doc$/, " Doc") // Add a space for "Doc"
+      .trim();
+  };
+
+  const result = [];
+
+  for (const [key, value] of Object.entries(documents)) {
+    if (key.endsWith("Type") || key.endsWith("Doc")) {
+      const baseKey = key.replace(/Type$|Doc$/, "");
+      const originalName = toOriginalName(baseKey);
+
+      // Handle cases with `otherCertName`
+      if (key === "otherCertName") {
+        result.push({
+          name: "Other Cert",
+          type: documents["otherCertType"],
+          doc: documents["otherCert"],
+          otherCertName: value,
+        });
+      } else if (!result.some((doc) => doc.name === originalName)) {
+        result.push({
+          name: originalName,
+          type: documents[`${baseKey}Type`] || null,
+          doc: documents[`${baseKey}Doc`] || null,
+        });
+      }
+    }
+  }
+
+  return result.filter((doc) => doc.type || doc.doc);
+};
+
+function extractFileName(data) {
+  const url = data;
+
+  if (!url) {
+    throw new Error("URL is required.");
+  }
+
+  const segments = url.split("/");
+  const fileName = segments[segments.length - 1];
+
+  const name = fileName.split("-").slice(1).join("-");
+
+  return name;
+}
+
 const PERMISSIONS = [
   { label: "Full Access", value: "FULL_ACCESS" },
   { label: "Create Permit", value: "CREATE_PERMIT" },
   { label: "Process Permit", value: "PROCESS_PERMIT" },
-  { label: "Create User", value: "CREATE_USER" },
-  { label: "Edit User", value: "EDIT_USER" },
+  { label: "Delete User", value: "DELETE_USER" },
+  { label: "Create Internal User", value: "CREATE_INTERNAL_USER" },
+  { label: "Edit Internal User", value: "EDIT_INTERNAL_USER" },
+  { label: "Create External User", value: "CREATE_EXTERNAL_USER" },
+  { label: "Edit External User", value: "EDIT_EXTERNAL_USER" },
   { label: "Create Role", value: "CREATE_ROLE" },
   { label: "Edit Role", value: "EDIT_ROLE" },
   { label: "Create Location", value: "CREATE_LOCATION" },
   { label: "Edit Location", value: "EDIT_LOCATION" },
-  { label: "Internal Task Responsible", value: "INTERNAL" },
-  { label: "External Task Responsible", value: "EXTERNAL" },
+  { label: "Create Company", value: "CREATE_COMPANY" },
+  { label: "Edit Company", value: "EDIT_COMPANY" },
 ] as const;
 
 const AUTHORITIES = [
@@ -75,4 +132,12 @@ const AUTHORITIES = [
   { label: "Issuing Authorizing Supervisor", value: "ISSUING_SUPERVISOR" },
 ] as const;
 
-export { randomHash, capitalize, createParams, PERMISSIONS, AUTHORITIES };
+export {
+  randomHash,
+  capitalize,
+  createParams,
+  toOriginalFormat,
+  extractFileName,
+  PERMISSIONS,
+  AUTHORITIES,
+};

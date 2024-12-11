@@ -1,6 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 
-function useCountdown(fromDate, fromTime, toDate, toTime) {
+function useCountdown(fromDate, fromTime, permitShiftType) {
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
     minutes: 0,
@@ -15,13 +15,18 @@ function useCountdown(fromDate, fromTime, toDate, toTime) {
       return new Date(`${datePart}T${timePart}`); // Combine into a valid ISO string
     };
 
-    // Combine fromDate + fromTime and toDate + toTime
+    // Combine fromDate + fromTime
     const startDateTime = combineDateAndTime(fromDate, fromTime);
-    const endDateTime = combineDateAndTime(toDate, toTime);
 
-    // Ensure the dates are valid
-    if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
-      console.error("Invalid dates or times provided");
+    // Calculate the endDateTime based on permitShiftType
+    const shiftHours = permitShiftType === "TWELVE_HOUR" ? 12 : 24;
+    const endDateTime = new Date(
+      startDateTime.getTime() + shiftHours * 60 * 60 * 1000
+    );
+
+    // Ensure the startDateTime is valid
+    if (isNaN(startDateTime.getTime())) {
+      console.error("Invalid fromDate or fromTime provided");
       return;
     }
 
@@ -44,18 +49,17 @@ function useCountdown(fromDate, fromTime, toDate, toTime) {
     }, 1000);
 
     return () => clearInterval(intervalId); // Clean up on component unmount
-  }, [fromDate, fromTime, toDate, toTime]);
+  }, [fromDate, fromTime, permitShiftType]);
 
   return timeLeft;
 }
 
 // Component to display the countdown
-const CountdownTimer = ({ fromDate, fromTime, toDate, toTime }) => {
+const CountdownTimer = ({ fromDate, fromTime, permitShiftType }) => {
   const { hours, minutes, seconds } = useCountdown(
     fromDate,
     fromTime,
-    toDate,
-    toTime
+    permitShiftType
   );
 
   return (

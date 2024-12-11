@@ -89,7 +89,7 @@ export default function ResetPassword({}: any) {
       </div>
 
       <div class="app-login__footer">
-        <a href="#" className="app-link">
+        <a href="mailto:helpdesk@oandoplc.com" className="app-link">
           Need help?
         </a>
       </div>
@@ -155,7 +155,7 @@ function ResetPasswordForm({ token }) {
       </div>
 
       <div class="app-login__footer">
-        <a href="#" className="app-link">
+        <a href="mailto:helpdesk@oandoplc.com" className="app-link">
           Need help?
         </a>
       </div>

@@ -161,8 +161,7 @@ export default function Monitoring({}: any) {
                       <CountdownTimer
                         fromDate={data.fromDate}
                         fromTime={data.fromTime}
-                        toDate={data.toDate}
-                        toTime={data.toTime}
+                        permitShiftType={data.permitShiftType}
                       />
                     </TableCell>
                     <TableCell>
@@ -200,8 +199,7 @@ export default function Monitoring({}: any) {
                             <CountdownTimer
                               fromDate={dataItem.fromDate}
                               fromTime={dataItem.fromTime}
-                              toDate={dataItem.toDate}
-                              toTime={dataItem.toTime}
+                              permitShiftType={dataItem.permitShiftType}
                             />
                           </h6>
                         </div>

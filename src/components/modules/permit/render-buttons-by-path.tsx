@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icon from "../../ui/icon";
 import PopupModal from "../../ui/popup";
 
@@ -11,11 +11,31 @@ import SuspendPermit from "./permit-monitoring/suspend-permit";
 import CancelPermit from "./permit-monitoring/cancel-permit";
 
 import { createRequest } from "../../../assets/api";
+import { useUserContext } from "../../../context/user.context";
 
 export default function RenderButtonsOnPath(path: string) {
   const { makeRequest } = useRequest(requestPermitClosure);
 
   const { permit } = usePermitDetails();
+  const { profile } = useUserContext();
+
+  const [userRole, setUserRole] = useState<string>();
+
+  useEffect(() => {
+    async function getPermitDetails() {
+      const permitResponse = await createRequest(
+        `/permit/${permit?.id}`,
+        "GET"
+      );
+      const permitData = permitResponse[0].data;
+
+      const userRole = permitData?.permitRoles?.[profile?.id];
+      console.log(userRole);
+      setUserRole(userRole);
+    }
+
+    getPermitDetails();
+  }, [permit, profile?.id]);
 
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [closurePopup, setClosurePopup] = useState(false);
@@ -92,58 +112,66 @@ export default function RenderButtonsOnPath(path: string) {
                   Print Permit
                 </button>
               </div>
-              <div className="closure">
-                <div>
-                  <h4>Request for closure</h4>
-                  <p>Click the button to process closure of this permit</p>
-                </div>
 
-                <button
-                  className={"flex-center"}
-                  onClick={() => handleClosurePopup(true)}
-                >
-                  <Icon name="export" />
-                  Request Closure{" "}
-                </button>
-              </div>
-
-              <div className="double">
-                <div className="suspension">
+              {userRole === "PERFORMING_SUPERVISOR" && (
+                <div className="closure">
                   <div>
-                    <h4>Suspend Permit</h4>
-                    <p>
-                      {" "}
-                      Click the button below to process suspension of this
-                      permit.
-                    </p>
+                    <h4>Request for closure</h4>
+                    <p>Click the button to process closure of this permit</p>
                   </div>
-                  <br />
 
                   <button
                     className={"flex-center"}
-                    onClick={() => handleSuspendPopup(true)}
+                    onClick={() => handleClosurePopup(true)}
                   >
-                    Suspend Permit
+                    <Icon name="export" />
+                    Request Closure{" "}
                   </button>
                 </div>
-                <div className="cancel">
-                  <div>
-                    <h4>Permit Cancellation</h4>
-                    <p>
-                      {" "}
-                      Click the button below to process cancel this permit.
-                    </p>
-                  </div>
-                  <br />
+              )}
 
-                  <button
-                    className={"flex-center"}
-                    onClick={() => handleCancelPopup(true)}
-                  >
-                    Cancel Permit
-                  </button>
-                </div>
-              </div>
+              {userRole === "ISSUING" ||
+                userRole === "ISSUING SUPERVISOR" ||
+                (userRole === "AUTHORIZING" && (
+                  <div className="double">
+                    <div className="suspension">
+                      <div>
+                        <h4>Suspend Permit</h4>
+                        <p>
+                          {" "}
+                          Click the button below to process suspension of this
+                          permit.
+                        </p>
+                      </div>
+                      <br />
+
+                      <button
+                        className={"flex-center"}
+                        onClick={() => handleSuspendPopup(true)}
+                      >
+                        Suspend Permit
+                      </button>
+                    </div>
+
+                    <div className="cancel">
+                      <div>
+                        <h4>Permit Cancellation</h4>
+                        <p>
+                          {" "}
+                          Click the button below to process cancel this permit.
+                        </p>
+                      </div>
+                      <br />
+
+                      <button
+                        className={"flex-center"}
+                        onClick={() => handleCancelPopup(true)}
+                      >
+                        Cancel Permit
+                      </button>
+                    </div>
+                  </div>
+                ))}
             </div>
           </>
         );
@@ -165,20 +193,24 @@ export default function RenderButtonsOnPath(path: string) {
                   Print Permit
                 </button>
               </div>
-              <div className="delete">
-                <div>
-                  <h4>Delete</h4>
-                  <p>Click the button to delete this permit</p>
-                </div>
 
-                <button
-                  className={"flex-center"}
-                  onClick={() => handleDeletePopUp(true)}
-                >
-                  <Icon name="delete" />
-                  Delete Permit
-                </button>
-              </div>
+              {permit?.authorizingAuthorityStatus !== "APPROVED" &&
+                userRole === "PERFORMING" && (
+                  <div className="delete">
+                    <div>
+                      <h4>Delete</h4>
+                      <p>Click the button to delete this permit</p>
+                    </div>
+
+                    <button
+                      className={"flex-center"}
+                      onClick={() => handleDeletePopUp(true)}
+                    >
+                      <Icon name="delete" />
+                      Delete Permit
+                    </button>
+                  </div>
+                )}
             </div>
           </>
         );

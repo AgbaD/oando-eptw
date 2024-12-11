@@ -41,6 +41,7 @@ const PermitMachine = createMachine(
         isCorrect: false,
         consentGiven: false,
       },
+      formatted_documents: {},
     },
     predictableActionArguments: true,
     initial: "permit_type",

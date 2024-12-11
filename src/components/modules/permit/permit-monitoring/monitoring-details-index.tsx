@@ -142,8 +142,7 @@ export default function MonitoringDetailsIndex({}: any) {
                 <CountdownTimer
                   fromDate={permit?.fromDate}
                   fromTime={permit?.fromTime}
-                  toDate={permit?.toDate}
-                  toTime={permit?.toTime}
+                  permitShiftType={permit?.permitShiftType}
                 />
               )}
             </>
@@ -155,27 +154,27 @@ export default function MonitoringDetailsIndex({}: any) {
         <div className="actions">
           {permit?.type === "HOT_WORK" ? (
             <>
-              {userRole === "PERFORMING_SUPERVISOR" ||
-                (userRole === "SUPERADMIN" && (
-                  <div className="closure">
-                    <div>
-                      <h4>Request For Closure</h4>
-                      <p>
-                        Click the button to request closure for this permit
-                      </p>{" "}
-                    </div>
-
-                    <button
-                      className={"flex-center"}
-                      onClick={() => handleClosurePopup(true)}
-                    >
-                      <Icon name="export" />
-                      Request Closure
-                    </button>
+              {userRole === "PERFORMING_SUPERVISOR" && (
+                <div className="closure">
+                  <div>
+                    <h4>Request For Closure</h4>
+                    <p>
+                      Click the button to request closure for this permit
+                    </p>{" "}
                   </div>
-                ))}
+
+                  <button
+                    className={"flex-center"}
+                    onClick={() => handleClosurePopup(true)}
+                  >
+                    <Icon name="export" />
+                    Request Closure
+                  </button>
+                </div>
+              )}
             </>
-          ) : permit?.status === "SUSPENDED" ? (
+          ) : permit?.status === "SUSPENDED" &&
+            permit?.suspenderId === profile?.id ? (
             <>
               <div className="print">
                 <div>
@@ -194,25 +193,24 @@ export default function MonitoringDetailsIndex({}: any) {
             </>
           ) : (
             <>
-              {userRole === "PERFORMING_SUPERVISOR" ||
-                (userRole === "SUPERADMIN" && (
-                  <div className="print">
-                    <div>
-                      <h4>Request For Revalidation</h4>
-                      <p>
-                        Click the button to request validation for this permit
-                      </p>{" "}
-                    </div>
-
-                    <button
-                      className={"flex-center"}
-                      onClick={() => handleRevalidatePopup(true)}
-                    >
-                      <Icon name="export" />
-                      Revalidate Permit
-                    </button>
+              {userRole === "PERFORMING_SUPERVISOR" && (
+                <div className="print">
+                  <div>
+                    <h4>Request For Revalidation</h4>
+                    <p>
+                      Click the button to request validation for this permit
+                    </p>{" "}
                   </div>
-                ))}
+
+                  <button
+                    className={"flex-center"}
+                    onClick={() => handleRevalidatePopup(true)}
+                  >
+                    <Icon name="export" />
+                    Revalidate Permit
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>

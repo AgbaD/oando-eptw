@@ -1,7 +1,7 @@
-import Icon from "../../../../ui/icon";
 import Section from "../../../../ui/sections";
 
-import { useRef, useState, useEffect } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
+import RenderButtonsOnPath from "../../render-buttons-by-path";
 
 export default function AuthAuthority({ response }: any) {
   const details = response;
@@ -16,6 +16,8 @@ export default function AuthAuthority({ response }: any) {
       ? setApproved(false)
       : setApproved(false);
   }, [details]);
+
+  const currentPath = window.location.pathname;
 
   const equipment = [
     {
@@ -197,21 +199,6 @@ export default function AuthAuthority({ response }: any) {
         );
       });
   };
-  const printRef = useRef<HTMLDivElement>(null);
-
-  const printHandler = () => {
-    if (printRef.current) {
-      const originalContent = document.body.innerHTML;
-      const printContent = printRef.current.innerHTML;
-
-      document.body.innerHTML = printContent;
-      window.print();
-      document.body.innerHTML = originalContent;
-      window.location.reload();
-    } else {
-      window.print();
-    }
-  };
 
   const time = [
     {
@@ -228,7 +215,7 @@ export default function AuthAuthority({ response }: any) {
   ];
 
   return (
-    <div className={"app-permit__sections"} ref={printRef}>
+    <div className={"app-permit__sections"}>
       <br />
       {approved ? (
         <>
@@ -325,19 +312,7 @@ export default function AuthAuthority({ response }: any) {
             section={time[0].section}
           />
           <br />
-          <div className="actions">
-            <div className="print">
-              <div>
-                <h4>Print </h4>
-                <p>Click the button to get a hardcopy version of this permit</p>
-              </div>
-
-              <button className={"flex-center"} onClick={printHandler}>
-                <Icon name="print" />
-                Print Permit
-              </button>
-            </div>
-          </div>
+          {RenderButtonsOnPath(currentPath)}
         </>
       ) : (
         <>

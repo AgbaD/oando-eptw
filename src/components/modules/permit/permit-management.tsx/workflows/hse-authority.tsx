@@ -1,7 +1,7 @@
-import Icon from "../../../../ui/icon";
 import Section from "../../../../ui/sections";
 
-import { useRef, useEffect, useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
+import RenderButtonsOnPath from "../../render-buttons-by-path";
 
 export default function HSEAuthority({ response }: any) {
   const details = response;
@@ -14,6 +14,8 @@ export default function HSEAuthority({ response }: any) {
       ? setApproved(false)
       : setApproved(false);
   }, [details]);
+
+  const currentPath = window.location.pathname;
 
   console.log(details);
 
@@ -198,24 +200,8 @@ export default function HSEAuthority({ response }: any) {
       });
   };
 
-  const printRef = useRef<HTMLDivElement>(null);
-
-  const printHandler = () => {
-    if (printRef.current) {
-      const originalContent = document.body.innerHTML;
-      const printContent = printRef.current.innerHTML;
-
-      document.body.innerHTML = printContent;
-      window.print();
-      document.body.innerHTML = originalContent;
-      window.location.reload();
-    } else {
-      window.print();
-    }
-  };
-
   return (
-    <div className={"app-permit__sections"} ref={printRef}>
+    <div className={"app-permit__sections"}>
       {approved ? (
         <>
           {" "}
@@ -306,19 +292,7 @@ export default function HSEAuthority({ response }: any) {
             </div>
           </div>
           <br />
-          <div className="actions">
-            <div className="print">
-              <div>
-                <h4>Print </h4>
-                <p>Click the button to get a hardcopy version of this permit</p>
-              </div>
-
-              <button className={"flex-center"} onClick={printHandler}>
-                <Icon name="print" />
-                Print Permit
-              </button>
-            </div>
-          </div>
+          {RenderButtonsOnPath(currentPath)}
         </>
       ) : (
         <>

@@ -57,7 +57,7 @@ export default function PermitRenewal({}: any) {
 
           <h5>Permit To Work Form / Hot Work</h5>
 
-          <a href="#" className="app-link">
+          <a href="mailto:helpdesk@oandoplc.com" className="app-link">
             Need help?
           </a>
         </div>

@@ -40,7 +40,7 @@ export default function EditInternalUser({}: any) {
   const { getFieldProps, values, handleSubmit, setFieldValue } = useForm({
     initialValues: {
       email: "",
-      roleIds: [],
+      roleIds: 0,
       fullname: "",
     },
     onSubmit,

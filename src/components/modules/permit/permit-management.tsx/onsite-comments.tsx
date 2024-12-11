@@ -48,7 +48,7 @@ export default function PermitOnsiteComments({}: any) {
         <div className="app-container app-register__nav">
           <img src="/svgs/logo.svg" alt="eptw_logo" />
 
-          <a href="#" className="app-link">
+          <a href="mailto:helpdesk@oandoplc.com" className="app-link">
             Need help?
           </a>
         </div>

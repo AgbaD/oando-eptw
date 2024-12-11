@@ -1,7 +1,7 @@
 import Section from "../../../../ui/sections";
 
-import { useRef, useEffect, useState } from "preact/hooks";
-import Icon from "../../../../ui/icon";
+import { useEffect, useState } from "preact/hooks";
+import RenderButtonsOnPath from "../../render-buttons-by-path";
 
 export default function PerfAuthSupervisor({ response }: any) {
   const details = response;
@@ -15,6 +15,8 @@ export default function PerfAuthSupervisor({ response }: any) {
       ? setApproved(false)
       : setApproved(false);
   }, [details]);
+
+  const currentPath = window.location.pathname;
 
   const documents = [
     {
@@ -42,6 +44,27 @@ export default function PerfAuthSupervisor({ response }: any) {
       ? filteredDocuments
       : [];
 
+  const closureFilteredDocuments = details?.permitDocuments.filter((doc) => {
+    doc.workflowType === "CLOSURE" && doc.authority === "PERFORMING_SUPERVISOR";
+  });
+
+  const closureDocuments =
+    details?.permitDocuments && details.permitDocuments.length > 0
+      ? closureFilteredDocuments
+      : [];
+
+  const cancelationFilteredDocuments = details?.permitDocuments.filter(
+    (doc) => {
+      doc.workflowType === "CANCELLATION" &&
+        doc.authority === "PERFORMING_SUPERVISOR";
+    }
+  );
+
+  const cancelationDocuments =
+    details?.permitDocuments && details.permitDocuments.length > 0
+      ? cancelationFilteredDocuments
+      : [];
+
   function extractFileName(data) {
     const url = data;
 
@@ -59,7 +82,13 @@ export default function PerfAuthSupervisor({ response }: any) {
 
   const renderDocuments = (type: string) => {
     const documentsToRender =
-      type === "REVALIDATION" ? revalidationDocuments : [documentObject];
+      type === "REVALIDATION"
+        ? revalidationDocuments
+        : type === "CLOSURE"
+        ? closureDocuments
+        : type === "CANCELLATION"
+        ? cancelationDocuments
+        : [documentObject];
 
     console.log(documentsToRender);
 
@@ -72,18 +101,29 @@ export default function PerfAuthSupervisor({ response }: any) {
 
       return (
         <div key={`doc-${docIndex}`} className="document-container">
-          {/* Add this block to render the SHIFT label once per document */}
-          {type === "REVALIDATION" && (
+          {type === "REVALIDATION" ? (
             <div className="">
               <br />
               <h3>
                 {type === "REVALIDATION"
-                  ? `SHIFT ${doc.revalidationShift || ""}`
+                  ? `PERMIT REVALIDATION - SHIFT ${doc.revalidationShift || ""}`
                   : ""}
               </h3>
               <br />
             </div>
-          )}
+          ) : type === "CLOSURE" ? (
+            <div className="">
+              <br />
+              <h3>{type === "CLOSURE" ? `PERMIT CLOSURE` : ""}</h3>
+              <br />
+            </div>
+          ) : type === "CANCELLATION" ? (
+            <div className="">
+              <br />
+              <h3>{type === "CANCELLATION" ? `PERMIT CANCELLATION` : ""}</h3>
+              <br />
+            </div>
+          ) : null}
 
           {entries
             .filter(([key, value]) => {
@@ -146,24 +186,8 @@ export default function PerfAuthSupervisor({ response }: any) {
     });
   };
 
-  const printRef = useRef<HTMLDivElement>(null);
-
-  const printHandler = () => {
-    if (printRef.current) {
-      const originalContent = document.body.innerHTML;
-      const printContent = printRef.current.innerHTML;
-
-      document.body.innerHTML = printContent;
-      window.print();
-      document.body.innerHTML = originalContent;
-      window.location.reload();
-    } else {
-      window.print();
-    }
-  };
-
   return (
-    <div className={"app-permit__sections"} ref={printRef}>
+    <div className={"app-permit__sections"}>
       <br />
       {approved ? (
         <>
@@ -207,21 +231,49 @@ export default function PerfAuthSupervisor({ response }: any) {
             </>
           )}
 
-          {/* {details?.performingAuthoritySupervisorClosureStatus === "APPROVED"} */}
+          {details?.performingAuthoritySupervisorClosureStatus !== null && (
+            <>
+              <Section
+                type="Permits"
+                header={``}
+                children={documents[0]}
+                section={documents[0].section}
+              />
 
-          <div className="actions">
-            <div className="print">
-              <div>
-                <h4>Print </h4>
-                <p>Click the button to get a hardcopy version of this permit</p>
+              <div className="section">
+                <div className="info">
+                  {closureDocuments.length > 0 ? (
+                    renderDocuments("CLOSURE")
+                  ) : (
+                    <p>No documents uploaded.</p>
+                  )}
+                </div>
               </div>
+            </>
+          )}
 
-              <button className={"flex-center"} onClick={printHandler}>
-                <Icon name="print" />
-                Print Permit
-              </button>
-            </div>
-          </div>
+          {details?.cancellationInitiatorId !== null && (
+            <>
+              <Section
+                type="Permits"
+                header={``}
+                children={documents[0]}
+                section={documents[0].section}
+              />
+
+              <div className="section">
+                <div className="info">
+                  {cancelationDocuments.length > 0 ? (
+                    renderDocuments("CANCELLATION")
+                  ) : (
+                    <p>No documents uploaded.</p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {RenderButtonsOnPath(currentPath)}
         </>
       ) : (
         <>

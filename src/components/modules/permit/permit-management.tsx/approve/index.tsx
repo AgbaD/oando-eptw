@@ -16,7 +16,11 @@ import { Fragment } from "preact/jsx-runtime";
 import { useRouter } from "preact-router";
 
 function Module() {
-  const [{matches: { id }}] = useRouter();
+  const [
+    {
+      matches: { id },
+    },
+  ] = useRouter();
   const { state } = usePermitApprovalContext();
   const stateAsString = state.toStrings()[0];
   const currentIdx = STEPS.indexOf(stateAsString) + 1;
@@ -29,7 +33,7 @@ function Module() {
 
           <h5>Permit To Work Form / Hot Work</h5>
 
-          <a href="#" className="app-link">
+          <a href="mailto:helpdesk@oandoplc.com" className="app-link">
             Need help?
           </a>
         </div>
@@ -78,8 +82,12 @@ function Module() {
                 moved ahead to other authorities.
               </p>
 
-              <Button href={`/permit-management/ptw/${id}`} variant="primary">View Permit Details</Button>
-              <Button href="/permit-management/" variant="secondary">Back To All Permits</Button>
+              <Button href={`/permit-management/ptw/${id}`} variant="primary">
+                View Permit Details
+              </Button>
+              <Button href="/permit-management/" variant="secondary">
+                Back To All Permits
+              </Button>
             </div>
           )}
         </div>

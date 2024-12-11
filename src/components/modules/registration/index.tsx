@@ -24,7 +24,7 @@ function Module() {
 
           <h5>Contactor Self Registration</h5>
 
-          <a href="#" className="app-link">
+          <a href="mailto:helpdesk@oandoplc.com" className="app-link">
             Need help?
           </a>
         </div>

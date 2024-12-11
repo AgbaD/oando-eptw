@@ -150,7 +150,10 @@ export default function SelectPermitRole({}: any) {
                       <TableCell>
                         {data?.workArea} / {data?.location?.locationArea}
                       </TableCell>
-                      <TableCell>{data?.entrustedCompany?.name}</TableCell>
+                      <TableCell>
+                        {data?.entrustedCompany?.name ||
+                          data?.executingCompany?.name}
+                      </TableCell>
                       <TableCell>
                         <Dropdown>
                           <DropdownTrigger>
@@ -199,7 +202,10 @@ export default function SelectPermitRole({}: any) {
                       </div>
                       <div className="">
                         <p className={"gray"}>Entrusted Company :</p>
-                        <h5>{dataItem?.entrustedCompany?.name} </h5>
+                        <h5>
+                          {dataItem?.entrustedCompany?.name ||
+                            dataItem?.executingCompany?.name}{" "}
+                        </h5>
                       </div>
                     </div>
                     <br />

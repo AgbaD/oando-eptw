@@ -36,6 +36,8 @@ export default function IssuSupervisorProcessSubmit() {
   const { makeRequest } = useRequest(approveIssuingSupervisor);
 
   const [loading, setLoading] = useState(false);
+  const [successful, setSuccessful] = useState(false);
+
   const { valueID } = useIDContext();
 
   const permitId = valueID;
@@ -106,12 +108,12 @@ export default function IssuSupervisorProcessSubmit() {
             error.message ?? "Failed to approve permit, please try again",
         });
       }
-      route("/permit-activities");
+      setLoading(false);
+      setSuccessful(true);
       toast({
         variant: "success",
         message: "Permit approved successfully",
       });
-      setLoading(false);
     }
 
     submitForm();
@@ -121,54 +123,79 @@ export default function IssuSupervisorProcessSubmit() {
     <div className="app-register__form">
       {loading ? (
         <>
-          <div className="app-submit-screen">
-            <div className="">
-              <div className="flex center">
-                <img src="/svgs/successful.svg" />
-              </div>
-
-              <div className="flex-center">
-                <div className="">
-                  <p>Approving Permit ....</p>
-                  <span>Please be patient as we approve this permit.</span>
+          <>
+            <div className="submit-container">
+              <div className="">
+                <div className="flex-center">
+                  <img src="/svgs/in-progress.svg" alt="" />
                 </div>
+                <p className="submit-container__title"> Approving Permit ...</p>
+                <p className="submit-container__description">
+                  Please wait as we process this permit.
+                </p>
+              </div>
+            </div>
+          </>
+        </>
+      ) : successful ? (
+        <>
+          <div className="submit-container">
+            <div className="">
+              <div className="flex-center">
+                <img src="/svgs/successful.svg" alt="" />
+              </div>
+              <p className="submit-container__title">Permit Approved</p>
+              <p className="submit-container__description">
+                You have successfully approved this permit.{" "}
+              </p>
+
+              <div className="submit-container__button-container">
+                <Button
+                  variant="tertiary"
+                  type="button"
+                  onClick={() => route("/process-permits")}
+                >
+                  Home
+                </Button>
+                <Button
+                  variant="primary"
+                  type="button"
+                  onClick={() => route("/process-permits")}
+                >
+                  View Permit
+                </Button>
               </div>
             </div>
           </div>
         </>
       ) : (
         <>
-          <div className="app-submit-screen">
+          <div className="submit-container">
             <div className="">
-              <div className="flex center">
-                <img src="/svgs/successful.svg" />
-              </div>
-
               <div className="flex-center">
-                <div className="">
-                  <p>Permit Approved</p>
-                  <span>You have successfully approved this permit.</span>
-                </div>
+                <img src="/svgs/submit-failed.svg" alt="" />
               </div>
-            </div>
-          </div>
+              <p className="submit-container__title">Permit Approval Failed</p>
+              <p className="submit-container__description">
+                An error occurred while processing this permit.
+              </p>
 
-          <div className="app-submit-screen">
-            <div className="app-register__form-footer">
-              <Button
-                variant="tertiary"
-                type="button"
-                onClick={() => route("/process-permits")}
-              >
-                Home
-              </Button>
-              <Button
-                variant="primary"
-                type="button"
-                onClick={() => route("/process-permits")}
-              >
-                View Permit
-              </Button>
+              <div className="submit-container__button-container">
+                <Button
+                  variant="tertiary"
+                  type="button"
+                  onClick={() => route("/process-permits")}
+                >
+                  Home
+                </Button>
+                <Button
+                  variant="primary"
+                  type="button"
+                  onClick={() => route("/process-permits")}
+                >
+                  Redo Permit
+                </Button>
+              </div>
             </div>
           </div>
         </>

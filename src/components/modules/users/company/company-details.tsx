@@ -36,7 +36,7 @@ export default function CompanyDetails({}: any) {
     },
     contractId: "",
     createdAt: "",
-    createdBy: null,
+    createdBy: "",
     members: [],
   });
 

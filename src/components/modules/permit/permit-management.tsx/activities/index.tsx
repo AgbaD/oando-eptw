@@ -255,13 +255,32 @@ export default function ProcessPermitsIndex({}: any) {
                   </button>
                 </div>
               </>
+            ) : permitDetails?.status === "CANCELATION_INITIATED" ? (
+              <>
+                <div className="closure">
+                  <div>
+                    <h4>Process Cancellation</h4>
+                    <p>
+                      Click the button to process cancellation for this permit
+                    </p>{" "}
+                  </div>
+
+                  <button
+                    className={"flex-center"}
+                    onClick={() => handleClosureNavigate(permitDetails)}
+                  >
+                    <Icon name="export" />
+                    Process Cancellation
+                  </button>
+                </div>
+              </>
             ) : (
               <>
                 <div className="closure">
                   <div>
                     <h4>Process Closure</h4>
                     <p>
-                      Click the button to request closure for this permit
+                      Click the button to proess closure for this permit
                     </p>{" "}
                   </div>
 

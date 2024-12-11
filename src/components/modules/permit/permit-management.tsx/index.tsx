@@ -32,7 +32,6 @@ export default function Workflows({}: any) {
   const work_types = ["All Work Types", "COLD_WORK", "HOT_WORK"];
 
   const [userRoles, setUserRoles] = useState([]);
-  console.log(userRoles);
   const [canCreatePermit, setCanCreatePermit] = useState(false);
 
   const [selectedStatus, setSelectedStatus] = useState("All Status");
@@ -50,20 +49,25 @@ export default function Workflows({}: any) {
   const { setID } = useIDContext();
   const { profile } = useUserContext();
 
+  const roleActions = {
+    checkRole: (roleArray) => {
+      if (roleArray.includes("PERFORMING")) {
+        setCanCreatePermit(true);
+      }
+    },
+  };
+
   useEffect(() => {
     async function getUserProfile() {
-      const userResponse = await createRequest(
+      const userResponse: any = await createRequest(
         `/profile/${profile?.id}`,
         "GET"
       );
-      console.log(userResponse[0]);
-      setUserRoles(userResponse[0].data.role.authorities);
+      setUserRoles(userResponse[0]?.data?.role?.authorities);
 
       console.log(userRoles);
 
-      if (userResponse[0].includes("PERFORMING")) {
-        setCanCreatePermit(true);
-      }
+      roleActions.checkRole(userRoles);
     }
 
     getUserProfile();

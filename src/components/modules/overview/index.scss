@@ -10,6 +10,16 @@
     border: 1px solid var(--grey-divider);
     border-radius: 8px;
 
+    .purple-container {
+      background-color: #3710711a;
+      width: 40px;
+      height: 40px;
+      border-radius: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
     &__header {
       display: flex;
       align-items: center;

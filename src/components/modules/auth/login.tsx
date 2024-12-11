@@ -14,6 +14,7 @@ import "./index.scss";
 import { loginRequest } from "../../../msal-auth-config";
 
 import { useMsal } from "@azure/msal-react";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Login({}: any) {
   const userContext = useUserContext();
@@ -49,6 +50,12 @@ export default function Login({}: any) {
       })
       .catch((error) => console.log(error));
   };
+
+  const [isCaptchaSuccessful, setIsCaptchaSuccess] = useState(false);
+
+  function onChange() {
+    setIsCaptchaSuccess(true);
+  }
 
   return (
     <div className="app-login">
@@ -102,7 +109,16 @@ export default function Login({}: any) {
               Forgot Password
             </Link>
 
-            <Button variant="primary" {...{ isLoading }}>
+            <ReCAPTCHA
+              sitekey="6LerQJgqAAAAADS_o9r55abOFrkwKK92oFBaKK_p"
+              onChange={onChange}
+            />
+
+            <Button
+              variant="primary"
+              {...{ isLoading }}
+              disabled={!isCaptchaSuccessful}
+            >
               Login to your account
               <Icon name="arrow-right" />
             </Button>
@@ -120,7 +136,7 @@ export default function Login({}: any) {
       </div>
 
       <div class="app-login__footer">
-        <a href="#" className="app-link">
+        <a href="mailto:helpdesk@oandoplc.com" className="app-link">
           Need help?
         </a>
       </div>

@@ -74,6 +74,7 @@ import SelectPermitRole from "./components/modules/permit/select-permit/index.ts
 import { DraftDetailsProvider } from "./context/draft-details.context.tsx";
 
 import Profile from "./components/modules/profile/index.tsx";
+import SocialLogin from "./components/modules/auth/social-login.tsx";
 
 function App() {
   return (
@@ -82,6 +83,7 @@ function App() {
       <ForgotPassword path="/forgot-password" />
       <ResetPassword path="/reset-password" />
       <CompleteOnboarding path="/complete-onboarding" />
+      <SocialLogin path="/social-login" />
 
       <AuthGuard default>
         <Router>

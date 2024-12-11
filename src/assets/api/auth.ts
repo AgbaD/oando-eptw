@@ -5,7 +5,7 @@ function login(data) {
 }
 
 function socialLogin(data) {
-  return createRequest("auth/microsoft", "post", data);
+  return createRequest("/auth/microsoft", "post", data);
 }
 
 function forgotPassword(data) {

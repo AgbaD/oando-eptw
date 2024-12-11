@@ -173,6 +173,7 @@ export default function AdditionalNotes() {
     const toCamelCase = (str) => {
       return str
         .replace(/\/.*|\(.*?\)/g, "") // Remove anything starting with `/` or inside brackets
+        .replace(/_/g, "") // Remove underscores
         .trim() // Remove leading and trailing spaces
         .replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) =>
           index === 0 ? match.toLowerCase() : match.toUpperCase()

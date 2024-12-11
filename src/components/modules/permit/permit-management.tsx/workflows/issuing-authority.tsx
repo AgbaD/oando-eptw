@@ -1,7 +1,7 @@
 import Section from "../../../../ui/sections";
-import Icon from "../../../../ui/icon";
 
 import { useEffect, useState } from "preact/hooks";
+import RenderButtonsOnPath from "../../render-buttons-by-path";
 
 export default function IssuingAuthorities({ response }: any) {
   const details = response;
@@ -14,6 +14,8 @@ export default function IssuingAuthorities({ response }: any) {
       ? setApproved(false)
       : setApproved(false);
   }, [details]);
+
+  const currentPath = window.location.pathname;
 
   const equipment = [
     {
@@ -303,19 +305,7 @@ export default function IssuingAuthorities({ response }: any) {
 
           <br />
 
-          <div className="actions">
-            <div className="print">
-              <div>
-                <h4>Print </h4>
-                <p>Click the button to get a hardcopy version of this permit</p>
-              </div>
-
-              <button className={"flex-center"}>
-                <Icon name="print" />
-                Print Permit
-              </button>
-            </div>
-          </div>
+          {RenderButtonsOnPath(currentPath)}
         </>
       ) : (
         <>

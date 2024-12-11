@@ -3,15 +3,19 @@ import "./index.scss";
 interface CheckboxProps {
   checked?: boolean;
   onChange: (isChecked: boolean) => void;
+  disabled?: boolean;
 }
 
 export default function Checkbox(props: CheckboxProps) {
+  const { checked, onChange, disabled } = props;
+
   return (
     <input
       className="base-checkbox"
       type="checkbox"
-      {...props}
-      onChange={({ currentTarget: { checked } }) => props.onChange(checked)}
+      checked={checked}
+      disabled={disabled}
+      onChange={({ currentTarget: { checked } }) => onChange(checked)}
     />
   );
 }

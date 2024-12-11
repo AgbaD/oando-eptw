@@ -1,7 +1,21 @@
 import Section from "../../../../ui/sections";
+import { useState, useEffect } from "preact/hooks";
+import RenderButtonsOnPath from "../../render-buttons-by-path";
 
 export default function SafetyOfficer({ response }: any) {
   const details = response;
+  const [approved, setApproved] = useState(false);
+
+  useEffect(() => {
+    details?.safetyOfficerStatus === "APPROVED"
+      ? setApproved(true)
+      : details?.safetyOfficerStatus === null
+      ? setApproved(false)
+      : setApproved(false);
+  }, [details]);
+
+  const currentPath = window.location.pathname;
+
   const documents = [
     {
       section: "",
@@ -27,6 +41,27 @@ export default function SafetyOfficer({ response }: any) {
       ? filteredDocuments
       : [];
 
+  const closureFilteredDocuments = details?.permitDocuments.filter(
+    (doc) =>
+      doc.workflowType === "CLOSURE" && doc.authority === "SAFETY_OFFICER"
+  );
+
+  const closureDocuments =
+    details?.permitDocuments && details.permitDocuments.length > 0
+      ? closureFilteredDocuments
+      : [];
+
+  const cancelationFilteredDocuments = details?.permitDocuments.filter(
+    (doc) => {
+      doc.workflowType === "CANCELLATION" && doc.authority === "SAFETY_OFFICER";
+    }
+  );
+
+  const cancelationDocuments =
+    details?.permitDocuments && details.permitDocuments.length > 0
+      ? cancelationFilteredDocuments
+      : [];
+
   function extractFileName(data) {
     const url = data;
 
@@ -44,7 +79,13 @@ export default function SafetyOfficer({ response }: any) {
 
   const renderDocuments = (type: string) => {
     const documentsToRender =
-      type === "REVALIDATION" ? revalidationDocuments : [documentObject];
+      type === "REVALIDATION"
+        ? revalidationDocuments
+        : type === "CLOSURE"
+        ? closureDocuments
+        : type === "CANCELLATION"
+        ? cancelationDocuments
+        : [documentObject];
 
     console.log(documentsToRender);
 
@@ -58,17 +99,29 @@ export default function SafetyOfficer({ response }: any) {
       return (
         <div key={`doc-${docIndex}`} className="document-container">
           {/* Add this block to render the SHIFT label once per document */}
-          {type === "REVALIDATION" && (
+          {type === "REVALIDATION" ? (
             <div className="">
               <br />
               <h3>
                 {type === "REVALIDATION"
-                  ? `SHIFT ${doc.revalidationShift || ""}`
+                  ? `PERMIT REVALIDATION - SHIFT ${doc.revalidationShift || ""}`
                   : ""}
               </h3>
               <br />
             </div>
-          )}
+          ) : type === "CLOSURE" ? (
+            <div className="">
+              <br />
+              <h3>{type === "CLOSURE" ? `PERMIT CLOSURE` : ""}</h3>
+              <br />
+            </div>
+          ) : type === "CANCELLATION" ? (
+            <div className="">
+              <br />
+              <h3>{type === "CANCELLATION" ? `PERMIT CANCELLATION` : ""}</h3>
+              <br />
+            </div>
+          ) : null}
 
           {entries
             .filter(([key, value]) => {
@@ -134,43 +187,96 @@ export default function SafetyOfficer({ response }: any) {
   return (
     <div className={"app-permit__sections"}>
       <br />
-      <Section
-        type="Permits"
-        header="DOCUMENT UPLOADS / ATTACHMENTS"
-        children={documents[0]}
-        section={documents[0].section}
-      />
-
-      <div className="section">
-        <div className="">
-          <p className="info">
-            {Object.keys(documentObject).length > 0 ? (
-              renderDocuments("APPROVAL")
-            ) : (
-              <p>No documents uploaded.</p>
-            )}
-          </p>
-        </div>
-      </div>
-      <br />
-
-      {details?.revalidations?.length > 0 && (
+      {approved ? (
         <>
+          {" "}
           <Section
             type="Permits"
-            header={``}
+            header="DOCUMENT UPLOADS / ATTACHMENTS"
             children={documents[0]}
             section={documents[0].section}
           />
-
           <div className="section">
-            <div className="info">
-              {revalidationDocuments.length > 0 ? (
-                renderDocuments("REVALIDATION")
-              ) : (
-                <p>No documents uploaded.</p>
-              )}
+            <div className="">
+              <p className="info">
+                {Object.keys(documentObject).length > 0 ? (
+                  renderDocuments("APPROVAL")
+                ) : (
+                  <p>No documents uploaded.</p>
+                )}
+              </p>
             </div>
+          </div>
+          <br />
+          {details?.revalidations?.length > 0 && (
+            <>
+              <Section
+                type="Permits"
+                header={``}
+                children={documents[0]}
+                section={documents[0].section}
+              />
+
+              <div className="section">
+                <div className="info">
+                  {revalidationDocuments.length > 0 ? (
+                    renderDocuments("REVALIDATION")
+                  ) : (
+                    <p>No documents uploaded.</p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+          {details?.issuingAuthoritySupervisorClosureStatus !== null && (
+            <>
+              <Section
+                type="Permits"
+                header={``}
+                children={documents[0]}
+                section={documents[0].section}
+              />
+
+              <div className="section">
+                <div className="info">
+                  {closureDocuments.length > 0 ? (
+                    renderDocuments("CLOSURE")
+                  ) : (
+                    <p>No documents uploaded.</p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+          {details?.cancellationInitiatorId !== null &&
+            details?.currentAuthority === "ISSUING_SUPERVISOR" && (
+              <>
+                <Section
+                  type="Permits"
+                  header={``}
+                  children={documents[0]}
+                  section={documents[0].section}
+                />
+
+                <div className="section">
+                  <div className="info">
+                    {cancelationDocuments.length > 0 ? (
+                      renderDocuments("CANCELLATION")
+                    ) : (
+                      <p>No documents uploaded.</p>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+          <br />
+          {RenderButtonsOnPath(currentPath)}
+        </>
+      ) : (
+        <>
+          <div className="base-empty">
+            <img src="/svgs/checklist.png" />
+            <p>Approval in progress</p>
           </div>
         </>
       )}

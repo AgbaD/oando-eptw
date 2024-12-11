@@ -70,7 +70,7 @@ function ResetPasswordForm({ token }: { token: string }) {
       </div>
 
       <div className="app-login__footer">
-        <a href="#" className="app-link">
+        <a href="mailto:helpdesk@oandoplc.com" className="app-link">
           Need help?
         </a>
       </div>
