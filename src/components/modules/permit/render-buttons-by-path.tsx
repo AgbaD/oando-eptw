@@ -93,6 +93,82 @@ export default function RenderButtonsOnPath(path: string) {
     route("/permit-management");
   }
 
+  // Utility function to format camelCase to Title Case
+  const formatTitle = (key) => {
+    return key
+      .replace(/([a-z])([A-Z])/g, "$1 $2") // Add space before uppercase letters
+      .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2") // Handle acronyms
+      .replace(/^[a-z]/, (char) => char.toUpperCase()); // Capitalize first letter
+  };
+
+  const handlePrint = () => {
+    const printContent = document.getElementById("permit-details-print");
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(
+      `<html>
+        <head>
+          <title>Permit Details</title>
+          <style>
+            body { font-family: Helvetica, sans-serif; margin: 20px; }
+            .header {display: flex; justify-content: space-between; align-items: center; text-align: center; margin-bottom: 20px; }
+            .header img { max-width: 100px; margin-right: 20px;}
+            .details { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+            .item { padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+            .footer { text-align: center; margin-top: 20px; font-size: 12px; }
+            .sub-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+            .small-text {font-size: 12px}
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <img src="/svgs/logo.sidebar.svg" alt="Logo" />
+            <h3>Permit Details</h3>
+          </div>
+          <div class="details">
+            ${printContent.innerHTML}
+          </div>
+          <div class="footer">Printed on: ${new Date().toLocaleString()}</div>
+        </body>
+      </html>`
+    );
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  const renderValue = (value) => {
+    if (typeof value === "object" && value !== null) {
+      if (Array.isArray(value)) {
+        return value.length > 0
+          ? value.map((item, index) => (
+              <div key={index}>{renderValue(item)}</div>
+            ))
+          : "N/A";
+      }
+      return (
+        <div>
+          {Object.entries(value)
+            .filter(([key]) => key.toLowerCase() !== "permitDocuments")
+            .map(([key, val]) => (
+              <div key={key} className="sub-grid">
+                <h5>{formatTitle(key)}:</h5>
+                <p className="small-text">{renderValue(val)}</p>
+              </div>
+            ))}
+        </div>
+      );
+    }
+    return value !== null ? value.toString() : "N/A";
+  };
+
+  const permitEntries = Object.entries(permit || {}).filter(
+    ([key]) =>
+      ![
+        "id",
+        "locationId",
+        "cancellationInitiatorId, updatedAt, permitDocuments, firefightingPrecautions",
+      ].includes(key)
+  );
+
   function renderItems() {
     switch (path) {
       case "/monitoring-details":
@@ -101,16 +177,23 @@ export default function RenderButtonsOnPath(path: string) {
             <div className="actions">
               <div className="print">
                 <div>
-                  <h4>Print </h4>
+                  <h4>Print</h4>
                   <p>
                     Click the button to get a hardcopy version of this permit
                   </p>
                 </div>
-
-                <button className={"flex-center"}>
-                  <Icon name="print" />
+                <button className="flex-center" onClick={handlePrint}>
                   Print Permit
                 </button>
+
+                <div id="permit-details-print" style={{ display: "none" }}>
+                  {permitEntries.map(([key, value]) => (
+                    <div key={key} className="item">
+                      <h4>{formatTitle(key)}:</h4>
+                      <p>{renderValue(value)}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {userRole === "PERFORMING_SUPERVISOR" && (
@@ -130,48 +213,48 @@ export default function RenderButtonsOnPath(path: string) {
                 </div>
               )}
 
-              {userRole === "ISSUING" ||
-                userRole === "ISSUING SUPERVISOR" ||
-                (userRole === "AUTHORIZING" && (
-                  <div className="double">
-                    <div className="suspension">
-                      <div>
-                        <h4>Suspend Permit</h4>
-                        <p>
-                          {" "}
-                          Click the button below to process suspension of this
-                          permit.
-                        </p>
-                      </div>
-                      <br />
-
-                      <button
-                        className={"flex-center"}
-                        onClick={() => handleSuspendPopup(true)}
-                      >
-                        Suspend Permit
-                      </button>
+              {(userRole === "ISSUING" ||
+                userRole === "AUTHORIZING" ||
+                userRole === "ISSUING_SUPERVISOR") && (
+                <div className="double">
+                  <div className="suspension">
+                    <div>
+                      <h4>Suspend Permit</h4>
+                      <p>
+                        {" "}
+                        Click the button below to process suspension of this
+                        permit.
+                      </p>
                     </div>
+                    <br />
 
-                    <div className="cancel">
-                      <div>
-                        <h4>Permit Cancellation</h4>
-                        <p>
-                          {" "}
-                          Click the button below to process cancel this permit.
-                        </p>
-                      </div>
-                      <br />
-
-                      <button
-                        className={"flex-center"}
-                        onClick={() => handleCancelPopup(true)}
-                      >
-                        Cancel Permit
-                      </button>
-                    </div>
+                    <button
+                      className={"flex-center"}
+                      onClick={() => handleSuspendPopup(true)}
+                    >
+                      Suspend Permit
+                    </button>
                   </div>
-                ))}
+
+                  <div className="cancel">
+                    <div>
+                      <h4>Permit Cancellation</h4>
+                      <p>
+                        {" "}
+                        Click the button below to process cancel this permit.
+                      </p>
+                    </div>
+                    <br />
+
+                    <button
+                      className={"flex-center"}
+                      onClick={() => handleCancelPopup(true)}
+                    >
+                      Cancel Permit
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </>
         );
@@ -182,16 +265,23 @@ export default function RenderButtonsOnPath(path: string) {
             <div className="actions">
               <div className="print">
                 <div>
-                  <h4>Print </h4>
+                  <h4>Print</h4>
                   <p>
                     Click the button to get a hardcopy version of this permit
                   </p>
                 </div>
-
-                <button className={"flex-center"}>
-                  <Icon name="print" />
+                <button className="flex-center" onClick={handlePrint}>
                   Print Permit
                 </button>
+
+                <div id="permit-details-print" style={{ display: "none" }}>
+                  {permitEntries.map(([key, value]) => (
+                    <div key={key} className="item">
+                      <h4>{formatTitle(key)}:</h4>
+                      <p>{renderValue(value)}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {permit?.authorizingAuthorityStatus !== "APPROVED" &&

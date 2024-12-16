@@ -8,7 +8,7 @@ export default function Drafts({ drafts }) {
         <Icon name="sidebar.draft" />
         <h1>Drafts</h1>
 
-        <a href="#">
+        <a href="/permit-drafts">
           View all
           <Icon name="diagonal-arrow" />
         </a>

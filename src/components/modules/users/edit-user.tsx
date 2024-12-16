@@ -10,10 +10,25 @@ import { editExternalUser, getRoles } from "../../../assets/api/user";
 import { toast } from "../../ui/toast";
 
 import Select from "../../ui/form/select";
+import { createRequest } from "../../../assets/api";
+import { useEffect, useState } from "preact/hooks";
+import { useIDContext } from "../../../context/id.context";
+
 export default function EditUser({}: any) {
   const { makeRequest, isLoading } = useRequest(editExternalUser);
+
+  const { valueID } = useIDContext();
+  const [user, setUser] = useState({
+    email: "",
+    roleId: 0,
+    fullname: "",
+    role: {
+      name: "",
+    },
+  });
+
   const rolesApi = useRequest(getRoles, {}, true);
-  const { getFieldProps, handleSubmit } = useForm({
+  const { getFieldProps, handleSubmit, setFieldValue } = useForm({
     initialValues: {
       email: "",
       roleId: null,
@@ -29,6 +44,24 @@ export default function EditUser({}: any) {
         value: role.id,
       }))
     : [];
+
+  useEffect(() => {
+    async function getUserByID() {
+      const userResponse = await createRequest(`/profile/${valueID}`, "GET");
+      const userData = userResponse[0].data;
+      setUser(userData);
+      console.log(userData);
+    }
+    getUserByID();
+  }, [valueID]);
+
+  useEffect(() => {
+    if (user) {
+      setFieldValue("email", user.email);
+      setFieldValue("roleId", user.roleId);
+      setFieldValue("fullname", user.fullname);
+    }
+  }, [user]);
 
   async function onSubmit(data) {
     if (data.userType === "external_type") {
@@ -73,14 +106,16 @@ export default function EditUser({}: any) {
 
             <p className="app-create__form__title">Email Address</p>
             <Input
-              placeholder="Enter email address"
+              placeholder={`${user.email ? user.email : "Enter email address"}`}
               {...getFieldProps("email")}
             />
 
             <p className="app-create__form__title">Role</p>
             <Select
               {...getFieldProps("roleId")}
-              placeholder="--select role--"
+              placeholder={`${
+                user.roleId ? user.role.name : "--select role--"
+              }`}
               options={roleOptions}
             />
 

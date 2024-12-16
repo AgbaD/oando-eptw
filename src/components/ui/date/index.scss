@@ -20,9 +20,10 @@
   color: var(--grey-700);
   font-size: 15px;
   gap: 12px;
+  margin: 7px 0px;
 
-  p {
-    margin: 10px 0 0 0;
+  span {
+    margin: 10px 0px;
   }
 
   &__buttons {

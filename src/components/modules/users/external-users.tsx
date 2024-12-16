@@ -62,10 +62,17 @@ const ExternalUsers = ({ company = [] }) => {
     setModalOpen(false);
   };
 
+  const handleEdit = (item) => {
+    setID(item.id);
+    route(`/users/edit`);
+  };
+
   return (
     <div>
       <div className="app-section__flex">
         <Search placeholder="Search by user name" onSearch={""} />
+        <br />
+
         <div className="app-section__filters">
           <span className="base-date-filter--secondary">Filter by:</span>
           <Dropdown className="base-dropdown__dropdown-wrapper">
@@ -183,7 +190,7 @@ const ExternalUsers = ({ company = [] }) => {
           <div className="app-modal__footer">
             <button
               className="app-modal__btn--yellow"
-              onClick={() => route("/users/edit")}
+              onClick={() => handleEdit(selectedUser)}
             >
               <Icon name="edit" /> Edit User
             </button>

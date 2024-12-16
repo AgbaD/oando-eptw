@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import Button from "../../ui/button";
 import Input from "../../ui/form/input";
 import Icon from "../../ui/icon";
@@ -42,20 +42,87 @@ export default function Login({}: any) {
 
   // const activeAccount = instance.getActiveAccount();
 
-  const handleRedirect = () => {
-    instance
-      .loginRedirect({
-        ...loginRequest,
-        prompt: "create",
-      })
-      .catch((error) => console.log(error));
-  };
+  // const handleRedirect = () => {
+  //   instance
+  //     .loginRedirect({
+  //       ...loginRequest,
+  //       prompt: "create",
+  //     })
+  //     .catch((error) => console.log(error));
+  // };
 
   const [isCaptchaSuccessful, setIsCaptchaSuccess] = useState(false);
 
   function onChange() {
     setIsCaptchaSuccess(true);
   }
+
+  /**
+   * Generate a random code verifier
+   */
+  function generateCodeVerifier() {
+    const array = new Uint32Array(32);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, (num) => num.toString(36))
+      .join("")
+      .slice(0, 128);
+  }
+
+  /**
+   * Generate a code challenge based on a code verifier
+   * @param {string} codeVerifier
+   * @returns {Promise<string>}
+   */
+  async function generateCodeChallenge(codeVerifier) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(codeVerifier);
+    const digest = await window.crypto.subtle.digest("SHA-256", data);
+    return btoa(String.fromCharCode(...new Uint8Array(digest)))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+  }
+
+  const verifier =
+    "1a7aiyx1u5iyabquso095bsdw5kal9j850wkfwblca4x3qvj1e140gvmnmf1qs8vxiep2lkvk9uulejg41il8ka51xs9rxs17twbt31jhrv40alsy00zdu7851kur4re";
+  generateCodeChallenge(verifier).then((challenge) => {
+    console.log("Verifier:", verifier);
+    console.log("Generated Challenge:", challenge);
+  });
+
+  const clientId = "373d919d-2a08-46b9-ac26-2638978ec8ba";
+  const tenantId = "a3329a53-02fd-4abb-94cd-6d1b954419f6";
+  const redirectUri = "https://oando-eptw.vercel.app/social-login"; // Your frontend URL
+  // let codeChallenge;
+
+  // const codeVerifier = generateCodeVerifier();
+  // sessionStorage.setItem("code_verifier", codeVerifier);
+  const [codeChallenge, setCodeChallenge] = useState("");
+
+  useEffect(() => {
+    async function initializePKCE() {
+      const verifier = generateCodeVerifier();
+      sessionStorage.setItem("code_verifier", verifier);
+      const challenge = await generateCodeChallenge(verifier);
+      setCodeChallenge(challenge);
+    }
+
+    initializePKCE();
+  }, []);
+
+  const handleRedirect = () => {
+    const authUrl =
+      `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize` +
+      `?client_id=${clientId}` +
+      `&response_type=code` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&scope=openid profile email` +
+      `&code_challenge=${codeChallenge}` +
+      `&code_challenge_method=S256`;
+
+    window.location.href = authUrl;
+    sessionStorage.setItem("code_challenge", codeChallenge);
+  };
 
   return (
     <div className="app-login">
@@ -75,7 +142,7 @@ export default function Login({}: any) {
           <div className="app-login__card__form">
             <h2>Get Started</h2>
             <p className="app-login__card__form__desc">
-              Welcome to Oando Eletronic Permit To Work System e-PTW. <br />
+              Welcome to Oando Electronic Permit To Work System e-PTW. <br />
               Click the button below to get started.
             </p>
 

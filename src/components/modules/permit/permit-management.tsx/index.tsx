@@ -117,6 +117,7 @@ export default function Workflows({}: any) {
           placeholder="Search permits by company, work area, permit type, or permit ID"
           onSearch={setSearchTerm}
         />
+        <br />
 
         <div className="app-section__filters ">
           <span className="base-date-filter--secondary">Filter by:</span>

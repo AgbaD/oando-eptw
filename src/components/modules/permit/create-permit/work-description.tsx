@@ -229,6 +229,35 @@ export default function WorkDescription() {
 }
 
 function getValidationSchema(isDraft) {
+  const now = new Date();
+
+  const dateTimeValidation = Yup.string().required("This field is required");
+
+  const fromDateTimeValidation = Yup.string()
+    .required("From date is required")
+    .test(
+      "is-not-in-past",
+      "From date and time cannot be in the past",
+      function (value) {
+        const { from_time } = this.parent;
+        const fromDateTime = new Date(`${value}T${from_time}`);
+        return fromDateTime >= now;
+      }
+    );
+
+  const toDateTimeValidation = Yup.string()
+    .required("To date is required")
+    .test(
+      "is-after-from",
+      "To date and time must be after the From date and time",
+      function (value) {
+        const { from_date, from_time, to_time } = this.parent;
+        const fromDateTime = new Date(`${from_date}T${from_time}`);
+        const toDateTime = new Date(`${value}T${to_time}`);
+        return toDateTime > fromDateTime;
+      }
+    );
+
   if (isDraft) {
     return Yup.object({
       role: Yup.string(),
@@ -236,14 +265,13 @@ function getValidationSchema(isDraft) {
       work_description: Yup.string(),
       locationId: Yup.number(),
       work_area: Yup.string(),
-      from_date: Yup.string().required("From date is required"),
-      to_date: Yup.string().required("To date is required"),
-      from_time: Yup.string().required("From time is required"),
-      to_time: Yup.string().required("To time is required"),
+      from_date: fromDateTimeValidation,
+      to_date: toDateTimeValidation,
+      from_time: dateTimeValidation,
+      to_time: dateTimeValidation,
     });
   }
 
-  // Otherwise, apply the standard required validation
   return Yup.object({
     role: Yup.string().required("Role is required"),
     performer: Yup.string().required("Performer is required"),
@@ -252,9 +280,9 @@ function getValidationSchema(isDraft) {
       .typeError("Location is required")
       .required("Location is required"),
     work_area: Yup.string().required("Work area is required"),
-    from_date: Yup.string().required("From date is required"),
-    to_date: Yup.string().required("To date is required"),
-    from_time: Yup.string().required("From time is required"),
-    to_time: Yup.string().required("To time is required"),
+    from_date: fromDateTimeValidation,
+    to_date: toDateTimeValidation,
+    from_time: dateTimeValidation,
+    to_time: dateTimeValidation,
   });
 }

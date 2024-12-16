@@ -118,6 +118,7 @@ export default function InternalUsers() {
       <div className="">
         <div className="app-section__header">
           <Search placeholder="Search by user name" onSearch={setSearchTerm} />
+          <br />
 
           <div className="app-section__filters ">
             <span className="base-date-filter--secondary">Filter by:</span>

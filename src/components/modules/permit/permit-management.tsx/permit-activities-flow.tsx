@@ -95,6 +95,7 @@ export default function ActivitiesFlow({}: any) {
 
       <div className="app-section__header">
         <Search placeholder="Search" onSearch={setSearchTerm} />
+        <br />
 
         <div className="app-section__filters ">
           <span className="base-date-filter--secondary">Filter by:</span>

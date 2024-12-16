@@ -75,6 +75,7 @@ export default function Storage({}: any) {
 
       <div className="app-section__header">
         <Search placeholder="Search permits" onSearch={setSearchTerm} />
+        <br />
 
         <div className="app-section__filters ">
           <span className="base-date-filter--secondary">Filter by:</span>

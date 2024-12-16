@@ -94,6 +94,7 @@ export default function Company() {
             placeholder="Search by name or Contract ID"
             onSearch={setSearchTerm}
           />
+          <br />
 
           <div className="app-section__filters ">
             <span className="base-date-filter--secondary">Filter by:</span>

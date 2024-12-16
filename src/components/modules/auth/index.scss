@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: fit-content;
   position: relative;
   background: #fbfbfb;
   padding: 20px;
@@ -25,7 +25,7 @@
     max-width: 1064px;
     border-radius: 12px;
     margin-top: 20px;
-    min-height: 87vh;
+    min-height: 100vh;
     padding: 50px 23px;
 
     &__logo {

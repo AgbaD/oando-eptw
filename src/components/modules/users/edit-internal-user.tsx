@@ -25,6 +25,9 @@ export default function EditInternalUser({}: any) {
     email: "",
     roleId: 0,
     fullname: "",
+    role: {
+      name: "",
+    },
   });
 
   useEffect(() => {
@@ -106,14 +109,16 @@ export default function EditInternalUser({}: any) {
 
             <p className="app-create__form__title">Email Address</p>
             <Input
-              placeholder="Enter email address"
+              placeholder={`${user.email ? user.email : "Enter email address"}`}
               {...getFieldProps("email")}
             />
 
             <p className="app-create__form__title">Role</p>
             <Select
               {...getFieldProps("roleId")}
-              placeholder="--select role--"
+              placeholder={`${
+                user.roleId ? user.role.name : "--select role--"
+              }`}
               options={roleOptions}
             />
 
