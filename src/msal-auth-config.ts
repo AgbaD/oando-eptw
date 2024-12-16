@@ -3,41 +3,41 @@ import { LogLevel } from "@azure/msal-browser";
 /**
  * Generate a random code verifier
  */
-function generateCodeVerifier() {
-  const array = new Uint32Array(32);
-  window.crypto.getRandomValues(array);
-  return Array.from(array, (num) => num.toString(36))
-    .join("")
-    .slice(0, 128);
-}
+// function generateCodeVerifier() {
+//   const array = new Uint32Array(32);
+//   window.crypto.getRandomValues(array);
+//   return Array.from(array, (num) => num.toString(36))
+//     .join("")
+//     .slice(0, 128);
+// }
 
 /**
  * Generate a code challenge based on a code verifier
  * @param {string} codeVerifier
  * @returns {Promise<string>}
  */
-async function generateCodeChallenge(codeVerifier) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(codeVerifier);
-  const digest = await window.crypto.subtle.digest("SHA-256", data);
-  return btoa(String.fromCharCode(...new Uint8Array(digest)))
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/, "");
-}
+// async function generateCodeChallenge(codeVerifier) {
+//   const encoder = new TextEncoder();
+//   const data = encoder.encode(codeVerifier);
+//   const digest = await window.crypto.subtle.digest("SHA-256", data);
+//   return btoa(String.fromCharCode(...new Uint8Array(digest)))
+//     .replace(/\+/g, "-")
+//     .replace(/\//g, "_")
+//     .replace(/=+$/, "");
+// }
 
 /**
  * Generate and store code verifier and challenge
  */
-async function initializePKCE() {
-  const codeVerifier = generateCodeVerifier();
-  const codeChallenge = await generateCodeChallenge(codeVerifier);
+// async function initializePKCE() {
+//   const codeVerifier = generateCodeVerifier();
+//   const codeChallenge = await generateCodeChallenge(codeVerifier);
 
-  // Store the verifier in session storage to use during token exchange
-  // sessionStorage.setItem("code_verifier", codeVerifier);
+//   // Store the verifier in session storage to use during token exchange
+//   // sessionStorage.setItem("code_verifier", codeVerifier);
 
-  return codeChallenge;
-}
+//   return codeChallenge;
+// }
 
 /**
  * Configuration object to be passed to MSAL instance on creation.
