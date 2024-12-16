@@ -11,9 +11,9 @@ import { login } from "../../../assets/api/auth";
 import * as Yup from "yup";
 import "./index.scss";
 
-import { loginRequest } from "../../../msal-auth-config";
+// import { loginRequest } from "../../../msal-auth-config";
 
-import { useMsal } from "@azure/msal-react";
+// import { useMsal } from "@azure/msal-react";
 import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Login({}: any) {
@@ -38,7 +38,7 @@ export default function Login({}: any) {
     userContext.login(res?.data);
   }
 
-  const { instance } = useMsal();
+  // const { instance } = useMsal();
 
   // const activeAccount = instance.getActiveAccount();
 

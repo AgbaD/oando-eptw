@@ -1,28 +1,28 @@
 import { useEffect } from "preact/hooks";
 import Button from "../../ui/button";
 
-import useRequest from "../../../hooks/use-request";
+// import useRequest from "../../../hooks/use-request";
 import { toast } from "../../ui/toast";
-import { useUserContext } from "../../../context/user.context";
-import { socialLogin } from "../../../assets/api/auth";
+// import { useUserContext } from "../../../context/user.context";
+// import { socialLogin } from "../../../assets/api/auth";
 import "./index.scss";
 
 export default function SocialLogin({}: any) {
-  const userContext = useUserContext();
-  const { makeRequest } = useRequest(socialLogin);
+  // const userContext = useUserContext();
+  // const { makeRequest } = useRequest(socialLogin);
 
-  function getTokenFromURL(url) {
-    try {
-      const tokenMatch = url.match(/code=1\.([^&]*)/);
-      if (tokenMatch && tokenMatch[1]) {
-        return tokenMatch[1];
-      }
-      return null;
-    } catch (error) {
-      console.error("Error parsing URL:", error);
-      return null;
-    }
-  }
+  // function getTokenFromURL(url) {
+  //   try {
+  //     const tokenMatch = url.match(/code=1\.([^&]*)/);
+  //     if (tokenMatch && tokenMatch[1]) {
+  //       return tokenMatch[1];
+  //     }
+  //     return null;
+  //   } catch (error) {
+  //     console.error("Error parsing URL:", error);
+  //     return null;
+  //   }
+  // }
 
   useEffect(() => {
     async function socialLogin() {
