@@ -31,7 +31,9 @@ export default function SocialLogin({}: any) {
 
       // Retrieve the code verifier from sessionStorage
       const codeVerifier = sessionStorage.getItem("code_verifier");
-      const codeChallenge = sessionStorage.getItem("code_challenge");
+
+      const id = sessionStorage.getItem("id_token");
+      const response = sessionStorage.getItem("microsoft_response");
 
       if (!codeVerifier) {
         return toast({
@@ -40,8 +42,8 @@ export default function SocialLogin({}: any) {
         });
       }
 
-      console.log(codeVerifier, "code verifier");
-      console.log(codeChallenge, "code challenge");
+      console.log("this is the id token", id);
+      console.log("this is the response", response);
 
       if (authCode) {
         const tokenData = {
