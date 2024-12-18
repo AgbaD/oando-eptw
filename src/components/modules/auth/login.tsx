@@ -47,11 +47,11 @@ export default function Login({}: any) {
 
   async function handleRedirect() {
     try {
-      // const response: any = instance.loginRedirect({
-      //   ...loginRequest,
-      //   prompt: "create",
-      // });
-      const response: any = instance.loginPopup(loginRequest);
+      const response: any = instance.loginRedirect({
+        ...loginRequest,
+        prompt: "create",
+      });
+      // const response: any = instance.loginPopup(loginRequest);
       console.log("authentication successful", response);
 
       const id_token = response?.idToken;
