@@ -1,10 +1,8 @@
 import { render } from "preact";
 import App from "./app.tsx";
 
-import { msalConfig } from "./msal-auth-config.ts";
-import { PublicClientApplication, EventType } from "@azure/msal-browser";
-
-export const msalInstance = new PublicClientApplication(msalConfig);
+import { msalInstance } from "./msal-auth-config.ts";
+import { EventType } from "@azure/msal-browser";
 
 // Default to using the first account if no account is active on page load
 if (
@@ -23,6 +21,8 @@ msalInstance.addEventCallback((event) => {
   ) {
     const account = (event.payload as any).account;
     msalInstance.setActiveAccount(account);
+
+    console.log(account, "this is the account");
   }
 });
 

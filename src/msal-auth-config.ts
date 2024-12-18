@@ -1,47 +1,5 @@
-import { LogLevel } from "@azure/msal-browser";
+import { PublicClientApplication } from "@azure/msal-browser";
 
-/**
- * Generate a random code verifier
- */
-// function generateCodeVerifier() {
-//   const array = new Uint32Array(32);
-//   window.crypto.getRandomValues(array);
-//   return Array.from(array, (num) => num.toString(36))
-//     .join("")
-//     .slice(0, 128);
-// }
-
-/**
- * Generate a code challenge based on a code verifier
- * @param {string} codeVerifier
- * @returns {Promise<string>}
- */
-// async function generateCodeChallenge(codeVerifier) {
-//   const encoder = new TextEncoder();
-//   const data = encoder.encode(codeVerifier);
-//   const digest = await window.crypto.subtle.digest("SHA-256", data);
-//   return btoa(String.fromCharCode(...new Uint8Array(digest)))
-//     .replace(/\+/g, "-")
-//     .replace(/\//g, "_")
-//     .replace(/=+$/, "");
-// }
-
-/**
- * Generate and store code verifier and challenge
- */
-// async function initializePKCE() {
-//   const codeVerifier = generateCodeVerifier();
-//   const codeChallenge = await generateCodeChallenge(codeVerifier);
-
-//   // Store the verifier in session storage to use during token exchange
-//   // sessionStorage.setItem("code_verifier", codeVerifier);
-
-//   return codeChallenge;
-// }
-
-/**
- * Configuration object to be passed to MSAL instance on creation.
- */
 export const msalConfig = {
   auth: {
     clientId: "373d919d-2a08-46b9-ac26-2638978ec8ba",
@@ -55,50 +13,33 @@ export const msalConfig = {
     cacheLocation: "sessionStorage",
     storeAuthStateInCookie: false,
   },
-  system: {
-    loggerOptions: {
-      loggerCallback: (level, message, containsPii) => {
-        if (containsPii) {
-          return;
-        }
-        switch (level) {
-          case LogLevel.Error:
-            console.error(message);
-            return;
-          case LogLevel.Info:
-            console.info(message);
-            return;
-          case LogLevel.Verbose:
-            console.debug(message);
-            return;
-          case LogLevel.Warning:
-            console.warn(message);
-            return;
-          default:
-            return;
-        }
-      },
-    },
-  },
 };
 
 export const loginRequest = {
-  scopes: [
-    "user.read",
-    // , "openid", "email"
-  ],
-  // codeChallenge: "",
-  // codeChallengeMethod: "",
+  scopes: ["user.read"],
 };
 
-/**
- * Example usage: Before initiating login, generate the code challenge
- */
-// (async () => {
-//   const codeChallenge = await initializePKCE();
-//   console.log("Code Challenge:", codeChallenge);
+export const msalInstance = new PublicClientApplication(msalConfig);
 
-//   // Add the code challenge to your login request
-//   loginRequest.codeChallenge = codeChallenge;
-//   loginRequest.codeChallengeMethod = "S256"; // PKCE method
-// })();
+export const handleMicrosoftRedirect = async () => {
+  try {
+    const response = await msalInstance.handleRedirectPromise();
+    if (response) {
+      // Save the access token to session storage
+      sessionStorage.setItem("access_token", response.accessToken);
+      console.log(response, "this is the response");
+      return response.accessToken;
+    }
+  } catch (error) {
+    console.error("Error handling redirect:", error);
+  }
+  return null;
+};
+
+export const initializeMsal = async () => {
+  try {
+    await msalInstance.initialize();
+  } catch (error) {
+    console.error("Error initializing MSAL:", error);
+  }
+};

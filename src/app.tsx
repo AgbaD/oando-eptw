@@ -1,7 +1,7 @@
 import Router, { route } from "preact-router";
 import { useEffect } from "preact/hooks";
 import "./assets/styles/index.scss";
-import { msalInstance } from "./main.tsx";
+import { msalInstance } from "./msal-auth-config.ts";
 
 import Login from "./components/modules/auth/login";
 import ForgotPassword from "./components/modules/auth/forgot-password";
