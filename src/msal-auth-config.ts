@@ -83,7 +83,10 @@ export const msalConfig = {
 };
 
 export const loginRequest = {
-  scopes: ["user.read", "openid", "email"],
+  scopes: [
+    "user.read",
+    // , "openid", "email"
+  ],
   // codeChallenge: "",
   // codeChallengeMethod: "",
 };

@@ -32,8 +32,8 @@ export default function SocialLogin({}: any) {
       // Retrieve the code verifier from sessionStorage
       // const codeVerifier = sessionStorage.getItem("code_verifier");
 
-      const id = sessionStorage.getItem("id_token");
-      const response = sessionStorage.getItem("microsoft_response");
+      // const id = sessionStorage.getItem("id_token");
+      // const response = sessionStorage.getItem("microsoft_response");
 
       // if (!codeVerifier) {
       //   return toast({
@@ -42,42 +42,41 @@ export default function SocialLogin({}: any) {
       //   });
       // }
 
-      console.log("this is the id token", id);
-      console.log("this is the response", response);
+      // console.log("this is the id token", id);
+      // console.log("this is the response", response);
 
-      if (authCode) {
-        // const tokenData = {
-        //   client_id: "373d919d-2a08-46b9-ac26-2638978ec8ba",
-        //   scope: "openid profile email",
-        //   code: `${authCode}`,
-        //   redirect_uri: "https://oando-eptw.vercel.app/social-login",
-        //   grant_type: "authorization_code",
-        //   code_verifier: `${codeVerifier}`,
-        // };
+      // if (authCode) {
+      // const tokenData = {
+      //   client_id: "373d919d-2a08-46b9-ac26-2638978ec8ba",
+      //   scope: "openid profile email",
+      //   code: `${authCode}`,
+      //   redirect_uri: "https://oando-eptw.vercel.app/social-login",
+      //   grant_type: "authorization_code",
+      //   code_verifier: `${codeVerifier}`,
+      // };
 
-        // const response = await fetch(
-        //   `https://login.microsoftonline.com/a3329a53-02fd-4abb-94cd-6d1b954419f6/oauth2/v2.0/token`,
-        //   {
-        //     method: "POST",
-        //     headers: {
-        //       "Content-Type": "application/x-www-form-urlencoded",
-        //     },
-        //     body: new URLSearchParams(tokenData),
-        //   }
-        // );
+      // const response = await fetch(
+      //   `https://login.microsoftonline.com/a3329a53-02fd-4abb-94cd-6d1b954419f6/oauth2/v2.0/token`,
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/x-www-form-urlencoded",
+      //     },
+      //     body: new URLSearchParams(tokenData),
+      //   }
+      // );
 
-        // const tokenResponse = await response.json();
+      // const tokenResponse = await response.json();
 
-        // console.log(tokenResponse);
+      // console.log(tokenResponse);
 
-        const [res, error] = await makeRequest({
-          token: authCode,
-          // codeVerifier: codeVerifier,
-        });
-        if (error) return toast({ message: error?.message, variant: "error" });
-        userContext.login(res?.data);
-      }
+      const [res, error] = await makeRequest({
+        token: authCode,
+      });
+      if (error) return toast({ message: error?.message, variant: "error" });
+      userContext.login(res?.data);
     }
+    // }
 
     socialLogin();
   }, []);

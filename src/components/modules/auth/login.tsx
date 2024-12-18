@@ -46,23 +46,22 @@ export default function Login({}: any) {
   // const activeAccount = instance.getActiveAccount();
 
   async function handleRedirect() {
-    try {
-      const response: any = instance.loginRedirect({
-        ...loginRequest,
-        prompt: "create",
-      });
-      // const response: any = instance.loginPopup(loginRequest);
-      console.log("authentication successful", response);
+    const response: any = instance.loginRedirect({
+      ...loginRequest,
+      prompt: "create",
+    });
+    //   // const response: any = instance.loginPopup(loginRequest);
+    console.log("authentication ", response);
 
-      const id_token = response?.idToken;
-      const access_token = response?.accessToken;
+    //   const id_token = response?.idToken;
+    //   const access_token = response?.accessToken;
 
-      sessionStorage.setItem("access_token", access_token);
-      sessionStorage.setItem("id_token", id_token);
-      sessionStorage.setItem("microsoft_response", response);
-    } catch (error) {
-      console.error("Error during authentication:", error);
-    }
+    //   sessionStorage.setItem("access_token", access_token);
+    //   sessionStorage.setItem("id_token", id_token);
+    //   sessionStorage.setItem("microsoft_response", response);
+    // } catch (error) {
+    //   console.error("Error during authentication:", error);
+    // }
   }
 
   const [isCaptchaSuccessful, setIsCaptchaSuccess] = useState(false);
