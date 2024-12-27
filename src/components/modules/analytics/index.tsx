@@ -302,6 +302,8 @@ function generateReport(data) {
   const currentMonth = String(now.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
   const currentMonthYear = `${currentYear}-${currentMonth}`;
 
+  console.log(currentMonthYear);
+
   let report = `### Monthly Permit Report for ${now.toLocaleString("default", {
     month: "long",
   })} ${currentYear}\n\n`;
