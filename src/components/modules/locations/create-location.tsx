@@ -35,11 +35,16 @@ export default function CreateLocation({}: any) {
       });
     }
 
+    toast({
+      variant: "success",
+      message: "Location created successfully",
+    });
+
     route("/locations");
   }
 
   const handleLocationChange = (value) => {
-    setFieldValue("locationArea", value);
+    setFieldValue("locationArea", value.trim());
   };
 
   return (
@@ -77,10 +82,14 @@ export default function CreateLocation({}: any) {
                 {...getFieldProps(`locationArea`)}
               />
             </div>
+            <br />
+            <br />
+            <br />
 
             <Button variant="primary" {...{ isLoading }}>
               Create Location Area
             </Button>
+            <br />
           </form>
         </div>
       </div>
@@ -90,5 +99,8 @@ export default function CreateLocation({}: any) {
 
 const validationSchema = Yup.object({
   site: Yup.string().required("Site is required"),
-  locationArea: Yup.string().required("Location area is required"),
+  locationArea: Yup.string()
+    .trim()
+    .required("Location area is required")
+    .min(2, "Please enter a valid location area"),
 });

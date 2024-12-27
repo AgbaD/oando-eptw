@@ -21,6 +21,7 @@ import { getAllPermits } from "../../../../assets/api/user";
 import CountdownTimer from "./countdown-timer";
 import { usePermitDetails } from "../../../../context/permit-details.context";
 import { createRequest } from "../../../../assets/api";
+import { convertSnakeCaseToTitleCase } from "../../../../assets/utils";
 
 export default function Monitoring({}: any) {
   const [selectedStatus, setSelectedStatus] = useState("All Status");
@@ -150,7 +151,9 @@ export default function Monitoring({}: any) {
                 .map((data) => (
                   <TableRow key={data.id}>
                     <TableCell>{data.publicId}</TableCell>
-                    <TableCell>{data.type}</TableCell>
+                    <TableCell>
+                      {convertSnakeCaseToTitleCase(data.type)}
+                    </TableCell>
                     <TableCell>
                       {truncateText(data.workDescription, 45)}
                     </TableCell>
@@ -190,7 +193,9 @@ export default function Monitoring({}: any) {
                     >
                       <div className="location-flex">
                         <p>{dataItem.publicId}</p>
-                        <h6 className={"gray"}>{dataItem.type}</h6>
+                        <h6 className={"gray"}>
+                          {convertSnakeCaseToTitleCase(dataItem.type)}
+                        </h6>
                       </div>
                       <p>{truncateText(dataItem.workDescription, 45)}</p>
                       <div className="location-flex">

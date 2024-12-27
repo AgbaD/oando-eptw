@@ -93,7 +93,11 @@ export default function Analytics({}: any) {
 
       <div className="app-section">
         <div className="app-analytics__header">
-          <Button dimension="md" variant="primary">
+          <Button
+            dimension="md"
+            variant="primary"
+            onClick={() => generateReport(response)}
+          >
             <Icon name="report" />
             Generate Report
           </Button>
@@ -160,12 +164,12 @@ export default function Analytics({}: any) {
               <div className="app-indicator">
                 <p>
                   <span style={{ background: "#008d4e" }}></span>
-                  Approval
+                  Issued
                 </p>
 
                 <p>
-                  <span style={{ background: "#F1511B" }}></span>
-                  Rejected
+                  <span style={{ background: "#E86E18" }}></span>
+                  Closed
                 </p>
               </div>
             </div>
@@ -200,17 +204,16 @@ export default function Analytics({}: any) {
                   {
                     labels:
                       getApprovalsData(
-                        response?.data?.permitApprovalGraph
-                          ?.groupedRejectedPermits
+                        response?.data?.permitChart?.closedPermitsGroupedByMonth
                       ).labels ?? [],
                     datasets: response
                       ? [
                           {
-                            label: "Approved",
+                            label: "Issued",
                             data:
                               getApprovalsData(
-                                response?.data?.permitApprovalGraph
-                                  ?.groupedApprovedPermits
+                                response?.data?.permitChart
+                                  ?.issuedPermitsGroupedByMonth
                               ).data ?? [],
                             backgroundColor: "#008D4E",
                             borderRadius: 20,
@@ -219,16 +222,16 @@ export default function Analytics({}: any) {
                             borderWidth: 2,
                           },
                           {
-                            label: "Rejected",
+                            label: "Closed",
                             data:
                               getApprovalsData(
-                                response?.data?.permitApprovalGraph
-                                  ?.groupedRejectedPermits
+                                response?.data?.permitChart
+                                  ?.closedPermitsGroupedByMonth
                               ).data ?? [],
-                            backgroundColor: "#F1511B",
+                            backgroundColor: "#E86E18",
                             borderRadius: 20,
                             barThickness: 12,
-                            borderColor: "rgba(0,0,0,0)",
+                            borderColor: "rgba(232, 110, 24, 1)",
                             borderWidth: 2,
                           },
                         ]
@@ -278,4 +281,89 @@ function getApprovalsData(data) {
     labels: Object.keys(data),
     data: Object.values(data),
   };
+}
+
+function generateReport(data) {
+  console.log("oga please");
+  if (!data.success || data.statusCode !== 201) {
+    return "Failed to retrieve data for the report.";
+  }
+
+  const {
+    allPermitCount,
+    closedPermitCount,
+    issuedPermitCount,
+    permitChart: { closedPermitsGroupedByMonth, issuedPermitsGroupedByMonth },
+  } = data.data;
+
+  // Get the current year and month
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = String(now.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
+  const currentMonthYear = `${currentYear}-${currentMonth}`;
+
+  let report = `### Monthly Permit Report for ${now.toLocaleString("default", {
+    month: "long",
+  })} ${currentYear}\n\n`;
+
+  report += `#### Summary:\n`;
+  report += `- Total Permits: ${allPermitCount}\n`;
+  report += `- Issued Permits: ${issuedPermitCount}\n`;
+  report += `- Closed Permits: ${closedPermitCount}\n\n`;
+
+  report += `---\n\n#### **Details of Issued Permits (December 2024):**\n`;
+  if (issuedPermitsGroupedByMonth["2024-12"]) {
+    issuedPermitsGroupedByMonth["2024-12"].forEach((permit, index) => {
+      report += `${index + 1}. **Permit ID:** ${permit.publicId}\n`;
+      report += `   - **Type:** ${permit.type}\n`;
+      report += `   - **Work Area:** ${permit.workArea}\n`;
+      report += `   - **Performing Person in Charge:** ${permit.performingPersonInCharge}\n`;
+      report += `   - **Description:** ${permit.workDescription}\n`;
+      report += `   - **From Date:** ${permit.fromDate}\n`;
+      report += `   - **To Date:** ${permit.toDate}\n`;
+      report += `   - **Status:** ${permit.status}\n`;
+      report += `   - **Date Approved:** ${new Date(
+        permit.dateApproved
+      ).toLocaleDateString()}\n`;
+      report += `   - **Current Authority:** ${permit.currentAuthority}\n\n`;
+    });
+  } else {
+    report += "_No issued permits for this period._\n\n";
+  }
+
+  report += `---\n\n#### **Details of Closed Permits (December 2024):**\n`;
+  if (closedPermitsGroupedByMonth["2024-12"]) {
+    closedPermitsGroupedByMonth["2024-12"].forEach((permit, index) => {
+      report += `${index + 1}. **Permit ID:** ${permit.publicId}\n`;
+      report += `   - **Type:** ${permit.type}\n`;
+      report += `   - **Work Area:** ${permit.workArea}\n`;
+      report += `   - **Performing Person in Charge:** ${permit.performingPersonInCharge}\n`;
+      report += `   - **Description:** ${permit.workDescription}\n`;
+      report += `   - **From Date:** ${permit.fromDate}\n`;
+      report += `   - **To Date:** ${permit.toDate}\n`;
+      report += `   - **Status:** ${permit.status}\n`;
+      report += `   - **Date Closed:** ${
+        permit.dateClosed
+          ? new Date(permit.dateClosed).toLocaleDateString()
+          : "N/A"
+      }\n`;
+      report += `   - **Current Authority:** ${permit.currentAuthority}\n\n`;
+    });
+  } else {
+    report += "_No closed permits for this period._\n\n";
+  }
+
+  // Create a downloadable document
+  const blob = new Blob([report], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `Monthly_Permit_Report_${new Date()
+    .toISOString()
+    .slice(0, 10)}.pdf`;
+
+  // Append the link to the body (required for Firefox) and trigger the download
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }

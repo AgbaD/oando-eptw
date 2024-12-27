@@ -316,7 +316,7 @@ export default function RenderButtonsOnPath(path: string) {
           <PopupModal
             icon={<img src="/svgs/delete_img.png" />} // Pass your custom icon here
             title="Delete Permit"
-            message="Are you sure you want to delete this permit? This action cannot be undone."
+            message={`Are you sure you want to delete this permit (ID: ${permit?.publicId})? This action cannot be undone.`}
             onClose={() => setDeletePopUp(false)}
             primaryButton={{
               label: "Delete",

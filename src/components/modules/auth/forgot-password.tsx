@@ -7,7 +7,7 @@ import useForm from "../../../hooks/use-form";
 import useRequest from "../../../hooks/use-request";
 import { toast } from "../../ui/toast";
 import { forgotPassword } from "../../../assets/api/auth";
-import { route } from "preact-router";
+import { Link, route } from "preact-router";
 
 export default function ForgotPassword({}: any) {
   const { makeRequest, isLoading } = useRequest(forgotPassword);
@@ -41,9 +41,13 @@ export default function ForgotPassword({}: any) {
 
           <Input
             placeholder="example@oando.com"
-            label="Email address"
+            label="Email Address"
             {...getFieldProps("email")}
           />
+
+          <Link className="app-link" href="/login">
+            Back to login?
+          </Link>
 
           <Button {...{ isLoading }} variant="primary" className="last-btn">
             Recover Password
@@ -68,5 +72,7 @@ export default function ForgotPassword({}: any) {
 }
 
 const validationSchema = Yup.object({
-  email: Yup.string().required("Email is required"),
+  email: Yup.string()
+    .email("Enter a valid email")
+    .required("Email is required"),
 });

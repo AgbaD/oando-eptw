@@ -12,6 +12,8 @@ import { createRequest } from "../../../../assets/api";
 import dayjs from "dayjs";
 import PopupModal from "../../../ui/popup";
 
+import { toast } from "../../../ui/toast";
+
 interface CompanyDetailsProps {
   id: number;
   name: string;
@@ -98,10 +100,21 @@ export default function CompanyDetails({}: any) {
   const handleBlockRole = async () => {
     const id = valueID;
 
-    const response = await createRequest(`profile/company/block/${id}`, "PUT");
-    console.log(response);
+    const response = await createRequest(`/profile/company/block/${id}`, "PUT");
+    if (response[0]?.statusCode === 200) {
+      setModalOpen(false);
 
-    setModalOpen(false);
+      return toast({
+        variant: "success",
+        message: response[0]?.message ?? "Company blocked successfully.",
+      });
+    } else {
+      return toast({
+        variant: "error",
+        message:
+          response[0]?.message ?? "Company block failed, please try again.",
+      });
+    }
   };
 
   return (
@@ -164,7 +177,7 @@ export default function CompanyDetails({}: any) {
             message="Are you sure you want to block this company? This action cannot be undone."
             onClose={() => setModalOpen(false)}
             primaryButton={{
-              label: "Delete",
+              label: "Block",
               onClick: handleBlockRole,
               color: "#D30021",
             }}

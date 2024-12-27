@@ -61,7 +61,9 @@ export default function VerificationClosure() {
           <Button
             variant="secondary"
             type="button"
-            onClick={() => send("go_back")}
+            onClick={() => {
+              window.location.href = "/permit-activities";
+            }}
           >
             Back
           </Button>

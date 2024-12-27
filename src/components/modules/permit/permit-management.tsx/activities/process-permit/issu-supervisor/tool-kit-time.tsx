@@ -5,9 +5,43 @@ import Input from "../../../../../../ui/form/input";
 import Button from "../../../../../../ui/button";
 
 import { useIssuingSupervisorActivityContext } from "../../../../../../../context/issuing-supervisor-context";
+import { useEffect, useState } from "preact/hooks";
+
+import { createRequest } from "../../../../../../../assets/api";
+import { useIDContext } from "../../../../../../../context/id.context";
+import dayjs from "dayjs";
 
 export default function ToolKitTime() {
   const { state, send } = useIssuingSupervisorActivityContext();
+  const { valueID } = useIDContext();
+  const id = valueID;
+
+  const [permitDetails, setPermitDetails] = useState<any>({
+    from_date: "",
+    from_time: "",
+    to_date: "",
+    to_time: "",
+  });
+
+  function getCurrentTimeIn12HrFormat() {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = now.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12; // Convert to 12-hour format
+    const minutesStr = minutes < 10 ? "0" + minutes : minutes;
+    return `${hours}:${minutesStr} ${ampm}`;
+  }
+
+  useEffect(() => {
+    async function getPermitDetails() {
+      const permitResponse = await createRequest(`/permit/${id}`, "GET");
+      const permitData = permitResponse[0].data;
+      setPermitDetails(permitData);
+    }
+
+    getPermitDetails();
+  }, [valueID]);
 
   const { getFieldProps, handleSubmit } = useForm({
     validationSchema,
@@ -45,7 +79,12 @@ export default function ToolKitTime() {
       <div className="">
         <div className="get-current-date">
           <p>Current Permit Start - End Date & Time:</p>
-          <span>17 / 04 / 2022 08:00 AM - 17 / 04 / 2022 08:00 AM</span>
+          <span>
+            {dayjs(permitDetails.from_date).format("DD/MM/YYYY")} :{" "}
+            {dayjs(permitDetails.from_time).format("hh:mm A")} -{" "}
+            {dayjs(permitDetails.to_date).format("DD/MM/YYYY")} :{" "}
+            {dayjs(permitDetails.to_time).format("hh:mm A")}{" "}
+          </span>
         </div>
       </div>
 
@@ -53,10 +92,14 @@ export default function ToolKitTime() {
         <div className="">
           <div className="">
             <h4>Edit Start Time</h4>
-            <p class="edit-start-time">
-              The time your are selecting must be more than the current time:
-              <span>11:54:00PM</span>
-            </p>
+            <div class="edit-start-time">
+              <p>
+                {" "}
+                The time your are selecting must be more than the current time:
+              </p>
+              <br />
+              <span>{getCurrentTimeIn12HrFormat()}</span>
+            </div>
           </div>
           <br />
           <Input

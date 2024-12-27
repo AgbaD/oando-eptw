@@ -280,6 +280,10 @@ function getValidationSchema(isDraft) {
       .typeError("Location is required")
       .required("Location is required"),
     work_area: Yup.string().required("Work area is required"),
+    equipment_to_be_worked: Yup.string().required("Equipment is required"),
+    environmental_issues: Yup.string().required(
+      "Environmental issue is required"
+    ),
     from_date: fromDateTimeValidation,
     to_date: toDateTimeValidation,
     from_time: dateTimeValidation,

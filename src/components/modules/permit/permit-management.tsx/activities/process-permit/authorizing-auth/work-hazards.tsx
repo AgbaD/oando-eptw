@@ -197,7 +197,7 @@ export default function AuthWorkHazards() {
           <Button
             variant="secondary"
             type="button"
-            onClick={() => send("go_back")}
+            onClick={() => (window.location.href = "/permit-workflows")}
           >
             Previous
           </Button>

@@ -92,7 +92,7 @@ export default function SendToAuthority({ setModalOpen }: ViewProps) {
     if (err) {
       toast({
         variant: "error",
-        message: err?.message || "Failed to update role, please try again",
+        message: err?.message || "Failed to send back permit, please try again",
       });
       return;
     } else {
@@ -114,17 +114,20 @@ export default function SendToAuthority({ setModalOpen }: ViewProps) {
             </button>
           </div>
           <br />
+          <br />
 
           <div className="popup-content">
             <div className="">
               <form onSubmit={handleSubmit}>
-                <Select
-                  label="Authority"
-                  placeholder="--select authority--"
-                  options={authorityOptions}
-                  {...getFieldProps("authority")}
-                />
-                <br />
+                <div className="">
+                  <Select
+                    label="Authority"
+                    placeholder="--select authority--"
+                    options={authorityOptions}
+                    {...getFieldProps("authority")}
+                  />
+                  <br />
+                </div>
 
                 <Textarea
                   label="Reason"
@@ -144,4 +147,10 @@ export default function SendToAuthority({ setModalOpen }: ViewProps) {
   );
 }
 
-const validationSchema = Yup.object({});
+const validationSchema = Yup.object({
+  authority: Yup.string().required("Please select a valid authority").trim(),
+  reason: Yup.string()
+    .required("Reason for sending back permit is required")
+    .trim()
+    .min(2, "Please enter a valid reason"),
+});

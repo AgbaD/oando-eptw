@@ -20,6 +20,7 @@ import { createRequest } from "../../../assets/api";
 import PopupModal from "../../ui/popup";
 
 import { toast } from "../../ui/toast";
+import { Dropdown, DropdownContent, DropdownTrigger } from "../../ui/dropdown";
 
 export default function Locations({}: any) {
   const [selectedLocation, viewLocation] = useState<any>();
@@ -29,6 +30,10 @@ export default function Locations({}: any) {
   const { setID, valueID } = useIDContext();
 
   const [selectedSubLocation, setSelectedSubLocation] = useState<any>(null);
+
+  const [locationArea, setLocationArea] = useState(
+    "--select a location area --"
+  );
 
   // Enhanced toggle function to reset the sub-location when the modal closes
   const toggle = (modalName) => {
@@ -76,6 +81,7 @@ export default function Locations({}: any) {
   };
 
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const handleDeleteRole = async () => {
     const id = valueID;
@@ -85,7 +91,8 @@ export default function Locations({}: any) {
 
     toggle("role_details");
     setModalOpen(false);
-    if (response[0]?.status === 200) {
+    if (response[0]?.statusCode === 200) {
+      window.location.reload();
       return toast({
         variant: "success",
         message: response[0]?.message ?? "Location deleted succesfully.",
@@ -99,8 +106,13 @@ export default function Locations({}: any) {
     }
   };
 
-  const startDelete = (item) => {
-    setID(item.id);
+  const showDeletePopup = (data: any) => {
+    setID(data.id);
+    setLocationArea(data.locationArea);
+  };
+
+  const renderDelete = () => {
+    setDropdownOpen(false);
     setModalOpen(true);
   };
 
@@ -305,7 +317,7 @@ export default function Locations({}: any) {
                 <Icon name="edit" />
                 Edit Location
               </button>
-              <button
+              {/* <button
                 className="app-modal__btn--red"
                 onClick={() => {
                   startDelete(selectedSubLocation);
@@ -313,7 +325,7 @@ export default function Locations({}: any) {
               >
                 <Icon name="delete" />
                 Delete
-              </button>
+              </button> */}
             </div>
           ) : (
             <div className="app-modal__double-footer">
@@ -331,15 +343,92 @@ export default function Locations({}: any) {
                 <Icon name="plus" />
                 Add Work Area
               </button>
+              <button
+                className="app-modal__btn--yellow"
+                onClick={() => {
+                  handleEditLocation(selectedLocation);
+                }}
+              >
+                <Icon name="plus" />
+                Edit Loc. Area
+              </button>
+              <button
+                className="app-modal__btn--red"
+                onClick={() => {
+                  setDropdownOpen(true);
+                }}
+              >
+                <Icon name="plus" />
+                Delete Loc. Area
+              </button>
             </div>
           )}
+
+          <div className="">
+            {isDropdownOpen && (
+              <div className="popup-overlay">
+                <div className="popup-modal">
+                  <div className="">
+                    <div className="flex-justify-between">
+                      <h4>Delete Location Area</h4>
+                      <button
+                        className="drop-close"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        &times;
+                      </button>
+                    </div>
+                    <br />
+                    <p>Select the location area you want to delete below</p>
+                    <br />
+                    <Dropdown className="base-dropdown__dropdown-wrapper">
+                      <DropdownTrigger>{locationArea}</DropdownTrigger>
+                      <DropdownContent>
+                        {selectedLocation?.data.map((data) => (
+                          <div
+                            key={data.id}
+                            className={"base-dropdown__option"}
+                            onClick={() => showDeletePopup(data)}
+                          >
+                            {data.locationArea}
+                          </div>
+                        ))}
+                      </DropdownContent>
+                    </Dropdown>
+                    <br />
+                    <div className="button-group">
+                      <button
+                        onClick={() => setModalOpen(false)}
+                        style={{
+                          backgroundColor: "#E86E18",
+                          color: "#fff",
+                        }}
+                      >
+                        Cancel
+                      </button>
+
+                      <button
+                        onClick={renderDelete}
+                        style={{
+                          backgroundColor: "#D30021",
+                          color: "#fff",
+                        }}
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className="">
             {isModalOpen && (
               <PopupModal
                 icon={<img src="/svgs/delete_img.png" />} // Pass your custom icon here
-                title="Delete Role"
-                message="Are you sure you want to delete this role? This action cannot be undone."
+                title="Delete Location"
+                message="Are you sure you want to delete this location? This action cannot be undone."
                 onClose={() => setModalOpen(false)}
                 primaryButton={{
                   label: "Delete",

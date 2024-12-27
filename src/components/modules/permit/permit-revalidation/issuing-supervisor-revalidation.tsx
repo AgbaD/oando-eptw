@@ -62,7 +62,11 @@ function Module() {
           {!state.matches("submit") && (
             <>
               <div className="app-register__content__header app-create-permit__header">
-                <h3>{stateMeta?.title}</h3>
+                <h3>
+                  {stateMeta?.title
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, (l) => l.toUpperCase())}
+                </h3>
                 <p>
                   Step {currentIdx} of {STEPS.length}
                 </p>

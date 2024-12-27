@@ -14,7 +14,7 @@ export default function Permits({ closedPermits }) {
       <div className="app-overview__permits-header">
         <h4>Recently Closed Permits</h4>
 
-        <button onClick={() => route("/permit-management")}>
+        <button onClick={() => route("/permit-storage")}>
           View all
           <Icon name="diagonal-arrow" />
         </button>

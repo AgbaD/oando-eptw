@@ -25,6 +25,7 @@ export default function SelectPermitRole({}: any) {
   const { profile } = useUserContext();
   const [userRoles, setUserRoles] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState({});
+  const [permissions, sertPermissions] = useState([]);
 
   useEffect(() => {
     async function getUserProfile() {
@@ -33,7 +34,8 @@ export default function SelectPermitRole({}: any) {
         "GET"
       );
       console.log(userResponse);
-      setUserRoles(userResponse[0].data.role.authorities);
+      setUserRoles(userResponse[0]?.data?.role?.authorities);
+      sertPermissions(userResponse[0]?.data?.role?.permissions);
     }
 
     getUserProfile();
@@ -79,7 +81,11 @@ export default function SelectPermitRole({}: any) {
           variant: "success",
           message: "Permit roles updated successfully.",
         });
-        route("/");
+        if (permissions?.includes("FULL_ACCESS")) {
+          route("/");
+        } else {
+          route("/permit-workflows");
+        }
       } else if (response?.[1]?.success === false) {
         toast({
           variant: "error",
@@ -99,7 +105,11 @@ export default function SelectPermitRole({}: any) {
     <div className="app-create-permit app-register">
       <div className="app-register__nav-wrapper app-container-wrapper">
         <div className="app-container app-register__nav">
-          <Link href="/">
+          <Link
+            href={`${
+              permissions?.includes("FULL_ACCESS") ? "/" : "/permit-workflows"
+            }`}
+          >
             <img
               src="/svgs/logo.eptw.svg"
               alt="eptw_logo"
@@ -262,6 +272,20 @@ export default function SelectPermitRole({}: any) {
               <Button variant="primary" onClick={onSubmit}>
                 Submit
                 <Icon name="arrow-right" />
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() =>
+                  route(
+                    `${
+                      permissions?.includes("FULL_ACCESS")
+                        ? "/"
+                        : "/permit-workflows"
+                    }`
+                  )
+                }
+              >
+                Home
               </Button>
             </div>
           )}

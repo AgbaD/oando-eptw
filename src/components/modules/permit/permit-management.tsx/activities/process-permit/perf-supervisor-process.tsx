@@ -63,15 +63,19 @@ function Module() {
           {!state.matches("submit") && (
             <>
               <div className="app-register__content__header app-create-permit__header">
-                <h3>{stateMeta?.title}</h3>
+                <h3>
+                  {stateMeta?.title
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, (l) => l.toUpperCase())}
+                </h3>
                 <p>
-                  Step {currentIdx} of {STEPS.length}
+                  Step {currentIdx} of {STEPS.length - 1}
                 </p>
               </div>
               <div className="app-register__progress-bar">
                 <span
                   style={{
-                    width: `${(currentIdx / STEPS.length) * 100}%`,
+                    width: `${(currentIdx / STEPS.length - 1) * 100}%`,
                   }}
                 ></span>
               </div>

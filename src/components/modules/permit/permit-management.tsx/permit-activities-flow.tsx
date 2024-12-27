@@ -23,6 +23,7 @@ import useRequest from "../../../../hooks/use-request";
 import { route } from "preact-router";
 import { getAllPermits } from "../../../../assets/api/user";
 import { useUserContext } from "../../../../context/user.context";
+import { convertSnakeCaseToTitleCase } from "../../../../assets/utils";
 
 export default function ActivitiesFlow({}: any) {
   const [selectedWorkType, setSelectedWorkType] = useState("All Work Types");
@@ -159,7 +160,9 @@ export default function ActivitiesFlow({}: any) {
                 .map((data) => (
                   <TableRow key={data.id}>
                     <TableCell>{data.publicId}</TableCell>
-                    <TableCell>{data.type}</TableCell>
+                    <TableCell>
+                      {convertSnakeCaseToTitleCase(data.type)}
+                    </TableCell>
 
                     <TableCell>
                       {truncateText(data.workDescription, 45)}
@@ -213,7 +216,9 @@ export default function ActivitiesFlow({}: any) {
                       onClick={() => handleItemClick(dataItem)}
                     >
                       <p>{dataItem.publicId}</p>
-                      <h6 className={"gray"}>{dataItem.type}</h6>
+                      <h6 className={"gray"}>
+                        {convertSnakeCaseToTitleCase(dataItem.type)}
+                      </h6>
                     </div>
                     <p>{truncateText(dataItem.workDescription, 45)}</p>
                     <div className="location-flex">

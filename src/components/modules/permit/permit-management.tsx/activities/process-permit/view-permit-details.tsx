@@ -59,14 +59,16 @@ export default function ViewPermitDetails({ setModalOpen }: Props) {
   return (
     <div className="popup-overlay">
       <div className="popup-modal">
-        <button className="close-button" onClick={setModalOpen}>
-          &times;
-        </button>
+        <div className="flex-between">
+          <h3 className="float-left">Permit Details</h3>
+
+          <button className="close-button" onClick={setModalOpen}>
+            &times;
+          </button>
+        </div>
 
         <div className="popup-content">
-          <div className="icon-container">
-            <p>Permit Details</p>
-          </div>
+          <br />
           <div className="app-section__lg-table popup-lg-table">
             <Table>
               <TableHead>

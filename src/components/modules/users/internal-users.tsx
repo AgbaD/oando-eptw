@@ -108,7 +108,9 @@ export default function InternalUsers() {
       selectedLocation === "All Locations" ||
       user?.location?.site === selectedLocation;
     const statusMatch =
-      selectedStatus === "All Status" || user.isActive === selectedStatus;
+      selectedStatus === "All Status" ||
+      (selectedStatus === "Active" && user.isActive) ||
+      (selectedStatus === "Inactive" && !user.isActive);
 
     return locationMatch && statusMatch && matchesSearch;
   });

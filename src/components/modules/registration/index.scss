@@ -215,6 +215,16 @@
         display: block;
         row-gap: 10px;
       }
+
+      &-footer {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+
+        > :first-child {
+          grid-column: span 2;
+        }
+      }
     }
   }
 }

@@ -122,8 +122,15 @@ export default function CreateCompany({}: any) {
 }
 
 const validationSchema = Yup.object({
-  companyName: Yup.string().required("Company name is required"),
-  contractID: Yup.string().required("Contract ID is required"),
+  companyName: Yup.string()
+    .required("Company name is required")
+    .trim()
+    .min(2, "Please enter a valid company name"),
+  contractID: Yup.string()
+    .required("Contract ID is required")
+    .trim()
+    .min(4, "Please enter a valid contract ID"),
+
   locationId: Yup.number()
     .required("Location is required")
     .min(1, "Please select a valid location"),

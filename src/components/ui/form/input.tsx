@@ -5,14 +5,14 @@ interface InputProps extends h.JSX.HTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   isTouched?: boolean;
-  deleteButton?: JSX.Element;
+  button?: JSX.Element;
 }
 
 export default function Input({
   label = "",
   error,
   isTouched,
-  deleteButton,
+  button,
   ...props
 }: InputProps) {
   const showError = isTouched ? Boolean(error) : false;
@@ -28,7 +28,7 @@ export default function Input({
           data-has-value={Boolean(props.value)}
           {...props}
         />
-        {deleteButton && <div className="delete-button">{deleteButton}</div>}
+        {button && <div className="delete-button">{button}</div>}
       </div>
       {showError && (
         <p className="base-input__error">

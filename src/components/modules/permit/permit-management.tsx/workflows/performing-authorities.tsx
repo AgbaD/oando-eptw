@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import Section from "../../../../ui/sections";
 
 import RenderButtonsOnPath from "../../render-buttons-by-path";
+import { convertSnakeCaseToTitleCase } from "../../../../../assets/utils";
 
 export default function PerformingAuthorities({ response }: any) {
   const details = response;
@@ -20,6 +21,9 @@ export default function PerformingAuthorities({ response }: any) {
 
   const documentObject = documentsArray?.document || {};
 
+  const type = convertSnakeCaseToTitleCase(details?.type ?? "");
+  const status = convertSnakeCaseToTitleCase(details?.status);
+
   const items = [
     {
       section: "A",
@@ -28,7 +32,7 @@ export default function PerformingAuthorities({ response }: any) {
         {
           id: 1,
           title: "Permit Type",
-          info: details?.type || "",
+          info: type || "",
         },
         {
           id: 2,
@@ -38,7 +42,7 @@ export default function PerformingAuthorities({ response }: any) {
         {
           id: 3,
           title: "Status / Authority",
-          info: `${details?.status} / ${details?.currentAuthority}` || "",
+          info: `${status} / ${details?.currentAuthority}` || "",
         },
       ],
     },

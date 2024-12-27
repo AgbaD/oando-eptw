@@ -16,9 +16,13 @@
   background: white;
   border-radius: 8px;
   width: fit-content;
-  padding: 20px;
+  padding: 50px;
   position: relative;
   text-align: center;
+
+  p {
+    width: 348px;
+  }
 }
 
 .close-button {
@@ -27,18 +31,46 @@
   right: 10px;
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   cursor: pointer;
+  // width: 218px;
+}
+
+.float-left {
+  float: left;
 }
 
 .icon-container {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image {
+  width: 100px;
+  height: 100px;
+}
+
+h2 {
+  color: #231f20;
+  font-weight: 700;
+  font-size: 24px;
   margin-bottom: 10px;
+}
+
+.message {
+  color: #1c1c1c;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 28px;
 }
 
 .button-group {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  align-items: center;
+  margin-top: 25px;
 }
 
 .button-group button {
@@ -47,6 +79,7 @@
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
+  width: 50%;
 }
 
 .button-group button:first-child {
@@ -60,6 +93,19 @@
 .popup-lg-table {
   text-align: left;
   width: 600px;
+}
+
+.flex-justify-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.drop-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 768px) {

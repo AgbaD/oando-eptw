@@ -21,11 +21,14 @@ import PopupModal from "../../ui/popup";
 import { createRequest } from "../../../assets/api";
 import { useIDContext } from "../../../context/id.context";
 
+import { toast } from "../../ui/toast";
+
 const ExternalUsers = ({ company = [] }) => {
   const [selectedUser, viewUser] = useState(null);
   const { toggle, modals } = useModal({ user_details: false });
   const [selectedStatus, setSelectedStatus] = useState("All Status");
   const status = ["All Status", "Active", "Inactive"];
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { setID, valueID } = useIDContext();
 
@@ -56,10 +59,19 @@ const ExternalUsers = ({ company = [] }) => {
     const id = valueID;
 
     const response = await createRequest(`/profile/${id}`, "DELETE");
-    console.log(response);
-
-    toggle("user_details");
-    setModalOpen(false);
+    if (response[0]?.statusCode === 200) {
+      toggle("user_details");
+      setModalOpen(false);
+      return toast({
+        variant: "success",
+        message: "User deleted successfully",
+      });
+    } else {
+      return toast({
+        variant: "error",
+        message: "User delete failed, please try again",
+      });
+    }
   };
 
   const handleEdit = (item) => {
@@ -67,10 +79,28 @@ const ExternalUsers = ({ company = [] }) => {
     route(`/users/edit`);
   };
 
+  // Filter and search logic
+  const filteredInfo = filteredData.filter((user) => {
+    const name = user.fullname.toLowerCase();
+    const email = user.email.toLowerCase();
+
+    const matchesSearch =
+      name.includes(searchQuery.toLowerCase()) ||
+      email.includes(searchQuery.toLowerCase()) ||
+      searchQuery === "";
+
+    const statusMatch =
+      selectedStatus === "All Status" ||
+      (selectedStatus === "Active" && user.isActive) ||
+      (selectedStatus === "Inactive" && !user.isActive);
+
+    return matchesSearch && statusMatch;
+  });
+
   return (
     <div>
       <div className="app-section__flex">
-        <Search placeholder="Search by user name" onSearch={""} />
+        <Search placeholder="Search by user name" onSearch={setSearchQuery} />
         <br />
 
         <div className="app-section__filters">
@@ -106,7 +136,7 @@ const ExternalUsers = ({ company = [] }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredData.map((data) => (
+            {filteredInfo.map((data) => (
               <TableRow key={data.id}>
                 <TableCell>{data.fullname}</TableCell>
                 <TableCell>{data.email}</TableCell>
@@ -134,7 +164,7 @@ const ExternalUsers = ({ company = [] }) => {
       </div>
 
       <ReusableMobileTable
-        data={filteredData}
+        data={filteredInfo}
         onItemClick={handleItemClick}
         getName={getName}
         formatCreatedAt={(item) =>

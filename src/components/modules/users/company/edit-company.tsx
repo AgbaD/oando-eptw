@@ -18,6 +18,7 @@ interface CompanyDetailsProps {
   id: number;
   name: string;
   location: {
+    id: number;
     locationArea: string;
     site: string;
   };
@@ -38,6 +39,7 @@ export default function EditCompany({}: any) {
     id: 0,
     name: "",
     location: {
+      id: 0,
       locationArea: "",
       site: "",
     },
@@ -61,7 +63,7 @@ export default function EditCompany({}: any) {
     }
   }, [valueID]);
 
-  const { getFieldProps, handleSubmit } = useForm({
+  const { getFieldProps, handleSubmit, setFieldValue } = useForm({
     initialValues: {
       name: "",
       contractId: "",
@@ -71,7 +73,15 @@ export default function EditCompany({}: any) {
     validationSchema,
   });
 
+  useEffect(() => {
+    if (company) {
+      setFieldValue("companyName", company.name);
+      setFieldValue("contractID", company.contractId);
+    }
+  });
+
   const [siteName, setSiteName] = useState("--select site--");
+  const [locationName, setLocationName] = useState("--select location--");
   const [locationOptions, setLocationOptions] = useState([]);
 
   useEffect(() => {
@@ -91,7 +101,7 @@ export default function EditCompany({}: any) {
     const requestData = {
       name: data.companyName || company.name,
       contractId: data.contractID || company.contractId,
-      locationId: Number(data.locationId),
+      locationId: Number(data.locationId) || company.location.id,
     };
 
     const [_, error] = await makeRequest(requestData); // only `data` is passed
@@ -101,6 +111,11 @@ export default function EditCompany({}: any) {
         message: error?.message ?? "Failed to edit company, please try again.",
       });
     }
+
+    toast({
+      variant: "success",
+      message: "Company updated successfully",
+    });
 
     route("/users/company/details");
   }
@@ -143,10 +158,18 @@ export default function EditCompany({}: any) {
 
             <p className="app-create__form__title">Location Area</p>
             <Select
-              placeholder="--select location--"
+              placeholder={locationName}
               options={locationOptions}
-              {...getFieldProps("locationId")}
-              required
+              value={getFieldProps("locationId").value}
+              onChange={(e) => {
+                const selectedValue = (e.target as HTMLSelectElement).value;
+                setFieldValue("locationId", selectedValue);
+                setLocationName(
+                  locationOptions.find(
+                    (option) => option.value === selectedValue
+                  )?.text
+                );
+              }}
             />
 
             <Button variant="primary" {...{ isLoading }}>
@@ -160,9 +183,9 @@ export default function EditCompany({}: any) {
 }
 
 const validationSchema = Yup.object({
-  companyName: Yup.string().required("Company name is required"),
-  contractID: Yup.string().required("Contract ID is required"),
-  locationId: Yup.number()
-    .required("Location is required")
-    .min(1, "Please select a valid location"),
+  // companyName: Yup.string().required("Company name is required"),
+  // contractID: Yup.string().required("Contract ID is required"),
+  // locationId: Yup.number()
+  //   .required("Location is required")
+  //   .min(1, "Please select a valid location"),
 });

@@ -64,6 +64,7 @@ export default function CancelPermit({ setModalOpen }: ViewProps) {
                 <h5>
                   Kindly state the reason for cancelling this permit below
                 </h5>
+                <br />
 
                 <Textarea
                   label=""
@@ -83,4 +84,9 @@ export default function CancelPermit({ setModalOpen }: ViewProps) {
   );
 }
 
-const validationSchema = Yup.object({});
+const validationSchema = Yup.object({
+  reason: Yup.string()
+    .required("Reason for sending back permit is required")
+    .trim()
+    .min(2, "Please enter a valid reason"),
+});

@@ -97,6 +97,11 @@ export default function EditLocation({}: any) {
       });
     }
 
+    toast({
+      variant: "success",
+      message: "Location area edited successfully",
+    });
+
     route("/locations");
   }
 
@@ -153,7 +158,7 @@ export default function EditLocation({}: any) {
                       (e.target as HTMLInputElement).value
                     )
                   }
-                  deleteButton={
+                  button={
                     <img
                       src="/svgs/delete_icon.svg"
                       alt="Delete"

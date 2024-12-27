@@ -47,8 +47,8 @@ export default function EditRole({}: any) {
   useEffect(() => {
     if (roleResponseState) {
       setFieldValue("name", roleResponseState.name);
-      setFieldValue("permissions", permissions);
-      // setFieldValue("authorities", roleResponseState.authorities);
+      setFieldValue("permissions", roleResponseState.permissions);
+      setFieldValue("authorities", roleResponseState.authorities);
     }
   }, [roleResponseState, permissions]);
 
@@ -59,19 +59,19 @@ export default function EditRole({}: any) {
     setFieldValue("permissions", updatedPermissions);
   }
 
-  // function toggleAuthorities(value, isChecked) {
-  //   const updatedAuthorities = isChecked
-  //     ? [...values.authorities, value]
-  //     : values.authorities.filter((p) => p !== value);
-  //   setFieldValue("authorities", updatedAuthorities);
-  // }
+  function toggleAuthorities(value, isChecked) {
+    const updatedAuthorities = isChecked
+      ? [...values.authorities, value]
+      : values.authorities.filter((p) => p !== value);
+    setFieldValue("authorities", updatedAuthorities);
+  }
 
   async function onSubmit(data) {
     const [_, err] = await makeRequest({
       roleId: valueID,
       name: roleName,
       permissions: data.permissions,
-      // authorities: data.authorities,
+      authorities: data.authorities,
     });
 
     if (err) {
@@ -80,6 +80,11 @@ export default function EditRole({}: any) {
         message: err?.message || "Failed to update role, please try again",
       });
       return;
+    } else {
+      toast({
+        variant: "success",
+        message: "Role updated successfully",
+      });
     }
 
     route("/roles");
@@ -108,7 +113,10 @@ export default function EditRole({}: any) {
               {PERMISSIONS.map(({ label, value }, i) => (
                 <label className="base-checkbox-label" key={i}>
                   <Checkbox
-                    checked={values.permissions.includes(value)}
+                    checked={
+                      values.permissions.includes(value) ||
+                      (roleResponseState?.permissions || []).includes(value)
+                    }
                     onChange={(isChecked) => togglePermission(value, isChecked)}
                   />
                   <span>{label}</span>
@@ -121,8 +129,13 @@ export default function EditRole({}: any) {
               {AUTHORITIES.map(({ label, value }, i) => (
                 <label className="base-checkbox-label" key={i}>
                   <Checkbox
-                    checked={values.permissions.includes(value)}
-                    onChange={(isChecked) => togglePermission(value, isChecked)}
+                    checked={
+                      values.authorities.includes(value) ||
+                      (roleResponseState?.authorities || []).includes(value)
+                    }
+                    onChange={(isChecked) =>
+                      toggleAuthorities(value, isChecked)
+                    }
                   />
                   <span>{label}</span>
                 </label>

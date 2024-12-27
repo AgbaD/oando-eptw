@@ -134,8 +134,8 @@
 }
 
 .app-modal__double-footer {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   margin-top: 7px;
   gap: 20px;
   position: sticky;

@@ -76,8 +76,14 @@ export default function Roles({}: any) {
 
   const filteredRoles = roles.filter((role) => {
     const roleName = `${role.name}`.toLowerCase();
+    const permissions = role.permissions || [];
 
-    return roleName.includes(searchTerm.toLowerCase());
+    return (
+      roleName.includes(searchTerm.toLowerCase()) ||
+      permissions.some((p) =>
+        p.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
   });
 
   return (
@@ -117,7 +123,11 @@ export default function Roles({}: any) {
                   <TableCell>
                     {dayjs(data.createdAt).format("MMM DD, YYYY • HH:mm A")}
                   </TableCell>
-                  <TableCell>{data.permissions?.join(", ") || "---"}</TableCell>
+                  <TableCell>
+                    <div className="w-roles">
+                      {data.permissions?.join(", ") || "---"}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <Button
                       variant="outline"

@@ -102,6 +102,21 @@ function extractFileName(data) {
   return name;
 }
 
+function convertSnakeCaseToTitleCase(text) {
+  return text
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function getInitials(name) {
+  return name
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase())
+    .join("");
+}
+
 const PERMISSIONS = [
   { label: "Full Access", value: "FULL_ACCESS" },
   { label: "Create Permit", value: "CREATE_PERMIT" },
@@ -138,6 +153,8 @@ export {
   createParams,
   toOriginalFormat,
   extractFileName,
+  convertSnakeCaseToTitleCase,
+  getInitials,
   PERMISSIONS,
   AUTHORITIES,
 };

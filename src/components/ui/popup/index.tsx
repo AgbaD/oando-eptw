@@ -77,9 +77,11 @@ export default function PopupModal({
           </div>
         ) : (
           <div className="popup-content">
-            <div className="icon-container">{icon}</div>
+            <div className="icon-container">
+              <div className="image">{icon}</div>
+            </div>
             <h2>{title}</h2>
-            <p>{message}</p>
+            <p className="message">{message}</p>
             <div className="button-group">
               {secondaryButton && (
                 <button

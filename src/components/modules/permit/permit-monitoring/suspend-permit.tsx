@@ -64,6 +64,7 @@ export default function SuspendPermit({ setModalOpen }: ViewProps) {
                 <h5>
                   Kindly state the reason for suspending this permit below
                 </h5>
+                <br />
 
                 <Textarea
                   label=""

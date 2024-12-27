@@ -64,19 +64,21 @@ export default function EditUser({}: any) {
   }, [user]);
 
   async function onSubmit(data) {
-    if (data.userType === "external_type") {
-      const [_, error] = await makeRequest({
-        email: data.email,
-        roleId: Number(data.roleId),
-        locationId: Number(data.location),
+    console.log(data);
+    const [_, error] = await makeRequest({
+      fullname: data.fullname || user?.fullname,
+      email: data.email || user?.email,
+      roleId: Number(data.roleId) || user?.roleId,
+      externalProfileId: valueID,
+    });
+    if (error) {
+      return toast({
+        variant: "error",
+        message: error?.message ?? "Failed to update user, please try again.",
       });
-      if (error) {
-        return toast({
-          variant: "error",
-          message: error?.message ?? "Failed to create user, please try again.",
-        });
-      }
     }
+
+    toast({ variant: "success", message: "User updated successfully" });
 
     route("/users");
   }
@@ -138,7 +140,7 @@ const validationSchema = Yup.object({
   //   "userType",
   //   isExternalUser("Last name is required")
   // ),
-  email: Yup.string().email("Email is invalid").required("Email is required"),
-  role: Yup.string().required("Role is required"),
-  location: Yup.string().required("Location is required"),
+  // fullname: Yup.string().required("Full name is required"),
+  // email: Yup.string().email("Email is invalid").required("Email is required"),
+  // roleId: Yup.string().required("Role is required"),
 });

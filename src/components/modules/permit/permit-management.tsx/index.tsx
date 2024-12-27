@@ -26,6 +26,7 @@ import { getAllPermits } from "../../../../assets/api/user";
 import { useUserContext } from "../../../../context/user.context";
 
 import { createRequest } from "../../../../assets/api";
+import { convertSnakeCaseToTitleCase } from "../../../../assets/utils";
 
 export default function Workflows({}: any) {
   const [selectedWorkType, setSelectedWorkType] = useState("All Work Types");
@@ -154,13 +155,11 @@ export default function Workflows({}: any) {
           </div>
         </div>
 
-        {canCreatePermit ? (
+        {canCreatePermit && (
           <Button href="/permit/create" variant="primary" dimension="md">
             <Icon name="plus" />
             Create New Permit
           </Button>
-        ) : (
-          <></>
         )}
       </div>
 
@@ -184,7 +183,9 @@ export default function Workflows({}: any) {
                 <>
                   <TableRow key={data.id}>
                     <TableCell>{data.publicId}</TableCell>
-                    <TableCell>{data.type}</TableCell>
+                    <TableCell>
+                      {convertSnakeCaseToTitleCase(data.type)}
+                    </TableCell>
                     <TableCell>
                       {truncateText(data.workDescription, 45)}
                     </TableCell>
@@ -229,7 +230,9 @@ export default function Workflows({}: any) {
                 >
                   <div className="location-flex">
                     <p>{dataItem.publicId}</p>
-                    <h6 className={"gray"}>{dataItem.type}</h6>
+                    <h6 className={"gray"}>
+                      {convertSnakeCaseToTitleCase(dataItem.type)}
+                    </h6>
                   </div>
                   <p>{truncateText(dataItem.workDescription, 45)}</p>
                   <div className="location-flex">

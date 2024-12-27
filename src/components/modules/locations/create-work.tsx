@@ -19,7 +19,7 @@ export default function CreateWork({}: any) {
   const { getFieldProps, handleSubmit, setFieldValue, values } = useForm({
     initialValues: {
       locationId: 0,
-      workArea: [], // Start with an empty array for workArea
+      workArea: [""] as string[], // Start with one empty string for workArea
     },
     onSubmit,
     validationSchema,
@@ -122,15 +122,16 @@ export default function CreateWork({}: any) {
             {values.workArea.map((location, index) => (
               <div key={index} className="location-fields">
                 <Input
-                  placeholder="Enter Location"
+                  placeholder="Enter Work Area"
                   value={location}
+                  {...getFieldProps(`workArea.${index}`)}
                   onChange={(e) =>
                     handleLocationChange(
                       index,
                       (e.target as HTMLInputElement).value
                     )
                   }
-                  deleteButton={
+                  button={
                     <img
                       src="/svgs/delete_icon.svg"
                       alt="Delete"
@@ -146,8 +147,13 @@ export default function CreateWork({}: any) {
               style={{ cursor: "pointer" }}
               onClick={addNewLocationField}
             >
-              <img src="/svgs/location-add.svg" width={16} height={16} />
-              <span>Add Location</span>
+              <img
+                src="/svgs/location-add.svg"
+                width={16}
+                height={16}
+                style={{ marginRight: 8 }}
+              />
+              <span>Add Work Area</span>
             </div>
 
             <Button variant="primary" {...{ isLoading }}>

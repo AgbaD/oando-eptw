@@ -23,6 +23,7 @@ import { createRequest } from "../../../assets/api";
 import { toast } from "../../ui/toast";
 import { route } from "preact-router";
 import { useDraftDetails } from "../../../context/draft-details.context";
+import { convertSnakeCaseToTitleCase } from "../../../assets/utils";
 
 export default function Drafts({}: any) {
   const { response, isLoading } = useRequest(getAllDrafts, {}, true);
@@ -160,9 +161,11 @@ export default function Drafts({}: any) {
                   <TableCell>
                     {dayjs(data.createdAt).format("MMM DD, YYYY • HH:mm A")}
                   </TableCell>
-                  <TableCell>{data.type}</TableCell>
+                  <TableCell>
+                    {convertSnakeCaseToTitleCase(data.type)}
+                  </TableCell>
                   <TableCell>{data.workArea}</TableCell>
-                  <TableCell>Alize Cornet</TableCell>
+                  <TableCell></TableCell>
                   <TableCell>
                     <Button
                       variant="outline"
@@ -188,6 +191,40 @@ export default function Drafts({}: any) {
           </Table>
         </div>
 
+        <div className="app-section__sm-table">
+          <Table>
+            <TableBody>
+              {filteredDrafts.map((dataItem) => (
+                <div
+                  key={dataItem.id}
+                  className="container"
+                  onClick={() => handleItemClick(dataItem)}
+                >
+                  <div className="location-flex">
+                    <div className="items-center">
+                      <h6
+                        className={`${
+                          dataItem.status === "Draft"
+                            ? "draft-status"
+                            : "others-status"
+                        }`}
+                      >
+                        {dayjs(dataItem.createdAt).format(
+                          "MMM DD, YYYY • HH:mm A"
+                        )}
+                      </h6>
+                    </div>
+                  </div>
+                  <div className="location-flex">
+                    <p>{convertSnakeCaseToTitleCase(dataItem.type)}</p>
+                    <h6 className={"gray"}>{dataItem.workArea}</h6>
+                  </div>
+                </div>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
         {!filteredDrafts.length && (
           <div className="base-empty">
             <img src="/svgs/document.svg" />
@@ -202,7 +239,7 @@ export default function Drafts({}: any) {
             <PopupModal
               icon={<img src="/svgs/delete_img.png" />}
               title="Delete Draft?"
-              message="Are you sure you want to delete this role? This action cannot be undone."
+              message="Are you sure you want to delete this draft? This action cannot be undone."
               onClose={() => setModalOpen(false)}
               primaryButton={{
                 label: "Delete",

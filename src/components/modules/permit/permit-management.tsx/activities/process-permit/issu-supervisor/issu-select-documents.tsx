@@ -68,7 +68,9 @@ export default function IssuSupervisorDocuments() {
           <Button
             variant="secondary"
             type="button"
-            onClick={() => send("go_back")}
+            onClick={() => {
+              window.location.href = "/permit-activitites";
+            }}
           >
             Back
           </Button>

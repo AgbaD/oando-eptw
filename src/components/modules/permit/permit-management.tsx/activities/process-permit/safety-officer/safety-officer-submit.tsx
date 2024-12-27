@@ -100,6 +100,7 @@ export default function SafetyOfficerProcessSubmit() {
                   <img src="/svgs/in-progress.svg" alt="" />
                 </div>
                 <p className="submit-container__title"> Approving Permit ...</p>
+                <br />
                 <p className="submit-container__description">
                   Please wait as we process this permit.
                 </p>
@@ -115,9 +116,11 @@ export default function SafetyOfficerProcessSubmit() {
                 <img src="/svgs/successful.svg" alt="" />
               </div>
               <p className="submit-container__title">Permit Approved</p>
+              <br />
               <p className="submit-container__description">
                 You have successfully approved this permit.{" "}
               </p>
+              <br />
 
               <div className="submit-container__button-container">
                 <Button
@@ -146,9 +149,11 @@ export default function SafetyOfficerProcessSubmit() {
                 <img src="/svgs/submit-failed.svg" alt="" />
               </div>
               <p className="submit-container__title">Permit Approval Failed</p>
+              <br />
               <p className="submit-container__description">
                 An error occurred while processing this permit.
               </p>
+              <br />
 
               <div className="submit-container__button-container">
                 <Button

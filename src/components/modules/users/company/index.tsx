@@ -71,20 +71,27 @@ export default function Company() {
   const users = response?.data || [];
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredCompanies = users.filter((user) => {
-    const contractId = user.contractId.toLowerCase();
-    const name = user.name.toLowerCase();
+  const filteredCompanies = users
+    .filter((user) => {
+      const contractId = user.contractId.toLowerCase();
+      const name = user.name.toLowerCase();
 
-    const matchesSearch =
-      contractId.includes(searchTerm.toLowerCase()) ||
-      name.includes(searchTerm.toLowerCase()) ||
-      searchTerm === "";
+      const matchesSearch =
+        contractId.includes(searchTerm.toLowerCase()) ||
+        name.includes(searchTerm.toLowerCase()) ||
+        searchTerm === "";
 
-    const statusMatch =
-      selectedStatus === "All Status" || user.isActive === selectedStatus;
+      const statusMatch =
+        selectedStatus === "All Status" ||
+        (selectedStatus === "Active" && user.isActive) ||
+        (selectedStatus === "Inactive" && !user.isActive);
 
-    return statusMatch && matchesSearch;
-  });
+      return statusMatch && matchesSearch;
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
 
   return (
     <>
@@ -124,7 +131,7 @@ export default function Company() {
                     <TableRow>
                       <TableCell>Contract ID</TableCell>
                       <TableCell>Company Name</TableCell>
-                      <TableCell>Members</TableCell>
+                      {/* <TableCell>Members</TableCell> */}
                       <TableCell>Status</TableCell>
                       {/* <TableCell>Role</TableCell> */}
                       <TableCell></TableCell>
@@ -136,12 +143,12 @@ export default function Company() {
                       <TableRow key={data.id}>
                         <TableCell>{data.contractId.toUpperCase()}</TableCell>
                         <TableCell>{data.name}</TableCell>
-                        {/* <TableCell>{data.type?.toLowerCase()}</TableCell> */}
-                        <TableCell>
+
+                        {/* <TableCell>
                           {data?.members?.length > 0
                             ? data?.members?.length
                             : 0}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <span
                             className={` ${
@@ -150,7 +157,8 @@ export default function Company() {
                                 : "status-inactive"
                             }`}
                           >
-                            {data.status}
+                            {data.status?.charAt(0).toUpperCase() +
+                              data.status?.slice(1).toLowerCase()}
                           </span>
                         </TableCell>
                         <TableCell>

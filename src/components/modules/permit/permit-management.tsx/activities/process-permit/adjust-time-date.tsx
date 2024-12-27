@@ -6,8 +6,33 @@ import Button from "../../../../../ui/button";
 
 import { useAuthorizingActivityContext } from "../../../../../../context/authorizing-activity-context";
 
+import { useIDContext } from "../../../../../../context/id.context";
+import { createRequest } from "../../../../../../assets/api";
+import { useState, useEffect } from "preact/hooks";
+import dayjs from "dayjs";
+
 export default function UpdateTimeDate() {
   const { state, send } = useAuthorizingActivityContext();
+
+  const { valueID } = useIDContext();
+  const id = valueID;
+
+  const [permitDetails, setPermitDetails] = useState<any>({
+    from_date: "",
+    from_time: "",
+    to_date: "",
+    to_time: "",
+  });
+
+  useEffect(() => {
+    async function getPermitDetails() {
+      const permitResponse = await createRequest(`/permit/${id}`, "GET");
+      const permitData = permitResponse[0].data;
+      setPermitDetails(permitData);
+    }
+
+    getPermitDetails();
+  }, [valueID]);
 
   const { getFieldProps, handleSubmit } = useForm({
     validationSchema,
@@ -28,7 +53,12 @@ export default function UpdateTimeDate() {
       <div className="">
         <div className="get-current-date">
           <p>Current Permit Start - End Date & Time:</p>
-          <span>17 / 04 / 2022 08:00 AM - 17 / 04 / 2022 08:00 AM</span>
+          <span>
+            {dayjs(permitDetails.from_date).format("DD/MM/YYYY")} :{" "}
+            {dayjs(permitDetails.from_time).format("hh:mm A")} -{" "}
+            {dayjs(permitDetails.to_date).format("DD/MM/YYYY")} :{" "}
+            {dayjs(permitDetails.to_time).format("hh:mm A")}{" "}
+          </span>
         </div>
       </div>
 
