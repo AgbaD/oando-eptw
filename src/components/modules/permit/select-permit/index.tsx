@@ -258,7 +258,18 @@ export default function SelectPermitRole({}: any) {
                 ) : (
                   <div className="">
                     <p>No processable permits yet</p>
-                    <Button onClick={() => route("/")} variant="primary">
+                    <Button
+                      onClick={() =>
+                        route(
+                          `${
+                            permissions?.includes("FULL_ACCESS")
+                              ? "/"
+                              : "/permit-workflows"
+                          }`
+                        )
+                      }
+                      variant="primary"
+                    >
                       Go to home page
                     </Button>
                   </div>

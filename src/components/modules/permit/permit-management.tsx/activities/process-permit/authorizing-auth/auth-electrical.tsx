@@ -6,10 +6,13 @@ import { useAuthorizingActivityContext } from "../../../../../../../context/auth
 import useForm from "../../../../../../../hooks/use-form";
 import Button from "../../../../../../ui/button";
 import Radio from "../../../../../../ui/form/radio";
+
+import Input from "../../../../../../ui/form/input";
+
 export default function AuthElectricalIsolation() {
   const { send, state } = useAuthorizingActivityContext();
 
-  const { handleSubmit, setFieldValue, values } = useForm({
+  const { handleSubmit, setFieldValue, values, getFieldProps } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.electrical_precaution,
@@ -54,6 +57,13 @@ export default function AuthElectricalIsolation() {
               </div>
             </div>
           ))}
+
+          <Input
+            type="text"
+            label="Others"
+            placeholder={"Others"}
+            {...getFieldProps("other")}
+          />
         </div>
 
         <div className="app-register__form-footer">
@@ -108,7 +118,7 @@ export const LIST = [
     text: "INSTALLATION OF GROUND FAULT CIRCUIT INTERUPTOR (GCFI OR RESIDUAL CURRENT CICUIT BREAKER (RCCB)",
     value: "gfciInstallation",
   },
-  { text: "OTHERS", value: "other" },
+  // { text: "OTHERS", value: "other" },
 ];
 
 const validationSchema = Yup.object({

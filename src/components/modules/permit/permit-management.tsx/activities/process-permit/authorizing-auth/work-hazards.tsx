@@ -10,6 +10,8 @@ import { useState, useMemo } from "preact/hooks";
 import SendToAuthority from "../send-back-to-authority";
 import { usePermitDetails } from "../../../../../../../context/permit-details.context";
 
+import Input from "../../../../../../ui/form/input";
+
 export default function AuthWorkHazards() {
   const { send, state } = useAuthorizingActivityContext();
   const { permit } = usePermitDetails();
@@ -102,7 +104,7 @@ export default function AuthWorkHazards() {
     return acc;
   }, {});
 
-  const { handleSubmit, setFieldValue, values } = useForm({
+  const { handleSubmit, setFieldValue, values, getFieldProps } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.work_hazards,
@@ -184,6 +186,13 @@ export default function AuthWorkHazards() {
               </div>
             </div>
           ))}
+
+          <Input
+            type="text"
+            label="Others"
+            placeholder={"Others"}
+            {...getFieldProps("otherHazard")}
+          />
         </div>
 
         <div className="app-register__form-footer">
@@ -223,7 +232,7 @@ export const HAZARDS = [
   { text: "FALLING OBJECTS", value: "falling" },
   { text: "RADIATION", value: "radiation" },
   { text: "TYPE OF WASTE IS KNOWN", value: "knownWaste" },
-  { text: "OTHER", value: "otherHazard" },
+  // { text: "OTHER", value: "otherHazard" },
 ];
 
 const validationSchema = Yup.object({

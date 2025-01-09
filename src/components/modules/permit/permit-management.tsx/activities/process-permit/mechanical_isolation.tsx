@@ -10,6 +10,7 @@ import { useState, useMemo } from "preact/hooks";
 import { usePermitDetails } from "../../../../../../context/permit-details.context";
 
 import Section from "../../../../../ui/sections";
+import Input from "../../../../../ui/form/input";
 
 export default function MechanicalIsolation() {
   const { send, state } = useIssuingActivityContext();
@@ -80,7 +81,7 @@ export default function MechanicalIsolation() {
       }, {}))
     : (initialItems = {});
 
-  const { handleSubmit, setFieldValue, values } = useForm({
+  const { handleSubmit, setFieldValue, values, getFieldProps } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.mechanical_precaution,
@@ -165,6 +166,12 @@ export default function MechanicalIsolation() {
                   </div>
                 </div>
               ))}
+              <Input
+                type="text"
+                label="Others"
+                placeholder={"Others"}
+                {...getFieldProps("other")}
+              />
             </>
           ) : (
             <>
@@ -191,6 +198,12 @@ export default function MechanicalIsolation() {
                   </div>
                 </div>
               ))}
+              <Input
+                type="text"
+                label="Others"
+                placeholder={"Others"}
+                {...getFieldProps("other")}
+              />
             </>
           )}
         </div>
@@ -244,7 +257,7 @@ export const LIST = [
     value: "lineDepressurization",
   },
   { text: "VENTILATION (Natural / Mechanical means)", value: "ventilation" },
-  { text: "OTHER", value: "other" },
+  // { text: "OTHER", value: "other" },
 ];
 
 const validationSchema = Yup.object({

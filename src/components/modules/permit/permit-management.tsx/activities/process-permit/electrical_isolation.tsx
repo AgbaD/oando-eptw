@@ -10,6 +10,8 @@ import SendToAuthority from "./send-back-to-authority";
 import Section from "../../../../../ui/sections";
 import { usePermitDetails } from "../../../../../../context/permit-details.context";
 
+import Input from "../../../../../ui/form/input";
+
 export default function ElectricalIsolation() {
   const { send, state } = useIssuingActivityContext();
 
@@ -80,7 +82,7 @@ export default function ElectricalIsolation() {
       }, {}))
     : (initialItems = {});
 
-  const { handleSubmit, setFieldValue, values } = useForm({
+  const { handleSubmit, setFieldValue, values, getFieldProps } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.electrical_precaution,
@@ -165,6 +167,13 @@ export default function ElectricalIsolation() {
                   </div>
                 </div>
               ))}
+
+              <Input
+                type="text"
+                label="Others"
+                placeholder={"Others"}
+                {...getFieldProps("other")}
+              />
             </>
           ) : (
             <>
@@ -191,6 +200,13 @@ export default function ElectricalIsolation() {
                   </div>
                 </div>
               ))}
+
+              <Input
+                type="text"
+                label="Others"
+                placeholder={"Others"}
+                {...getFieldProps("other")}
+              />
             </>
           )}
         </div>
@@ -247,7 +263,7 @@ export const LIST = [
     text: "INSTALLATION OF GROUND FAULT CIRCUIT INTERUPTOR (GCFI OR RESIDUAL CURRENT CICUIT BREAKER (RCCB)",
     value: "gfciInstallation",
   },
-  { text: "OTHERS", value: "other" },
+  // { text: "OTHERS", value: "other" },
 ];
 
 const validationSchema = Yup.object({

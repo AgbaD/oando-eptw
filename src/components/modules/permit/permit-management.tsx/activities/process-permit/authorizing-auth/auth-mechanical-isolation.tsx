@@ -8,9 +8,11 @@ import Button from "../../../../../../ui/button";
 import Radio from "../../../../../../ui/form/radio";
 import { useAuthorizingActivityContext } from "../../../../../../../context/authorizing-activity-context";
 
+import Input from "../../../../../../ui/form/input";
+
 export default function AuthMechanicalIsolation() {
   const { send, state } = useAuthorizingActivityContext();
-  const { handleSubmit, setFieldValue, values } = useForm({
+  const { handleSubmit, setFieldValue, values, getFieldProps } = useForm({
     validationSchema,
     initialValues: {
       ...state.context.mechanical_precaution,
@@ -55,6 +57,13 @@ export default function AuthMechanicalIsolation() {
               </div>
             </div>
           ))}
+
+          <Input
+            type="text"
+            label="Others"
+            placeholder={"Others"}
+            {...getFieldProps("other")}
+          />
         </div>
 
         <div className="app-register__form-footer">
@@ -105,7 +114,7 @@ export const LIST = [
     value: "lineDepressurization",
   },
   { text: "VENTILATION (Natural / Mechanical means)", value: "ventilation" },
-  { text: "OTHER", value: "other" },
+  // { text: "OTHER", value: "other" },
 ];
 
 const validationSchema = Yup.object({

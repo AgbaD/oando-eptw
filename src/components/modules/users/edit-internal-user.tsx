@@ -28,6 +28,7 @@ export default function EditInternalUser({}: any) {
     role: {
       name: "",
     },
+    locationId: 0,
   });
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function EditInternalUser({}: any) {
       const userResponse = await createRequest(`/profile/${valueID}`, "GET");
       const userData = userResponse[0].data;
       setUser(userData);
-      console.log(userData);
+      console.log("user data", userData);
     }
     getUserByID();
   }, [valueID]);
@@ -69,9 +70,9 @@ export default function EditInternalUser({}: any) {
   async function onSubmit(data) {
     const [_, error] = await makeRequest({
       fullname: data.fullname,
-      email: data.email,
-      roleId: Number(data.roleId),
-      locationId: Number(data.location),
+      email: data.email || user?.email,
+      roleId: Number(data.roleId) || user?.roleId,
+      locationId: Number(user?.locationId),
       internalUserId: Number(valueID),
     });
     if (error) {

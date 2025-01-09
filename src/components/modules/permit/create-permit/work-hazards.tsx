@@ -6,6 +6,8 @@ import Radio from "../../../ui/form/radio";
 import { usePermitContext } from "../../../../context/permit.context";
 import { useDraftDetails } from "../../../../context/draft-details.context";
 
+import Input from "../../../ui/form/input";
+
 export default function WorkHazards() {
   const { send, state } = usePermitContext();
 
@@ -78,6 +80,13 @@ export default function WorkHazards() {
             </div>
           </div>
         ))}
+
+        <Input
+          type="text"
+          label="Others"
+          placeholder={"Others"}
+          {...getFieldProps("otherHazard")}
+        />
       </div>
 
       <div className="app-register__form-footer">
@@ -106,7 +115,7 @@ export const HAZARDS = [
   { text: "FALLING OBJECTS", value: "falling" },
   { text: "RADIATION", value: "radiation" },
   { text: "TYPE OF WASTE IS KNOWN", value: "knownWaste" },
-  { text: "OTHER", value: "otherHazard" },
+  // { text: "OTHER", value: "otherHazard" },
 ];
 
 function getValidationSchema(isDraft) {
