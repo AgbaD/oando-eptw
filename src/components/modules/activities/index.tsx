@@ -19,6 +19,8 @@ import ReusableMobileTable from "../../ui/global/mobiletable";
 import { Dropdown, DropdownTrigger, DropdownContent } from "../../ui/dropdown";
 
 import { siteOptions } from "../locations/data";
+import { Pagination } from "../../ui/pagination";
+import { paginate } from "../../../assets/utils";
 
 export default function Activities({}: any) {
   const [stagedActivity, stageActivity] = useState<any>();
@@ -81,6 +83,14 @@ export default function Activities({}: any) {
     setDateRange({ start: range.startDate, end: range.endDate });
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const sortedData = filteredActivities.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  const paginatedData = paginate(sortedData, currentPage, itemsPerPage);
+
   return (
     <>
       <Header title="Audits" />
@@ -124,7 +134,7 @@ export default function Activities({}: any) {
             </TableHead>
 
             <TableBody>
-              {filteredActivities?.map((data) => (
+              {paginatedData?.map((data) => (
                 <TableRow key={data.id}>
                   <TableCell>
                     {dayjs(data.createdAt).format("DD/MM/YYYY • HH:mm A")}
@@ -156,13 +166,22 @@ export default function Activities({}: any) {
         </div>
 
         <ReusableMobileTable
-          data={filteredActivities}
+          data={paginatedData}
           onItemClick={handleItemClick}
           formatCreatedAt={formatCreatedAt}
           getName={getName}
           getDetails={getDetails}
           type={"Default"}
         />
+
+        {filteredActivities.length && (
+          <Pagination
+            totalItems={filteredActivities.length}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        )}
 
         {!filteredActivities.length && (
           <div className="base-empty">

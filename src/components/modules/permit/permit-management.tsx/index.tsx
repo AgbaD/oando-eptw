@@ -28,6 +28,9 @@ import { useUserContext } from "../../../../context/user.context";
 import { createRequest } from "../../../../assets/api";
 import { convertSnakeCaseToTitleCase } from "../../../../assets/utils";
 
+import { paginate } from "../../../../assets/utils";
+import { Pagination } from "../../../ui/pagination";
+
 export default function Workflows({}: any) {
   const [selectedWorkType, setSelectedWorkType] = useState("All Work Types");
   const work_types = ["All Work Types", "COLD_WORK", "HOT_WORK"];
@@ -109,6 +112,14 @@ export default function Workflows({}: any) {
     );
   });
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const sortedData = filteredWorkflows.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  const paginatedData = paginate(sortedData, currentPage, itemsPerPage);
+
   return (
     <>
       <Header title="Workflow" />
@@ -179,7 +190,7 @@ export default function Workflows({}: any) {
             </TableHead>
 
             <TableBody>
-              {filteredWorkflows.map((data) => (
+              {paginatedData.map((data) => (
                 <>
                   <TableRow key={data.id}>
                     <TableCell>{data.publicId}</TableCell>
@@ -222,7 +233,7 @@ export default function Workflows({}: any) {
         <div className="app-section__sm-table">
           <Table>
             <TableBody>
-              {filteredWorkflows.map((dataItem) => (
+              {paginatedData.map((dataItem) => (
                 <div
                   key={dataItem.id}
                   className="container"
@@ -254,6 +265,15 @@ export default function Workflows({}: any) {
             </TableBody>
           </Table>
         </div>
+
+        {filteredWorkflows.length && (
+          <Pagination
+            totalItems={filteredWorkflows.length}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        )}
 
         {!filteredWorkflows.length && (
           <div className="base-empty">

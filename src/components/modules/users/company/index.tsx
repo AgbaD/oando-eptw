@@ -28,6 +28,9 @@ import { useIDContext } from "../../../../context/id.context";
 
 // import { createRequest } from "../../../../assets/api";
 
+import { Pagination } from "../../../ui/pagination";
+import { paginate } from "../../../../assets/utils";
+
 export default function Company() {
   const [selectedCompany] = useState<any>();
   const { toggle, modals } = useModal({ user_details: false });
@@ -93,6 +96,14 @@ export default function Company() {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const sortedData = filteredCompanies.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  const paginatedData = paginate(sortedData, currentPage, itemsPerPage);
+
   return (
     <>
       <div className="">
@@ -139,7 +150,7 @@ export default function Company() {
                   </TableHead>
 
                   <TableBody>
-                    {filteredCompanies.map((data) => (
+                    {paginatedData.map((data) => (
                       <TableRow key={data.id}>
                         <TableCell>{data.contractId.toUpperCase()}</TableCell>
                         <TableCell>{data.name}</TableCell>
@@ -176,12 +187,19 @@ export default function Company() {
               </div>
 
               <ReusableMobileTable
-                data={filteredCompanies}
+                data={paginatedData}
                 onItemClick={handleItemClick}
                 getName={getName}
                 type={"Company"}
                 getDetails={""}
                 formatCreatedAt={""}
+              />
+
+              <Pagination
+                totalItems={filteredCompanies.length}
+                itemsPerPage={itemsPerPage}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
               />
 
               {!response?.data?.length && (

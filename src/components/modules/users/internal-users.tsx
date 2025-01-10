@@ -28,6 +28,9 @@ import { createRequest } from "../../../assets/api";
 import PopupModal from "../../ui/popup";
 import { toast } from "../../ui/toast";
 
+import { paginate } from "../../../assets/utils";
+import { Pagination } from "../../ui/pagination";
+
 export default function InternalUsers() {
   const [selectedUser, viewUser] = useState<any>();
   const { toggle, modals } = useModal({ user_details: false });
@@ -115,6 +118,14 @@ export default function InternalUsers() {
     return locationMatch && statusMatch && matchesSearch;
   });
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const sortedData = filteredUsers.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  const paginatedData = paginate(sortedData, currentPage, itemsPerPage);
+
   return (
     <>
       <div className="">
@@ -173,7 +184,7 @@ export default function InternalUsers() {
                   </TableHead>
 
                   <TableBody>
-                    {filteredUsers.map((data) => (
+                    {paginatedData.map((data) => (
                       <TableRow key={data.id}>
                         <TableCell>{data.fullname}</TableCell>
                         <TableCell>{data.email}</TableCell>
@@ -207,7 +218,7 @@ export default function InternalUsers() {
               </div>
 
               <ReusableMobileTable
-                data={filteredUsers}
+                data={paginatedData}
                 onItemClick={handleItemClick}
                 getName={getName}
                 formatCreatedAt={(item) =>
@@ -215,6 +226,13 @@ export default function InternalUsers() {
                 }
                 type={"Users"}
                 getDetails={(item) => item?.type}
+              />
+
+              <Pagination
+                totalItems={filteredUsers.length}
+                itemsPerPage={itemsPerPage}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
               />
 
               {!response?.data?.length && (

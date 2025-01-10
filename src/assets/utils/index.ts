@@ -117,6 +117,12 @@ function getInitials(name) {
     .join("");
 }
 
+function paginate(data: any[], page: number, itemsPerPage: number) {
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  return data.slice(startIndex, endIndex);
+}
+
 const PERMISSIONS = [
   { label: "Full Access", value: "FULL_ACCESS" },
   { label: "Create Permit", value: "CREATE_PERMIT" },
@@ -155,6 +161,7 @@ export {
   extractFileName,
   convertSnakeCaseToTitleCase,
   getInitials,
+  paginate,
   PERMISSIONS,
   AUTHORITIES,
 };

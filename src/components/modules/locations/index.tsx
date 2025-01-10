@@ -22,6 +22,9 @@ import PopupModal from "../../ui/popup";
 import { toast } from "../../ui/toast";
 import { Dropdown, DropdownContent, DropdownTrigger } from "../../ui/dropdown";
 
+import { Pagination } from "../../ui/pagination";
+import { paginate } from "../../../assets/utils";
+
 export default function Locations({}: any) {
   const [selectedLocation, viewLocation] = useState<any>();
   const { response, isLoading } = useRequest(getSites, {}, true);
@@ -116,6 +119,14 @@ export default function Locations({}: any) {
     setModalOpen(true);
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // const sortedData = formattedData.sort(
+  //   (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  // );
+  const paginatedData = paginate(formattedData, currentPage, itemsPerPage);
+
   return (
     <>
       <Header title="Locations" />
@@ -154,7 +165,7 @@ export default function Locations({}: any) {
             </TableHead>
 
             <TableBody>
-              {formattedData.map((dataItem) => (
+              {paginatedData.map((dataItem) => (
                 <TableRow key={dataItem.site}>
                   <TableCell>{dataItem.site}</TableCell>
                   <TableCell>
@@ -183,7 +194,7 @@ export default function Locations({}: any) {
         <div className="app-section__sm-table">
           <Table>
             <TableBody>
-              {formattedData.map((dataItem) => (
+              {paginatedData.map((dataItem) => (
                 <div key={dataItem.site} className="container">
                   <h2>{dataItem.site}</h2>
 
@@ -211,6 +222,13 @@ export default function Locations({}: any) {
             </TableBody>
           </Table>
         </div>
+
+        <Pagination
+          totalItems={formattedData.length}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
 
         {!response?.data && (
           <div className="base-empty">

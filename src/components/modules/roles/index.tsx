@@ -23,6 +23,9 @@ import { route } from "preact-router";
 import { useIDContext } from "../../../context/id.context";
 import { createRequest } from "../../../assets/api";
 
+import { Pagination } from "../../ui/pagination";
+import { paginate } from "../../../assets/utils";
+
 export default function Roles({}: any) {
   const [selectedRole, viewRole] = useState<any>();
   const { toggle, modals } = useModal({ role_details: false });
@@ -86,6 +89,14 @@ export default function Roles({}: any) {
     );
   });
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const sortedData = filteredRoles.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  const paginatedData = paginate(sortedData, currentPage, itemsPerPage);
+
   return (
     <>
       <Header title="Roles & Permissions" />
@@ -115,7 +126,7 @@ export default function Roles({}: any) {
             </TableHead>
 
             <TableBody>
-              {filteredRoles.map((data) => (
+              {paginatedData.map((data) => (
                 <TableRow key={data.id}>
                   <TableCell>
                     {data.name.replace(/\b\w/g, (char) => char.toUpperCase())}
@@ -146,13 +157,22 @@ export default function Roles({}: any) {
         </div>
 
         <ReusableMobileTable
-          data={filteredRoles}
+          data={paginatedData}
           onItemClick={handleItemClick}
           formatCreatedAt={formatCreatedAt}
           getName={getName}
           getDetails={getDetails}
           type={"Default"}
         />
+
+        {filteredRoles.length && (
+          <Pagination
+            totalItems={filteredRoles.length}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        )}
 
         {!filteredRoles.length && (
           <div className="base-empty">

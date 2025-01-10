@@ -25,6 +25,9 @@ import { route } from "preact-router";
 import { useDraftDetails } from "../../../context/draft-details.context";
 import { convertSnakeCaseToTitleCase } from "../../../assets/utils";
 
+import { Pagination } from "../../ui/pagination";
+import { paginate } from "../../../assets/utils";
+
 export default function Drafts({}: any) {
   const { response, isLoading } = useRequest(getAllDrafts, {}, true);
 
@@ -115,6 +118,14 @@ export default function Drafts({}: any) {
     setDateRange({ start: range.startDate, end: range.endDate });
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const sortedData = filteredDrafts.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  const paginatedData = paginate(sortedData, currentPage, itemsPerPage);
+
   return (
     <>
       <Header title="Drafts" />
@@ -156,7 +167,7 @@ export default function Drafts({}: any) {
             </TableHead>
 
             <TableBody>
-              {filteredDrafts.map((data) => (
+              {paginatedData.map((data) => (
                 <TableRow key={data.id}>
                   <TableCell>
                     {dayjs(data.createdAt).format("MMM DD, YYYY • HH:mm A")}
@@ -194,7 +205,7 @@ export default function Drafts({}: any) {
         <div className="app-section__sm-table">
           <Table>
             <TableBody>
-              {filteredDrafts.map((dataItem) => (
+              {paginatedData.map((dataItem) => (
                 <div
                   key={dataItem.id}
                   className="container"
@@ -224,6 +235,15 @@ export default function Drafts({}: any) {
             </TableBody>
           </Table>
         </div>
+
+        {filteredDrafts.length && (
+          <Pagination
+            totalItems={filteredDrafts.length}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        )}
 
         {!filteredDrafts.length && (
           <div className="base-empty">

@@ -26,6 +26,7 @@ export default function UploadDocument({
 
     try {
       const response = await fetch(
+        // "http://localhost:3000/api/file/upload",
         "https://eptw.ankursolutions.com/api/file/upload",
         {
           method: "POST",

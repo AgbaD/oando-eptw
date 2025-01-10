@@ -26,6 +26,9 @@ import { getAllPermits } from "../../../../assets/api/user";
 import { usePermitDetails } from "../../../../context/permit-details.context";
 import { convertSnakeCaseToTitleCase } from "../../../../assets/utils";
 
+import { Pagination } from "../../../ui/pagination";
+import { paginate } from "../../../../assets/utils";
+
 export default function Storage({}: any) {
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const [selectedWorkType, setSelectedWorkType] = useState("All Work Types");
@@ -69,6 +72,14 @@ export default function Storage({}: any) {
 
     return matchesSearch && matchesWorkType;
   });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const sortedData = filteredStorage.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  const paginatedData = paginate(sortedData, currentPage, itemsPerPage);
 
   return (
     <>
@@ -130,7 +141,7 @@ export default function Storage({}: any) {
             </TableHead>
 
             <TableBody>
-              {filteredStorage
+              {paginatedData
                 .filter(
                   (data) =>
                     data.status === "CLOSED" || data.status === "CANCELED"
@@ -180,7 +191,7 @@ export default function Storage({}: any) {
         <div className="app-section__sm-table">
           <Table>
             <TableBody>
-              {filteredStorage
+              {paginatedData
                 .filter(
                   (dataItem) =>
                     dataItem.status === "CLOSED" ||
@@ -211,6 +222,15 @@ export default function Storage({}: any) {
                 ))}
             </TableBody>
           </Table>
+
+          {filteredStorage.length && (
+            <Pagination
+              totalItems={filteredStorage.length}
+              itemsPerPage={itemsPerPage}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
         {!filteredStorage.length && (
           <div className="base-empty">

@@ -23,6 +23,9 @@ import { usePermitDetails } from "../../../../context/permit-details.context";
 import { createRequest } from "../../../../assets/api";
 import { convertSnakeCaseToTitleCase } from "../../../../assets/utils";
 
+import { Pagination } from "../../../ui/pagination";
+import { paginate } from "../../../../assets/utils";
+
 export default function Monitoring({}: any) {
   const [selectedStatus, setSelectedStatus] = useState("All Status");
   const statusOptions = [
@@ -79,6 +82,14 @@ export default function Monitoring({}: any) {
 
     return isSearchMatch && isWorkTypeMatch && isStatus;
   });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const sortedData = filteredMonitoring.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  const paginatedData = paginate(sortedData, currentPage, itemsPerPage);
 
   return (
     <>
@@ -141,7 +152,7 @@ export default function Monitoring({}: any) {
             </TableHead>
 
             <TableBody>
-              {filteredMonitoring
+              {paginatedData
                 .filter(
                   (data) =>
                     data.status !== "NOT_STARTED" &&
@@ -183,7 +194,7 @@ export default function Monitoring({}: any) {
         <div className="app-section__sm-table">
           <Table>
             <TableBody>
-              {filteredMonitoring.map(
+              {paginatedData.map(
                 (dataItem) =>
                   dataItem.status !== "NOT_STARTED" && (
                     <div
@@ -215,6 +226,15 @@ export default function Monitoring({}: any) {
               )}
             </TableBody>
           </Table>
+
+          {filteredMonitoring.length > 1 && (
+            <Pagination
+              totalItems={filteredMonitoring.length}
+              itemsPerPage={itemsPerPage}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
 
         {/* Empty State */}

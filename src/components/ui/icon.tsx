@@ -13,6 +13,8 @@ interface IconProps {
     | "edit"
     | "delete"
     | "caret-left"
+    | "caret-right"
+    | "white-caret-left"
     | "clock"
     | "pending"
     | "approved"
@@ -65,6 +67,7 @@ export default function Icon(props: IconProps) {
         </svg>
       );
     }
+
     case "arrow-right": {
       return (
         // prettier-ignore
@@ -73,6 +76,7 @@ export default function Icon(props: IconProps) {
         </svg>
       );
     }
+
     case "process": {
       return (
         // prettier-ignore
@@ -82,6 +86,7 @@ export default function Icon(props: IconProps) {
 </svg>
       );
     }
+
     case "upload": {
       return (
         // prettier-ignore
@@ -90,6 +95,7 @@ export default function Icon(props: IconProps) {
         </svg>
       );
     }
+
     case "x": {
       return (
         // prettier-ignore
@@ -261,6 +267,7 @@ export default function Icon(props: IconProps) {
         </svg>
       );
     }
+
     case "caret-left": {
       return (
         // prettier-ignore
@@ -276,6 +283,38 @@ export default function Icon(props: IconProps) {
         </svg>
       );
     }
+    case "white-caret-left": {
+      return (
+        // prettier-ignore
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_10_5440)">
+        <path d="M15 6L9 12L15 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <defs>
+        <clipPath id="clip0_10_5440">
+        <rect width="24" height="24" fill="white"/>
+        </clipPath>
+        </defs>
+        </svg>
+      );
+    }
+
+    case "caret-right": {
+      return (
+        // prettier-ignore
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#clip0_10_5440)">
+        <path d="M9 6L15 12L9 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <defs>
+        <clipPath id="clip0_10_5440">
+          <rect width="24" height="24" fill="white"/>
+        </clipPath>
+      </defs>
+    </svg>
+      );
+    }
+
     case "clock": {
       return (
         // prettier-ignore

@@ -1,0 +1,30 @@
+.pagination {
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  gap: 0.5rem;
+  margin: 20px 0px;
+}
+.pagination__sub-button {
+  background-color: #f67828;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 0.5rem;
+  color: white;
+}
+.pagination__button {
+  padding: 0.8rem 1rem;
+  border: none;
+  //   background-color: #f4f4f4;
+  cursor: pointer;
+}
+
+.pagination__button--active {
+  color: #f67828;
+  //   color: #fff;
+}
+
+.pagination__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

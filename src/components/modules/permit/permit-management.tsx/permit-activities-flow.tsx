@@ -25,6 +25,9 @@ import { getAllPermits } from "../../../../assets/api/user";
 import { useUserContext } from "../../../../context/user.context";
 import { convertSnakeCaseToTitleCase } from "../../../../assets/utils";
 
+import { Pagination } from "../../../ui/pagination";
+import { paginate } from "../../../../assets/utils";
+
 export default function ActivitiesFlow({}: any) {
   const [selectedWorkType, setSelectedWorkType] = useState("All Work Types");
   const work_types = ["All Work Types", "COLD_WORK", "HOT_WORK"];
@@ -90,6 +93,14 @@ export default function ActivitiesFlow({}: any) {
     );
   });
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const sortedData = filteredActivities.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  const paginatedData = paginate(sortedData, currentPage, itemsPerPage);
+
   return (
     <>
       <Header title="Activities" />
@@ -150,7 +161,7 @@ export default function ActivitiesFlow({}: any) {
             </TableHead>
 
             <TableBody>
-              {filteredActivities
+              {paginatedData
                 .filter(
                   (data) =>
                     data.status !== "CLOSED" &&
@@ -198,7 +209,7 @@ export default function ActivitiesFlow({}: any) {
         <div className="app-section__sm-table">
           <Table>
             <TableBody>
-              {filteredActivities
+              {paginatedData
                 .filter(
                   (data) =>
                     data.status !== "CLOSED" &&
@@ -240,6 +251,15 @@ export default function ActivitiesFlow({}: any) {
             </TableBody>
           </Table>
         </div>
+
+        {filteredActivities.length && (
+          <Pagination
+            totalItems={filteredActivities.length}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        )}
 
         {!filteredActivities.length && (
           <div className="base-empty">
