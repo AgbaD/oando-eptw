@@ -61,7 +61,9 @@ function SecondaryDateFilter({
         <Dropdown className="calendar-dropdown">
           <DropdownTrigger>
             <Icon name="calendar" />
-            {startDate ? startDate.toDateString() : "Start date"}
+            <span style={{ marginLeft: 5 }}>
+              {startDate ? startDate.toDateString() : "Start date"}
+            </span>
           </DropdownTrigger>
           <DropdownContent>
             <DatePicker
@@ -78,7 +80,9 @@ function SecondaryDateFilter({
         <Dropdown className="calendar-dropdown">
           <DropdownTrigger>
             <Icon name="calendar" />
-            {endDate ? endDate.toDateString() : "End date"}
+            <span style={{ marginLeft: 5 }}>
+              {endDate ? endDate.toDateString() : "End date"}
+            </span>
           </DropdownTrigger>
           <DropdownContent>
             <DatePicker

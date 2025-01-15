@@ -79,6 +79,7 @@ export default function Locations({}: any) {
     : [];
 
   const handleEditLocation = (item) => {
+    console.log(item);
     setID(item.id);
     route("/locations/edit");
   };

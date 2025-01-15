@@ -40,7 +40,7 @@ export default function CreateCompany({}: any) {
             text: location.locationArea,
             value: location.id,
           }))
-        : [{ text: "No location areas found", value: "" }];
+        : [{ text: "No location areas found", value: 0 }];
 
       setLocationOptions(locations);
     }
@@ -133,5 +133,6 @@ const validationSchema = Yup.object({
 
   locationId: Yup.number()
     .required("Location is required")
+    .required("Select a valid site and location area")
     .min(1, "Please select a valid location"),
 });

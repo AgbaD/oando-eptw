@@ -6,23 +6,18 @@ import Textarea from "../../../ui/form/text-area";
 import Button from "../../../ui/button";
 import { usePermitContext } from "../../../../context/permit.context";
 
-import { siteOptions } from "../../locations/data";
-import useRequest from "../../../../hooks/use-request";
-import { getSites } from "../../../../assets/api/user";
+// import { siteOptions } from "../../locations/data";
+// import useRequest from "../../../../hooks/use-request";
+// import { getSites } from "../../../../assets/api/user";
 import { useState, useEffect } from "preact/hooks";
 import { createRequest } from "../../../../assets/api";
 import { useDraftDetails } from "../../../../context/draft-details.context";
+import { useUserContext } from "../../../../context/user.context";
 
 export default function WorkDescription() {
   const { draft, isDraft } = useDraftDetails();
+  const { profile } = useUserContext();
 
-  const siteApi = useRequest(getSites, {}, true);
-
-  const [siteName, setSiteName] = useState("--select work site--");
-  const [locationName, setLocationName] = useState(
-    "--select work location area--"
-  );
-  const [locationOptions, setLocationOptions] = useState([]);
   const [workAreaOptions, setWorkAreaOptions] = useState([]);
 
   const { state, send } = usePermitContext();
@@ -39,38 +34,29 @@ export default function WorkDescription() {
   });
 
   useEffect(() => {
-    if (siteName && siteApi.response) {
-      const siteData = siteApi.response.data[siteName];
+    const getUserProfile = async () => {
+      const userResponse = await createRequest(
+        `/profile/${profile?.id}`,
+        "GET"
+      );
+      console.log(userResponse);
 
-      // Map locations for the selected site, or show "No locations found"
-      const locations = siteData
-        ? siteData.map((location) => ({
-            text: location.locationArea,
-            value: location.id,
+      const locationData = userResponse[0]?.data?.location?.workAreas;
+
+      const options = userResponse
+        ? locationData.map((area) => ({
+            text: area,
+            value: area,
           }))
-        : [{ text: "No location areas found", value: "" }];
+        : [{ text: "No work areas found", value: "" }];
 
-      setLocationOptions(locations);
+      setWorkAreaOptions(options);
+    };
+
+    if (profile) {
+      getUserProfile();
     }
-  }, [siteName, siteApi.response]);
-
-  async function handleLocationAreaChange(id) {
-    const locations = await createRequest(`/location/${id}`, "GET");
-
-    const name = locations[0]?.locationArea;
-    setLocationName(name);
-
-    const locationData = locations[0]?.data?.workAreas;
-
-    const options = locationData
-      ? locationData.map((area) => ({
-          text: area,
-          value: area, // Ensure value is set to the work area name
-        }))
-      : [{ text: "No work areas found", value: "" }];
-
-    setWorkAreaOptions(options);
-  }
+  }, []);
 
   function onSubmit(values) {
     const work_description = {
@@ -79,7 +65,7 @@ export default function WorkDescription() {
       work_description: values.work_description || draft?.workDescription,
       equipment_to_be_worked:
         values.equipment_to_be_worked || draft?.equipmentToolsMaterials,
-      locationId: values.locationId || draft?.locationId,
+      locationId: profile?.locationId,
       work_area: values.work_area || draft?.location?.workAreas?.[0],
       environmental_issues:
         values.environmental_issues || draft?.environmentalConsideration,
@@ -133,7 +119,7 @@ export default function WorkDescription() {
           }`}
           {...getFieldProps("equipment_to_be_worked")}
         />
-        <Select
+        {/* <Select
           label="Site *"
           placeholder={`${
             isDraft ? `previous: ${draft?.location?.site}` : siteName
@@ -145,8 +131,8 @@ export default function WorkDescription() {
             setSiteName(value);
             setFieldValue("site", value); // Update field value
           }}
-        />
-        <Select
+        /> */}
+        {/* <Select
           label="Work Location *"
           placeholder={`${
             isDraft
@@ -160,7 +146,7 @@ export default function WorkDescription() {
             handleLocationAreaChange(value);
             getFieldProps("locationId").onChange(e);
           }}
-        />
+        /> */}
         <Select
           label="Work Area (Unit / Installation) *"
           placeholder={`${

@@ -48,10 +48,11 @@ export function DropdownTrigger({ children, isOpen, setIsOpen }: any) {
   );
 }
 
-export function DropdownContent({ children, isOpen, setIsOpen }: any) {
+export function DropdownContent({ children, isOpen }: any) {
   if (!isOpen) return null;
+
   const DecoratedChildren = Children.map(children, (child) =>
-    cloneElement(child, { setIsOpen })
+    cloneElement(child, { isOpen })
   );
 
   return <div className="base-dropdown__content">{DecoratedChildren}</div>;
@@ -59,7 +60,7 @@ export function DropdownContent({ children, isOpen, setIsOpen }: any) {
 
 export function DropdownOption({ children, setIsOpen }: any) {
   return (
-    <div className="base-dropdown__option" onClick={() => setIsOpen(false)}>
+    <div className="base-dropdown__option" onClick={() => setIsOpen(true)}>
       {children}
     </div>
   );

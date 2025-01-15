@@ -13,6 +13,10 @@ import { formatDateForBackend } from "../permit-management.tsx/activities/proces
 
 import { Link } from "preact-router";
 import dayjs from "dayjs";
+import { convertSnakeCaseToTitleCase } from "../../../../assets/utils";
+import { useUserContext } from "../../../../context/user.context";
+import { getAllCompanies } from "../../../../assets/api/user";
+import { useEffect, useState } from "preact/hooks";
 
 export default function AdditionalNotes() {
   const { state, send } = usePermitContext();
@@ -23,6 +27,31 @@ export default function AdditionalNotes() {
     validationSchema,
   });
 
+  const { profile } = useUserContext();
+  const companyApi = useRequest(getAllCompanies, {}, true);
+  const [companyList, setCompanyList] = useState([]);
+
+  useEffect(() => {
+    const companyData = companyApi?.response?.data;
+
+    setCompanyList(companyData);
+  }),
+    [companyApi.response];
+
+  function getCompanyName(id: string) {
+    if (!Array.isArray(companyList) || companyList.length === 0) {
+      return "";
+    }
+
+    const companyId = Number(id);
+    if (isNaN(companyId)) {
+      return "";
+    }
+
+    const company = companyList.find((item) => item.id === companyId);
+    return company?.name || "";
+  }
+
   // Permit Summary Items
   const items = [
     {
@@ -32,7 +61,7 @@ export default function AdditionalNotes() {
         {
           id: 1,
           title: "Permit Type",
-          info: state.context.permit_type,
+          info: convertSnakeCaseToTitleCase(state.context.permit_type),
         },
       ],
     },
@@ -64,7 +93,10 @@ export default function AdditionalNotes() {
         {
           id: 6,
           title: "Work Location / Work Area",
-          info: state.context.work_description?.locationId,
+          info:
+            profile?.locationId +
+            " / " +
+            state.context.work_description?.work_area,
         },
         {
           id: 7,
@@ -86,12 +118,16 @@ export default function AdditionalNotes() {
         {
           id: 1,
           title: "Entrusted Company",
-          info: state.context.company_details?.entrusted_company,
+          info: getCompanyName(
+            state.context.company_details?.entrusted_company
+          ),
         },
         {
           id: 2,
           title: "Executing Company",
-          info: state.context.company_details?.executing_company,
+          info: getCompanyName(
+            state.context.company_details?.executing_company
+          ),
         },
         {
           id: 3,
@@ -198,7 +234,7 @@ export default function AdditionalNotes() {
     const payload = {
       type: state.context.permit_type.toUpperCase(),
       workArea: state.context.work_description?.work_area,
-      locationId: Number(state.context.work_description?.locationId),
+      locationId: Number(profile?.locationId),
       performerRole: state.context.work_description?.role,
       performerPersonInCharge: state.context.work_description?.performer,
       workDescription: state.context.work_description?.work_description,
@@ -316,7 +352,9 @@ export default function AdditionalNotes() {
       {selectedDocuments?.length > 0 ? (
         selectedDocuments.map((item, index) => (
           <div key={index} className="section__content__document_section">
-            <p className="section__header">{item.name}</p>
+            <p className="section__header">
+              {convertSnakeCaseToTitleCase(item.name)}
+            </p>
             <div className="section__content">
               <p className="document">
                 <span>Upload Option</span>

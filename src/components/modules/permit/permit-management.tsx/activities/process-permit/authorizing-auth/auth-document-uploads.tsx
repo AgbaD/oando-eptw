@@ -123,10 +123,7 @@ export default function AuthDocuments() {
                   </label>
                   <Select
                     {...getFieldProps(`document_${document}`)}
-                    options={[
-                      { text: "Manual Upload", value: "manual" },
-                      { text: "Online", value: "online" },
-                    ]}
+                    options={[{ text: "Manual Upload", value: "manual" }]}
                   />
                   {values.documents[document] &&
                     !values[`document_${document}`] && (

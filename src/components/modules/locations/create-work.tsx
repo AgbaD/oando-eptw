@@ -19,7 +19,7 @@ export default function CreateWork({}: any) {
   const { getFieldProps, handleSubmit, setFieldValue, values } = useForm({
     initialValues: {
       locationId: 0,
-      workArea: [""] as string[], // Start with one empty string for workArea
+      workArea: [] as string[],
     },
     onSubmit,
     validationSchema,
@@ -124,7 +124,7 @@ export default function CreateWork({}: any) {
                 <Input
                   placeholder="Enter Work Area"
                   value={location}
-                  {...getFieldProps(`workArea.${index}`)}
+                  {...getFieldProps(`workArea[${index}]`)}
                   onChange={(e) =>
                     handleLocationChange(
                       index,
@@ -168,5 +168,12 @@ export default function CreateWork({}: any) {
 
 const validationSchema = Yup.object({
   locationId: Yup.string().required("Location is required"),
-  workArea: Yup.array().of(Yup.string().required("Add at least one work area")),
+  workArea: Yup.array()
+    .of(
+      Yup.string()
+        .trim()
+        .required("Work area is required")
+        .min(2, "Please enter a valid work area")
+    )
+    .min(1, "At least one work area is required"),
 });

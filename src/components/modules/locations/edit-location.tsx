@@ -23,11 +23,12 @@ export default function EditLocation({}: any) {
   const [locationName, setLocationName] = useState("");
   const [locationResponseState, setLocationResponseState] = useState(null);
 
-  console.log(locationName);
+  const id = valueID;
+  console.log(locationName, id);
 
   useEffect(() => {
     async function getLocationDetails() {
-      const response = await createRequest(`/location/${valueID}`, "GET");
+      const response = await createRequest(`/location/${id}`, "GET");
       const locationData = response[0].data;
       setLocationResponseState(locationData);
       setLocationName(locationData?.locationArea);
@@ -35,7 +36,15 @@ export default function EditLocation({}: any) {
     }
 
     getLocationDetails();
-  }, [valueID]);
+  }, [id]);
+
+  useEffect(() => {
+    if (locationResponseState) {
+      setFieldValue("locationId", locationResponseState?.id);
+      setFieldValue("locationArea", locationResponseState?.locationArea);
+      setFieldValue("site", locationResponseState?.site);
+    }
+  });
 
   const { makeRequest, isLoading } = useRequest(editLocation);
   const { getFieldProps, handleSubmit, setFieldValue, values } = useForm({

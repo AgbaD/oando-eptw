@@ -32,7 +32,6 @@ export default function CompanyDetails() {
         : [{ text: "No company found", value: "" }];
 
       setOptions(items);
-      console.log(companyData);
     }
   }, [companyName, companyApi.response]);
 

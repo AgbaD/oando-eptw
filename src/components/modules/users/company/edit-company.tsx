@@ -49,6 +49,8 @@ export default function EditCompany({}: any) {
     members: [],
   });
 
+  const [locationId, setLocationId] = useState(0);
+
   useEffect(() => {
     if (valueID) {
       async function getCompanyById() {
@@ -93,18 +95,20 @@ export default function EditCompany({}: any) {
             value: location.id,
           }))
         : [{ text: "No location areas found", value: "" }];
+      console.log(locations);
       setLocationOptions(locations);
     }
   }, [siteName, siteApi.response]);
 
   async function onSubmit(data) {
+    console.log(data);
     const requestData = {
-      name: data.companyName || company.name,
-      contractId: data.contractID || company.contractId,
-      locationId: Number(data.locationId) || company.location.id,
+      name: data.companyName ?? company.name,
+      contractId: data.contractID ?? company.contractId,
+      locationId: locationId ?? company.location.id,
     };
 
-    const [_, error] = await makeRequest(requestData); // only `data` is passed
+    const [_, error] = await makeRequest(requestData);
     if (error) {
       return toast({
         variant: "error",
@@ -160,15 +164,17 @@ export default function EditCompany({}: any) {
             <Select
               placeholder={locationName}
               options={locationOptions}
-              value={getFieldProps("locationId").value}
               onChange={(e) => {
-                const selectedValue = (e.target as HTMLSelectElement).value;
-                setFieldValue("locationId", selectedValue);
-                setLocationName(
-                  locationOptions.find(
-                    (option) => option.value === selectedValue
-                  )?.text
+                const selectedValue = Number(
+                  (e.target as HTMLSelectElement).value
                 );
+                setFieldValue("locationId", selectedValue);
+                setLocationId(selectedValue);
+                console.log("Selected Location ID:", selectedValue);
+                const selectedOption = locationOptions.find(
+                  (option) => option.value === selectedValue
+                );
+                setLocationName(selectedOption?.text ?? "--select location--");
               }}
             />
 

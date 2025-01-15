@@ -86,10 +86,7 @@ export default function Documents() {
             </label>
             <Select
               {...getFieldProps(`document_${document.replace(/ /g, "_")}`)}
-              options={[
-                { text: "Manual Upload", value: "manual" },
-                { text: "Online", value: "online" },
-              ]}
+              options={[{ text: "Manual Upload", value: "manual" }]}
             />
           </div>
         ))}
