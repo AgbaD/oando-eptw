@@ -20,6 +20,7 @@ export async function createRequest(
     if (body) config.body = JSON.stringify(body);
 
     const res = await fetch(
+      // `http://9.141.17.85:3000/api${endpoint}`,
       // `http://localhost:3000/api${endpoint}`,
       `https://eptw.ankursolutions.com/api${endpoint}`,
       config
@@ -35,7 +36,8 @@ export async function createRequest(
       if (!res.ok) return [null, response];
       return [response, null];
     }
-  } catch {
+  } catch (error) {
+    console.log(error)
     return [null, { message: "Something went wrong, please try again" }];
   }
 }
