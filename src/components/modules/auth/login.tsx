@@ -148,7 +148,7 @@ export default function Login({}: any) {
             </Link>
 
             <ReCAPTCHA
-              sitekey="6LerQJgqAAAAADS_o9r55abOFrkwKK92oFBaKK_p"
+              sitekey="6Ldv08UqAAAAAFC6tjq3NGi85G6imOeULJmgC1MP"
               onChange={onChange}
             />
 

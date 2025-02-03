@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  eptw-app-dev:
+    image: eptw-app-dev
+    container_name: eptw-app-dev
+    restart: always
+    ports:
+      - 80:80
+    networks:
+      - eptw-network
+
+networks:
+  eptw-network:
+    external: true
+
