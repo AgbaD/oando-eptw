@@ -1,2 +1,4 @@
 - difference in eptw-fe and oerln fe repo
-base url for calling backend api
+- base url for calling backend api 
+- http://127.0.0.1:3000/api
+- https://eptw.ankursolutions.com/api
